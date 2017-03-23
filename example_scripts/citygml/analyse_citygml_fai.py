@@ -8,11 +8,12 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    #citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
-    #dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.gml" )
-    
-    citygml_filepath = "F:\\kianwee_work\\case_study\\shp2citygml_example\\citygml\\yishun_central.gml"
-    dae_filepath = "F:\\kianwee_work\\case_study\\shp2citygml_example\\dae\\yishun_central_fai.dae"
+    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.dae" )
+        
+    #citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+1) + ".gml"
+    #dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+1) + "_fai.dae"
+
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     #================================================================================
@@ -33,4 +34,5 @@ for cnt in range(1):
     
     print "AVERAGE FAI", avg_fai
     d_str = "AVERAGE FAI: " + str(avg_fai)
-    pyliburo.utility3d.write_2_collada_falsecolour(gridded_boundary, fai_list, "FAI", dae_filepath, description_str = d_str)
+    pyliburo.utility3d.write_2_collada_falsecolour(gridded_boundary, fai_list, "FAI", dae_filepath, 
+                                                   description_str = d_str, other_occface_list = os_list) 

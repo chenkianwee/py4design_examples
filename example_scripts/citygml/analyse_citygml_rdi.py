@@ -8,11 +8,12 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    #citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
-    #dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_rdi.dae" )
+    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_rdi.dae" )
     
-    citygml_filepath = "F:\\kianwee_work\\case_study\\shp2citygml_example\\citygml\\yishun_central.gml"
-    dae_filepath = "F:\\kianwee_work\\case_study\\shp2citygml_example\\dae\\yishun_central_rdi.dae"
+    #citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+1) + ".gml"
+    #dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+1) + "_rdi.dae"
+        
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     #================================================================================
@@ -35,7 +36,8 @@ for cnt in range(1):
     print "TOTAL TIME TAKEN", (time2-time1)/60
     
     d_str = " AVG_RDI: " + str(avg_rdi) + "\n" + "RDI PERCENTAGE: " + str(rdi_per) + "\n" +  "ROAD LENGTH: " + str(road_length)
-    pyliburo.utility3d.write_2_collada_falsecolour(plts, rdi_list , "RDI", dae_filepath, description_str = d_str)
+    pyliburo.utility3d.write_2_collada_falsecolour(plts, rdi_list , "RDI", dae_filepath, description_str = d_str,
+                                                   minval = 0.0, maxval = 1.0,  other_occedge_list =edges )
     
     '''
     buildings = evaluations.building_occsolids

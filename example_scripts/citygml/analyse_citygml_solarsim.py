@@ -9,18 +9,18 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
-for cnt in range(1):
+for cnt in range(9):
     #citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
     #dae_result_name = "punggol_luse101"
     #dae_filepath1 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_nshfavi.dae" )
     #dae_filepath2 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_dfavi.dae" )
     #dae_filepath3 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_pveavi.dae" )
     
-    citygml_filepath = "F:\\kianwee_work\\case_study\\shp2citygml_example\\citygml\\yishun_central.gml"
-    dae_filepath1 = "F:\\kianwee_work\\case_study\\shp2citygml_example\\dae\\yishun_central_nshfavi.dae"
-    dae_filepath2 = "F:\\kianwee_work\\case_study\\shp2citygml_example\\dae\\yishun_central_dfavi.dae"
-    dae_filepath3 = "F:\\kianwee_work\\case_study\\shp2citygml_example\\dae\\yishun_central_pveavi.dae"
-    
+    citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+1) + ".gml"
+    dae_filepath1 = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+1) + "_nshfavi.dae"
+    dae_filepath2 = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+1) + "_dfavi.dae"
+    dae_filepath3 = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+1) + "_pveavi.dae"
+
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     
