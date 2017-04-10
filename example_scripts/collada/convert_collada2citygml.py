@@ -11,8 +11,8 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 #dae_file = os.path.join(parent_path, "example_files", "form_eval_example",  "dae", "example9.dae")
 #citygml_filepath = os.path.join(parent_path, "example_files", "form_eval_example", "citygml", "example9.gml")
 
-dae_file = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example8.dae"
-citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example8.gml"
+dae_file = "F:\\kianwee_work\\case_study\\5x5ptblks\\dae\\5x5ptblks2.dae"
+citygml_filepath = "F:\\kianwee_work\\case_study\\5x5ptblks\\citygml\\5x5ptblks2.gml"
 
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"

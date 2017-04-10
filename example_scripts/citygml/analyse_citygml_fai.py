@@ -8,11 +8,11 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
-    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.dae" )
+    #citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
+    #dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.dae" )
         
-    #citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+7) + ".gml"
-    #dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+7) + "_fai.dae"
+    citygml_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\citygml\\5x5ptblks2.gml"
+    dae_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\design_variants\\archive\\varying_density\\skp\\255.dae"
 
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
