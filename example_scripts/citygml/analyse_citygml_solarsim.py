@@ -9,7 +9,7 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
-for cnt in range(1):
+for cnt in range(3):
     citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
     dae_result_name = "punggol_luse101"
     dae_filepath1 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_nshffai.dae" )
@@ -18,7 +18,7 @@ for cnt in range(1):
     dae_filepath4 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_dffai2.dae" )
     dae_filepath5 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_pvefai.dae" )
     dae_filepath6 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_pvefai2.dae" )
-    
+        
     '''
     citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+7) + ".gml"
     dae_filepath1 = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+7) + "_nshfavi.dae"
@@ -75,7 +75,7 @@ for cnt in range(1):
     #factor of 1.5 means we expect 60% of the heat to be transmitted through the envelope 
     #==========================================================================================================================
     
-    irrad_threshold = (80*4549)/1000.0#kw/m2
+    irrad_threshold = (50*4549)/1000.0#kw/m2
     illum_threshold = 10000#lux ~~254kw/m2
     roof_irrad_threshold = 1280 #kwh/m2
     facade_irrad_threshold = 512 #kwh/m2
@@ -99,8 +99,8 @@ for cnt in range(1):
     d_str = "NSHFFAI: " + str(res_dict["afi"]) + "\n" + "NSHFAI: " + str(res_dict["ai"])
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                    "kWh/m2", dae_filepath1, description_str = d_str, 
-                                                   minval = 0, maxval = 404.4)
-    
+                                                   minval = 0, maxval = 758.17)
+
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"], "NSHFFAI", 
                                                    dae_filepath2, description_str = d_str, 
                                                    minval = 0.0, maxval = 0.8)
@@ -145,11 +145,11 @@ for cnt in range(1):
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"][0], "PVEFAI", 
                                                    dae_filepath6, description_str = d_str, 
                                                    minval = 0.0, maxval = 0.8)
-    
+    '''
     time2 = time.clock()
     print "TIME TAKEN", (time2-time1)/60
     print "MODEL EVALUATED!"
-    '''
+
     res_dict = evaluations.pvafai(roof_irrad_threshold, weatherfilepath,xdim,ydim, surface = "roof")
                                                                                       
     print "PV ROOF TO FLOOR AREA INDEX :", res_dict["afi"]

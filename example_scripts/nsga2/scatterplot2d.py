@@ -1,7 +1,7 @@
 import pyliburo
 xmlfile = "F:\\kianwee_work\\case_study\\auto_parm_example\\nsga2_xml\\archive\\pareto.xml"
 xmlfile2 = "F:\\kianwee_work\\case_study\\auto_parm_example\\nsga2_xml\\archive\\npareto.xml"
-res_img_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\nsga2_xml\\archive\\overall.png"
+res_img_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\nsga2_xml\\archive\\pareto_front.png"
 inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile)
 inds2 = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile2)
 
@@ -12,46 +12,37 @@ colourlist = []
 for ind in inds:
     score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
     idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    if score_list[0] > 73:
-        if idx == "209":
-            print idx, score_list
-            labellist.append(idx)
-        else:
-            print "MORE THAN 73", idx, score_list
-            labellist.append("")
-    elif score_list[0] < 58:
-        if idx == "547":
-            print idx, score_list
-            labellist.append(idx)
-        else:
-            print "LESS THAN 58", idx, score_list
-            labellist.append("")
-    elif score_list[0] > 65 and score_list[0] < 70 :
-        #print "MORE BETWEEN 65 AND 70", idx
-        print type(idx)
-        if idx == "999":
-            print idx, score_list
-            labellist.append(idx)
-            
-        else:
-            #print "BETWEEN 65 BETWEEN 70", idx, score_list
-            labellist.append("")
-    else:
-        labellist.append("") 
+    print idx, score_list
     pts.append(score_list)
-    #pareto_labellist.append(idx)
+    labellist.append("")
     arealist.append(30)
     colourlist.append("red")
     
 for ind in inds2:
     score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
     idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    pts.append(score_list)
-    labellist.append("")
-    arealist.append(10)
-    colourlist.append("black")
+    nshfai = score_list[0]
+    fai = score_list[1]
+    if fai <= 0.48 and fai >= 0.45:
+        print idx, score_list
+        pts.append(score_list)
+        labellist.append("")
+        arealist.append(10)
+        colourlist.append("black")
+    else:
+        pts.append(score_list)
+        labellist.append("")
+        arealist.append(10)
+        colourlist.append("black")
     
-    
+base_nshfai = 0.0712174412239
+base_fai = 0.471696895423
+
+pts.append([base_nshfai,base_fai])
+labellist.append("")
+arealist.append(20)
+colourlist.append("blue")
+
 print "DRAWING GRAPH ..."
 pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=24, labellist = labellist,
-                                            xlabel = "SHGFAI(%)", ylabel = "FAI(%)", savefile = res_img_filepath )
+                                            xlabel = "NSHFAI", ylabel = "FAI", savefile = res_img_filepath )

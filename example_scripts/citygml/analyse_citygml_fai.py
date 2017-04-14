@@ -11,8 +11,8 @@ for cnt in range(1):
     #citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
     #dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.dae" )
         
-    citygml_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\citygml\\5x5ptblks2.gml"
-    dae_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\design_variants\\archive\\varying_density\\skp\\255.dae"
+    citygml_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\design_variants\\993.gml"
+    dae_filepath = "F:\\kianwee_work\\case_study\\auto_parm_example\\design_variants\\skp\\993_fai.dae"
 
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
