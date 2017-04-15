@@ -26,8 +26,6 @@ occsolid = pyliburo.py3dmodel.construct.make_solid(fixed_occshell)
 occsolid = pyliburo.py3dmodel.modify.fix_close_solid(occsolid)
 facade_list, roof_list, footprint_list = pyliburo.gml3dmodel.identify_building_surfaces(occsolid)
 
-print "facade_area", pyliburo.gml3dmodel.faces_surface_area(facade_list)
-print "roof_area", pyliburo.gml3dmodel.faces_surface_area(roof_list)
 win_occface_list = []
 wall_occface_list = []
 shade_occface_list = []
@@ -35,7 +33,7 @@ for facade in facade_list:
     fmidpt = pyliburo.py3dmodel.calculate.face_midpt(facade)
     fnrml = pyliburo.py3dmodel.calculate.face_normal(facade)
     fnrml = (round(fnrml[0],2), round(fnrml[1],2), round(fnrml[2],2))
-    win_occface = pyliburo.py3dmodel.fetch.shape2shapetype(pyliburo.py3dmodel.modify.uniform_scale(facade, 0.5,0.5,0.5, fmidpt))
+    win_occface = pyliburo.py3dmodel.fetch.shape2shapetype(pyliburo.py3dmodel.modify.uniform_scale(facade, 0.1,0.1,0.1, fmidpt))
     
     wall_occface = pyliburo.py3dmodel.construct.boolean_difference(facade,win_occface)
     tri_wall_occface_list = pyliburo.py3dmodel.construct.simple_mesh(wall_occface)
@@ -56,9 +54,10 @@ for facade in facade_list:
     win_occface_list.append(win_occface)
     wall_occface_list.extend(new_tri_wall_occface_list)
     
-
+'''
 sky_occface_list = []
 roof_occface_list = []
+
 for roof in roof_list:
     fmidpt = pyliburo.py3dmodel.calculate.face_midpt(roof)
     fnrml = pyliburo.py3dmodel.calculate.face_normal(roof)
@@ -78,8 +77,7 @@ for roof in roof_list:
             
     sky_occface_list.append(sky_occface)
     roof_occface_list.extend(new_tri_roof_occface_list)
-
-
+'''
 #construct the surrounding bldgs
 pypt_list2 = [(80,20,0), (140,20,0), (140,40,0),(80,40,0)]
 occface = pyliburo.py3dmodel.construct.make_polygon(pypt_list2)
@@ -97,19 +95,15 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 weatherfilepath = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw" )
 shp_attribs_list = []
 for wall in wall_occface_list:
-    shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(wall,2.3,"wall" )
+    shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(wall,1,"wall" )
     shp_attribs_list.append(shp_attribs)
     
-for roof in roof_occface_list:
-    shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(roof,2.3,"roof" )
+for roof in roof_list:
+    shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(roof,0.5,"roof" )
     shp_attribs_list.append(shp_attribs)
 
 for window in win_occface_list:
     shp_attribs = pyliburo.buildingformeval.create_glazing_shape_attribute(window,2.82,0.81,"window")
-    shp_attribs_list.append(shp_attribs)
-    
-for skylight in sky_occface_list:
-    shp_attribs = pyliburo.buildingformeval.create_glazing_shape_attribute(skylight,2.82,0.81,"skylight")
     shp_attribs_list.append(shp_attribs)
 
 for shade in shade_occface_list:
@@ -126,28 +120,36 @@ for footprint in footprint_list:
     
 result_dictionary = pyliburo.buildingformeval.calc_ettv(shp_attribs_list,weatherfilepath)
 print result_dictionary
-
 time3 = time.clock()
 print "CALCULATED ETTV", (time3-time2)/60.0
 
+time4 = time.clock()
+#calculate cooling energy 
+facade_area = result_dictionary["facade_area"]
+roof_area = result_dictionary["roof_area"]
+floor_area = pyliburo.py3dmodel.calculate.face_area(occface)
+ettv = result_dictionary["ettv"]
+rttv = result_dictionary["rttv"]
+system_dict_list = pyliburo.buildingformeval.calc_cooling_energy_consumption(facade_area, roof_area, floor_area, ettv, rttv)
+chosen_system = pyliburo.buildingformeval.choose_efficient_cooling_system(system_dict_list)
+print chosen_system
+time5 = time.clock()
+print "CALCULATED COOLING ENERGY ", (time5-time4)/60.0
 
 display_2dlist = []
 colour_list = []
 display_2dlist.append(wall_occface_list)
 display_2dlist.append(win_occface_list)
-display_2dlist.append(roof_occface_list)
-display_2dlist.append(sky_occface_list)
+display_2dlist.append(roof_list)
 display_2dlist.append(footprint_list)
 display_2dlist.append([extrude])
 display_2dlist.append(shade_occface_list)
-display_2dlist.append(occedge_list)
 
 colour_list.append("WHITE")
 colour_list.append("GREEN")
 colour_list.append("RED")
 colour_list.append("YELLOW")
 colour_list.append("BLUE")
-colour_list.append("BLACK")
 colour_list.append("BLACK")
 colour_list.append("BLACK")
 pyliburo.py3dmodel.construct.visualise(display_2dlist,colour_list)
