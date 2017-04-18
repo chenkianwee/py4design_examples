@@ -54,7 +54,7 @@ for facade in facade_list:
     win_occface_list.append(win_occface)
     wall_occface_list.extend(new_tri_wall_occface_list)
     
-'''
+
 sky_occface_list = []
 roof_occface_list = []
 
@@ -77,7 +77,7 @@ for roof in roof_list:
             
     sky_occface_list.append(sky_occface)
     roof_occface_list.extend(new_tri_roof_occface_list)
-'''
+
 #construct the surrounding bldgs
 pypt_list2 = [(80,20,0), (140,20,0), (140,40,0),(80,40,0)]
 occface = pyliburo.py3dmodel.construct.make_polygon(pypt_list2)
@@ -98,7 +98,7 @@ for wall in wall_occface_list:
     shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(wall,1,"wall" )
     shp_attribs_list.append(shp_attribs)
     
-for roof in roof_list:
+for roof in roof_occface_list:
     shp_attribs = pyliburo.buildingformeval.create_opaque_srf_shape_attribute(roof,0.5,"roof" )
     shp_attribs_list.append(shp_attribs)
 
@@ -106,6 +106,10 @@ for window in win_occface_list:
     shp_attribs = pyliburo.buildingformeval.create_glazing_shape_attribute(window,2.82,0.81,"window")
     shp_attribs_list.append(shp_attribs)
 
+for skylight in sky_occface_list:
+    shp_attribs = pyliburo.buildingformeval.create_glazing_shape_attribute(skylight,2.82,0.81,"skylight")
+    shp_attribs_list.append(shp_attribs)
+    
 for shade in shade_occface_list:
     shp_attribs = pyliburo.buildingformeval.create_shading_srf_shape_attribute(shade, "shade")
     shp_attribs_list.append(shp_attribs)
@@ -117,6 +121,7 @@ for surround in surround_occface_list:
 for footprint in footprint_list:
     shp_attribs = pyliburo.buildingformeval.create_shading_srf_shape_attribute(footprint, "footprint")
     shp_attribs_list.append(shp_attribs)
+    
     
 result_dictionary = pyliburo.buildingformeval.calc_ettv(shp_attribs_list,weatherfilepath)
 print result_dictionary
@@ -132,7 +137,7 @@ ettv = result_dictionary["ettv"]
 rttv = result_dictionary["rttv"]
 system_dict_list = pyliburo.buildingformeval.calc_cooling_energy_consumption(facade_area, roof_area, floor_area, ettv, rttv)
 chosen_system = pyliburo.buildingformeval.choose_efficient_cooling_system(system_dict_list)
-print chosen_system
+print system_dict_list
 time5 = time.clock()
 print "CALCULATED COOLING ENERGY ", (time5-time4)/60.0
 
@@ -140,7 +145,7 @@ display_2dlist = []
 colour_list = []
 display_2dlist.append(wall_occface_list)
 display_2dlist.append(win_occface_list)
-display_2dlist.append(roof_list)
+display_2dlist.append(sky_occface_list)
 display_2dlist.append(footprint_list)
 display_2dlist.append([extrude])
 display_2dlist.append(shade_occface_list)

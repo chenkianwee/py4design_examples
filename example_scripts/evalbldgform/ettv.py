@@ -140,7 +140,6 @@ display_2dlist.append(sky_occface_list)
 display_2dlist.append(footprint_list)
 display_2dlist.append([extrude])
 display_2dlist.append(shade_occface_list)
-display_2dlist.append(occedge_list)
 
 colour_list.append("WHITE")
 colour_list.append("GREEN")
