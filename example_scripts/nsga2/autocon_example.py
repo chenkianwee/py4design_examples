@@ -69,7 +69,7 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
         
         for external_wall in external_wall_list:
             ew_midpt = py3dmodel.calculate.face_midpt(external_wall)
-            external_win = py3dmodel.modify.uniform_scale(external_wall, wwr, wwr, wwr, ew_midpt)
+            external_win = py3dmodel.modify.uniform_scale(external_wall, 0.98, 0.98, wwr/0.98, ew_midpt)
             external_win = py3dmodel.fetch.shape2shapetype(external_win)
             win_list.append(external_win)
             tri_external_wall = triangulate_wall_with_hole(external_wall, external_win)
@@ -82,7 +82,7 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
         for courtyard_wall in courtyard_wall_list:
             courtyard_wall = py3dmodel.modify.reverse_face(courtyard_wall)
             cw_midpt = py3dmodel.calculate.face_midpt(courtyard_wall)
-            courtyard_win = py3dmodel.modify.uniform_scale(courtyard_wall, wwr, wwr, wwr, cw_midpt)
+            courtyard_win = py3dmodel.modify.uniform_scale(courtyard_wall, 0.98, 0.98, wwr/0.98, cw_midpt)
             courtyard_win = py3dmodel.fetch.shape2shapetype(courtyard_win)
             win_list.append(courtyard_win)
             tri_courtyard_wall = triangulate_wall_with_hole(courtyard_wall, courtyard_win)
@@ -95,9 +95,6 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
         if fcnt!=0:
             nxt_flr_area = py3dmodel.calculate.face_area(flr_courtyard)
             flr_area = flr_area + nxt_flr_area
-        print flr_area
-        
-        #extrusion = py3dmodel.construct.extrude(nxt_flr, (0,0,1), flr2flr_height)
         fcnt+=1
     
     nflrs = len(flr_list)
@@ -166,10 +163,7 @@ def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win
         win_srfmat = "bca_dblglz_uncoated_glass"
     if win_srfmat_parm == 2:
         win_srfmat = "bca_dblglz_reflective_lowe_glass"
-    #if win_srfmat_parm == 3:
-    #    win_srfmat = "bca_dblglz_fritted_lowe_glass"
-    
-    
+        
     total_sensor_srf_list = []
     total_sensor_pt_list = []
     total_sensor_dir_list = []
@@ -280,9 +274,6 @@ def eval_cooling_energy(wall_list, flr_list, roof_list, win_list, bldg_shade_lis
     if win_srfmat_parm == 2:
         win_uvalue = 1.6
         win_sc = 0.33
-    #if win_srfmat_parm == 3:
-    #    win_uvalue = 1.6
-    #    win_sc = 0.28
     
     shp_attribs_list = []
     for wall in wall_list:
@@ -314,8 +305,8 @@ def eval_cooling_energy(wall_list, flr_list, roof_list, win_list, bldg_shade_lis
     ettv_dict = buildingformeval.calc_ettv(shp_attribs_list,epwweatherfile)
     system_dict_list = buildingformeval.calc_cooling_energy_consumption(ettv_dict["facade_area"], ettv_dict["roof_area"],
                                                      flr_area, ettv_dict["ettv"], ettv_dict["rttv"])
-    chosen_system = buildingformeval.choose_efficient_cooling_system(system_dict_list)
-    return chosen_system
+    chosen_system = buildingformeval.choose_efficient_cooling_system(system_dict_list)[0]
+    return chosen_system, ettv_dict, flr_area
 #================================================================================
 #OPTIMISATION ALGORITHM FUNCTIONS
 #================================================================================
@@ -332,7 +323,7 @@ def generate_gene_dict_list():
     for _ in range(4):
         gene_dict = {}
         gene_dict["type"] = "int_range"
-        gene_dict["range"] = (0,4)
+        gene_dict["range"] = (0,4,1)
         dict_list.append(gene_dict)
         
     #scaling factor for hte courtyard size
@@ -353,14 +344,14 @@ def generate_gene_dict_list():
     for _ in range(1):
         gene_dict = {}
         gene_dict["type"] = "int_range"
-        gene_dict["range"] = (0,4)
+        gene_dict["range"] = (0,3,1)
         dict_list.append(gene_dict)
         
     #the window materials
     for _ in range(1):
         gene_dict = {}
         gene_dict["type"] = "int_range"
-        gene_dict["range"] = (0,4)
+        gene_dict["range"] = (0,3,1)
         dict_list.append(gene_dict)
         
     return dict_list
@@ -378,8 +369,8 @@ time1 = time.clock()
 #================================================================================
 #INSTRUCTION: ADVANCE OPTIMISATION PARAMETERS
 #================================================================================
-resume = False
-ngeneration = 50
+resume = True
+ngeneration = 46
 init_population = 100
 mutation_rate = 0.01
 crossover_rate  = 0.8 
@@ -406,26 +397,109 @@ for gencnt in range(ngeneration):
         #=================================================
         ind_id = ind.id
         dv_dae = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\" + str(ind_id) + ".dae"
+        dv_dae_daylight = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\daylight\\" + str(ind_id) + "daylight.dae"
         parms = ind.genotype.values
-        wall_list, flr_list, roof_list, win_list, bldg_shade_list = generate_design_variant(parms[0], parms[1], parms[2],
-                                                                                            parms[3], parms[4], parms[5], 
-                                                                                            parms[6])
-        all_srf_list =  wall_list + flr_list + roof_list + win_list + bldg_shade_list
-        utility3d.write_2_collada()
+        pt1 = parms[0]
+        pt2 = parms[1]
+        pt3 = parms[2]
+        pt4 = parms[3]
+        courtyard_size = parms[4]
+        wwr = parms[5]
+        shade_strategy = parms[6]
+        win_mat = parms[7]
+        
+        wall_list, flr_list, roof_list, win_list, bldg_shade_list = generate_design_variant(pt1, pt2, pt3, pt4,
+                                                                                            courtyard_size, wwr, 
+                                                                                            shade_strategy) 
+                                                                                            
+        
+        
+        all_srf_list =  wall_list + bldg_shade_list
+        
+        for roof in roof_list:
+            tri_roof_list = triangulate_face(roof)
+            all_srf_list.extend(tri_roof_list)
+            
+        for floor in flr_list:
+            tri_floor_list = triangulate_face(floor)
+            all_srf_list.extend(tri_floor_list)
+            
+        cmpd1 = py3dmodel.construct.make_compound(all_srf_list)
+        
+        if win_mat == 0:
+            win_colour = (0,1,1)
+        if win_mat == 1:
+            win_colour = (0,0.5,1)
+        if win_mat == 2:
+            win_colour = (0,0,1)
+            
+        cmpd2 = py3dmodel.construct.make_compound(win_list)
+        cmpd_list = [cmpd1, cmpd2]
+        rgb_colour_list = [(1,1,1), win_colour]
+        
         #==================================================
         #EVAL DESIGN VARIANT
         #==================================================
-        nshfai = eval_solar(dv_citygml)
-        fai =  eval_fai(dv_citygml)
-        print 'NSHFAI', nshfai, "FAI", fai
-        ind.set_score(0,nshfai)
-        ind.set_score(1,fai)
+        system_dict, ettv_dict, flr_area = eval_cooling_energy(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win_mat)
+        daylight = eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list,win_mat, dv_dae_daylight)
+        cooling_energy = system_dict["energy_consumed_yr_m2"]
+        
+        description_string = "test"
+
+        ettv = ettv_dict["ettv"]
+        roof_area = ettv_dict["roof_area"]
+        facade_area = ettv_dict["facade_area"]
+        envelope_area = roof_area + facade_area
+        shape_factor = envelope_area/flr_area
+        
+        sensible_load = system_dict["sensible_load"]
+        cooling_system = system_dict["cooling_system"]
+        
+        description_string = "design variant" + str(ind_id) + "\n"+ \
+                            "Cooling Energy (kWh/m2/yr):" + str(cooling_energy) + "\n"+ \
+                            "Daylight (% <300 >2000):" + str(daylight) + "\n" + \
+                            "footprint_pt1:" + str(pt1) + "\n" + \
+                            "footprint_pt2:" + str(pt2) + "\n" + \
+                            "footprint_pt3:" + str(pt3) + "\n" + \
+                            "footprint_pt4:" + str(pt4) + "\n" + \
+                            "courtyard_size:" + str(courtyard_size) + "\n" + \
+                            "wwr:" + str(wwr) + "\n" + \
+                            "shade_strategy:" + str(shade_strategy) + "\n" + \
+                            "win_mat:" + str(win_mat) + "\n" + \
+                            "Cooling System:" + cooling_system + "\n" + \
+                            "Sensible Load (W):" + str(sensible_load) + "\n" + \
+                            "ettv:" + str(ettv) + "\n" + \
+                            "flr_area:" + str(flr_area) + "\n" + \
+                            "shape_factor:" + str(shape_factor) + "\n"
+                            
+        if cooling_system == 'Radiant Panels & DVUs':
+            supply_temperature = system_dict["supply_temperature_for_panels"]
+            panel_srf_area = system_dict["required_panel_area"]
+            ndvus = system_dict["required_dvus"] 
+        else:
+            supply_temperature = 0
+            panel_srf_area = 0
+            ndvus = 0
+            
+        description_string2 = "supply_temperature:" + str(supply_temperature) + "\n" + \
+                                "panel_srf_area:" + str(panel_srf_area) + "\n" + \
+                                "ndvus:" + str(ndvus) + "\n"
+        description_string = description_string + description_string2
+
+        
+        utility3d.write_2_collada_text_string(cmpd_list, description_string, dv_dae, face_rgb_colour_list=rgb_colour_list)
+        print 'COOLING ENERGY', cooling_energy , "DAYLIGHT", daylight
+        ind.set_score(0,cooling_energy)
+        ind.set_score(1,daylight)
+        derivedparams = [ettv, shape_factor, sensible_load, flr_area, cooling_system,
+                         supply_temperature, panel_srf_area, ndvus]
+        ind.add_derivedparams(derivedparams)
         
     #==================================================
     #NSGA FEEDBACK 
     #=================================================
     print "FEEDBACK ... ..."
-    pyliburo.runopt.feedback_nsga2(population)
+    runopt.feedback_nsga2(population)
     time2 = time.clock() 
     print "TIME TAKEN", (time2-time1)/60.0
     
@@ -433,38 +507,6 @@ print "DONE"
 time3 = time.clock() 
 print "TIME TAKEN", (time3-time1)/60.0
 
-
-wall_list, flr_list, roof_list, win_list, bldg_shade_list = autocon_schema(0,0,0,0, 0.3, 0.5, 1)
-time2 = time.clock()
-print "DEVELOPMENT TIME:",  (time2-time1)/60.0
-
-dae_filepath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\dae\\design_variant0.dae"
-daylight = eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list,1, dae_filepath)
-time3 = time.clock()
-print "DAYLIGHT TIME:", (time3-time2)/60.0
-print "DAYLIGHT LEVEL", daylight
-
-eval_cooling_energy(wall_list, flr_list, roof_list, win_list, bldg_shade_list, 1)
-time4 = time.clock()
-print "COOLING ENERGY TIME", (time4-time3)/60.0
-
-#VISUALISE
-display_2dlist = []
-colour_list = []
-display_2dlist.append(wall_list)
-display_2dlist.append(flr_list)
-display_2dlist.append(roof_list)
-display_2dlist.append(win_list)
-display_2dlist.append(bldg_shade_list)
-
-colour_list.append("WHITE")
-colour_list.append("WHITE")
-colour_list.append("RED")
-colour_list.append("BLUE")
-colour_list.append("YELLOW")
-
-py3dmodel.construct.visualise(display_2dlist, colour_list)
-    
 #glazing materials
 #0 =  sgl clear glass, vt 0.9, 1 = dbl glaze no coat, vt 0.79, 
 #2 = dbl glaze reflective lowe vt 0.6, 3 = frit glass low e vt 0.38
