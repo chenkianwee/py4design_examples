@@ -1,7 +1,7 @@
 import pyliburo
 overallxmlfile = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\overall.xml"
 inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(overallxmlfile)
-result_dict = pyliburo.pyoptimise.analyse_xml.kmeans_inds(inds,"score", n_clusters = 4)
+result_dict = pyliburo.pyoptimise.analyse_xml.kmeans_inds(inds,"score", n_clusters = 3)
 cluster_list = result_dict["cluster_list"]
 res_img_filepath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\clusters.png"
 
@@ -32,6 +32,6 @@ for cluster in cluster_list:
     cluster_cnt+=1
         
 print "DRAWING GRAPH ..."
-#pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=12, labellist = labellist,
-#                                            xlabel = "cooling", ylabel = "daylight", savefile = res_img_filepath )
+pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=12, labellist = labellist,
+                                            xlabel = "cooling", ylabel = "daylight", savefile = res_img_filepath )
 

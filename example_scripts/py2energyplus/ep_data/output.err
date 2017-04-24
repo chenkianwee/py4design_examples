@@ -1,0 +1,254 @@
+Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.24 16:31,IDD_Version 8.7.0
+   ** Warning ** IP: Note -- Some missing fields have been filled with defaults. See the audit output file for details.
+   ** Warning ** GetVertices: Roof/Ceiling is upside down! Tilt angle=[180.0], should be near 0, Surface="ROOF0", in Zone="ZONE1".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** GetVertices: Floor is upside down! Tilt angle=[0.0], should be near 180, Surface="FLOOR0", in Zone="ZONE1".
+   **   ~~~   ** Automatic fix is attempted.
+   ** Warning ** CheckUsedConstructions: There are 222 nominally unused constructions in input.
+   **   ~~~   ** Each Unused construction is shown.
+   ************* Construction=LIGHT EXTERIOR WALL
+   ************* Construction=LIGHT ROOF/CEILING
+   ************* Construction=LIGHT PARTITIONS
+   ************* Construction=LIGHT FLOOR
+   ************* Construction=LIGHT FURNISHINGS
+   ************* Construction=MEDIUM PARTITIONS
+   ************* Construction=MEDIUM FURNISHINGS
+   ************* Construction=HEAVY EXTERIOR WALL
+   ************* Construction=HEAVY ROOF/CEILING
+   ************* Construction=HEAVY PARTITIONS
+   ************* Construction=HEAVY FLOOR
+   ************* Construction=HEAVY FURNISHINGS
+   ************* Construction=SGL CLR 6MM
+   ************* Construction=SGL CLR LOW IRON 3MM
+   ************* Construction=SGL CLR LOW IRON 5MM
+   ************* Construction=SGL BRONZE 3MM
+   ************* Construction=SGL BRONZE 6MM
+   ************* Construction=SGL GREEN 3MM
+   ************* Construction=SGL GREEN 6MM
+   ************* Construction=SGL GREY 3MM
+   ************* Construction=SGL GREY 6MM
+   ************* Construction=SGL BLUE 6MM
+   ************* Construction=SGL REF-A-L CLR 6MM
+   ************* Construction=SGL REF-A-M CLR 6MM
+   ************* Construction=SGL REF-A-H CLR 6MM
+   ************* Construction=SGL REF-A-L TINT 6MM
+   ************* Construction=SGL REF-A-M TINT 6MM
+   ************* Construction=SGL REF-A-H TINT 6MM
+   ************* Construction=SGL REF-B-L CLR 6MM
+   ************* Construction=SGL REF-B-H CLR 6MM
+   ************* Construction=SGL REF-B-L TINT 6MM
+   ************* Construction=SGL REF-B-M TINT 6MM
+   ************* Construction=SGL REF-B-H TINT 6MM
+   ************* Construction=SGL REF-C-L CLR 6MM
+   ************* Construction=SGL REF-C-M CLR 6MM
+   ************* Construction=SGL REF-C-H CLR 6MM
+   ************* Construction=SGL REF-C-L TINT 6MM
+   ************* Construction=SGL REF-C-M TINT 6MM
+   ************* Construction=SGL REF-C-H TINT 6MM
+   ************* Construction=SGL REF-D CLR 6MM
+   ************* Construction=SGL REF-D TINT 6MM
+   ************* Construction=SGL LOE (E2=.4) CLR 3MM
+   ************* Construction=SGL LOE (E2=.2) CLR 3MM
+   ************* Construction=SGL LOE (E2=.2) CLR 6MM
+   ************* Construction=SGL ELEC ABS BLEACHED 6MM
+   ************* Construction=SGL ELEC ABS COLORED 6MM
+   ************* Construction=SGL ELEC REF BLEACHED 6MM
+   ************* Construction=SGL ELEC REF COLORED 6MM
+   ************* Construction=DBL CLR 3MM/6MM AIR
+   ************* Construction=DBL CLR 3MM/13MM AIR
+   ************* Construction=DBL CLR 3MM/13MM ARG
+   ************* Construction=DBL CLR 6MM/6MM AIR
+   ************* Construction=DBL CLR 6MM/13MM AIR
+   ************* Construction=DBL CLR 6MM/13MM ARG
+   ************* Construction=DBL CLR LOW IRON 3MM/6MM AIR
+   ************* Construction=DBL CLR LOW IRON 3MM/13MM AIR
+   ************* Construction=DBL CLR LOW IRON 3MM/13MM ARG
+   ************* Construction=DBL CLR LOW IRON 5MM/6MM AIR
+   ************* Construction=DBL CLR LOW IRON 5MM/13MM AIR
+   ************* Construction=DBL CLR LOW IRON 5MM/13MM ARG
+   ************* Construction=DBL BRONZE 3MM/6MM AIR
+   ************* Construction=DBL BRONZE 3MM/13MM AIR
+   ************* Construction=DBL BRONZE 3MM/13MM ARG
+   ************* Construction=DBL BRONZE 6MM/6MM AIR
+   ************* Construction=DBL BRONZE 6MM/13MM AIR
+   ************* Construction=DBL BRONZE 6MM/13MM ARG
+   ************* Construction=DBL GREEN 3M/6MM AIR
+   ************* Construction=DBL GREEN 3MM/13MM AIR
+   ************* Construction=DBL GREEN 3MM/13MM ARG
+   ************* Construction=DBL GREEN 6MM/6MM AIR
+   ************* Construction=DBL GREEN 6MM/13MM AIR
+   ************* Construction=DBL GREEN 6MM/13MM ARG
+   ************* Construction=DBL GREY 3MM/6MM AIR
+   ************* Construction=DBL GREY 3MM/13MM AIR
+   ************* Construction=DBL GREY 3MM/13MM ARG
+   ************* Construction=DBL GREY 6MM/6MM AIR
+   ************* Construction=DBL GREY 6MM/13MM AIR
+   ************* Construction=DBL GREY 6MM/13MM ARG
+   ************* Construction=DBL BLUE 6MM/6MM AIR
+   ************* Construction=DBL BLUE 6MM/13MM AIR
+   ************* Construction=DBL BLUE 6MM/13MM ARG
+   ************* Construction=DBL REF-A-L CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-A-L CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-A-L CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-A-M CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-A-M CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-A-M CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-A-H CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-A-H 6MM/13MM AIR
+   ************* Construction=DBL REF-A-H CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-A-L TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-A-L TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-A-L TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-A-M TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-A-M TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-A-M TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-A-H TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-A-H TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-A-H TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-B-L CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-B-L CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-B-L CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-B-H CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-B-H CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-B-H CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-B-L TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-B-L TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-B-L TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-B-M TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-B-M TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-B-M TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-B-H TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-B-H TINT 6MM/13MM AIR
+   ************* Construction=DBL REF B-H TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-C-L CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-C-L CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-C-L CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-C-M CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-C-M CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-C-M CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-C-H CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-C-H CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-C-H CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-C-L TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-C-L TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-C-L TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-C-M TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-C-M TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-C-M TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-C-H TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-C-H TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-C-H TINT 6MM/13MM ARG
+   ************* Construction=DBL REF-D CLR 6MM/6MM AIR
+   ************* Construction=DBL REF-D CLR 6MM/13MM AIR
+   ************* Construction=DBL REF-D CLR 6MM/13MM ARG
+   ************* Construction=DBL REF-D TINT 6MM/6MM AIR
+   ************* Construction=DBL REF-D TINT 6MM/13MM AIR
+   ************* Construction=DBL REF-D TINT 6MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.4) CLR 3MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.4) CLR 3MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.4) CLR 3MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.2) CLR 3MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.2) CLR 3MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.2) CLR 3MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.2) CLR 6MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.2) CLR 6MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.2) CLR 6MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.1) CLR 3MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.1) CLR 3MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.1) CLR 3MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.1) CLR 6MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.1) CLR 6MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.1) CLR 6MM/13MM ARG
+   ************* Construction=DBL LOE (E2=.1) TINT 6MM/6MM AIR
+   ************* Construction=DBL LOE (E2=.1) TINT 6MM/13MM AIR
+   ************* Construction=DBL LOE (E2=.1) TINT 6MM/13MM ARG
+   ************* Construction=DBL LOE (E3=.1) CLR 3MM/6MM AIR
+   ************* Construction=DBL LOE (E3=.1) CLR 3MM/13MM AIR
+   ************* Construction=DBL LOE (E3=.1) CLR 3MM/13MM ARG
+   ************* Construction=DBL LOE SPEC SEL CLR 3MM/6MM/6MM AIR
+   ************* Construction=DBL LOE SPEC SEL CLR 3MM/13MM/6MM AIR
+   ************* Construction=DBL LOE SPEC SEL CLR 3MM/13MM/6MM ARG
+   ************* Construction=DBL LOE SPEC SEL CLR 6MM/6MM AIR
+   ************* Construction=DBL LOE SPEC SEL CLR 6MM/13MM AIR
+   ************* Construction=DBL LOE SPEC SEL CLR 6MM/13MM ARG
+   ************* Construction=DBL LOE SPEC SEL TINT 6MM/6MM AIR
+   ************* Construction=DBL LOE SPEC SEL TINT 6MM/13MM AIR
+   ************* Construction=DBL LOE SPEC SEL TINT 6MM/13MM ARG
+   ************* Construction=DBL ELEC ABS BLEACHED 6MM/6MM AIR
+   ************* Construction=DBL ELEC ABS COLORED 6MM/6MM AIR
+   ************* Construction=DBL ELEC ABS BLEACHED 6MM/13MM AIR
+   ************* Construction=DBL ELEC ABS COLORED 6MM/13MM AIR
+   ************* Construction=DBL ELEC ABS BLEACHED 6MM/13MM ARG
+   ************* Construction=DBL ELEC ABS COLORED 6MM/13MM ARG
+   ************* Construction=DBL ELEC REF BLEACHED 6MM/6MM AIR
+   ************* Construction=DBL ELEC REF COLORED 6MM/6MM AIR
+   ************* Construction=DBL ELEC REF BLEACHED 6MM/13MM AIR
+   ************* Construction=DBL ELEC REF COLORED 6MM/13MM AIR
+   ************* Construction=DBL ELEC REF BLEACHED 6MM/13MM ARG
+   ************* Construction=DBL ELEC REF COLORED 6MM/13MM ARG
+   ************* Construction=DBL LOE ELEC ABS BLEACHED 6MM/6MM AIR
+   ************* Construction=DBL LOE ELEC ABS COLORED 6MM/6MM AIR
+   ************* Construction=DBL LOE ELEC ABS BLEACHED 6MM/13MM AIR
+   ************* Construction=DBL LOE ELEC ABS COLORED 6MM/13MM AIR
+   ************* Construction=DBL LOE ELEC ABS BLEACHED 6MM/13MM ARG
+   ************* Construction=DBL LOE ELEC ABS COLORED 6MM/13MM ARG
+   ************* Construction=DBL LOE ELEC REF BLEACHED 6MM/6MM AIR
+   ************* Construction=DBL LOE ELEC REF COLORED 6MM/6MM AIR
+   ************* Construction=DBL LOE ELEC REF BLEACHED 6MM/13MM AIR
+   ************* Construction=DBL LOE ELEC REF COLORED 6MM/13MM AIR
+   ************* Construction=DBL LOE ELEC REF BLEACHED 6MM/13MM ARG
+   ************* Construction=DBL LOE ELEC REF COLORED 6MM/13M ARG
+   ************* Construction=TRP CLR 3MM/6MM AIR
+   ************* Construction=TRP CLR 3MM/13MM AIR
+   ************* Construction=TRP CLR 3MM/13MM ARG
+   ************* Construction=TRP LOE (E5=.1) CLR 3MM/6MM AIR
+   ************* Construction=TRP LOE (E5=.1) CLR 3MM/13MM AIR
+   ************* Construction=TRP LOE (E5=.1) CLR 3MM/13MM ARG
+   ************* Construction=TRP LOE (E2=E5=.1) CLR 3MM/6MM AIR
+   ************* Construction=TRP LOE (E2=E5=.1) CLR 3MM/13MM AIR
+   ************* Construction=TRP LOE (E2=E5=.1) CLR 3MM/13MM ARG
+   ************* Construction=TRP LOE FILM (88) CLR 3MM/6MM AIR
+   ************* Construction=TRP LOE FILM (88) CLR 3MM/13MM AIR
+   ************* Construction=TRP LOE FILM (77) CLR 3MM/6MM AIR
+   ************* Construction=TRP LOE FILM (77) CLR 3MM/13MM AIR
+   ************* Construction=TRP LOE FILM (66) CLR 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (66) CLR 6MM/13MM AIR
+   ************* Construction=TRP LOE FILM (66) BRONZE 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (66) BRONZE 6MM/13MM AIR
+   ************* Construction=TRP LOE FILM (55) CLR 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (55) CLR 6MM/13M AIR
+   ************* Construction=TRP LOE FILM (55) BRONZE 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (55) BRONZE 6MM/13MM AIR
+   ************* Construction=TRP LOE FILM (44) BRONZE 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (44) BRONZE 6MM/13MM AIR
+   ************* Construction=TRP LOE FILM (33) BRONZE 6MM/6MM AIR
+   ************* Construction=TRP LOE FILM (33) BRONZE 6MM/13MM AIR
+   ************* Construction=QUADRUPLE LOE FILMS (88) 3MM/8MM KRYPTON
+   ************* Construction=DOUBLE PANE WINDOW
+   ************* Construction=LTWALL
+   ************* Construction=LTFLOOR
+   ************* Construction=LTROOF
+   ** Warning ** ShadowCalculation: suspect Calculation Frequency
+   **   ~~~   ** Value entered=[100000], Shadowing Calculations will be inaccurate.
+   ** Warning ** ShadowCalculation: invalid Calculation Method
+   **   ~~~   ** Value entered="20", AverageOverDaysInFrequency will be used.
+   ************* Testing Individual Branch Integrity
+   ************* All Branches passed integrity testing
+   ************* Testing Individual Supply Air Path Integrity
+   ************* All Supply Air Paths passed integrity testing
+   ************* Testing Individual Return Air Path Integrity
+   ************* All Return Air Paths passed integrity testing
+   ************* No node connection errors were found.
+   ************* Beginning Simulation
+   ************* Simulation Error Summary *************
+   *************
+   ************* ===== Final Error Summary =====
+   ************* The following error categories occurred.  Consider correcting or noting.
+   ************* Nominally Unused Constructions
+   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause
+   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm
+   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).
+   *************
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Completed Successfully-- 6 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  5.22sec

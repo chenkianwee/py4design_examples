@@ -151,8 +151,8 @@ def find_footprint_midpt(occface):
     
 def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win_srfmat_parm, dae_filepath):
     rad_base_filepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo\\py2radiance\\base.rad"
-    rad_folderpath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\rad_data"
-    daysim_folderpath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\daysim_data"
+    rad_folderpath = "F:\\design_variants\\rad_data"
+    daysim_folderpath = "F:\\design_variants\\daysim_data"
     epwweatherfile = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
     
     rad = py2radiance.Rad(rad_base_filepath, rad_folderpath)
@@ -370,7 +370,7 @@ time1 = time.clock()
 #INSTRUCTION: ADVANCE OPTIMISATION PARAMETERS
 #================================================================================
 resume = True
-ngeneration = 46
+ngeneration = 39
 init_population = 100
 mutation_rate = 0.01
 crossover_rate  = 0.8 
@@ -396,8 +396,8 @@ for gencnt in range(ngeneration):
         #GENERATE DESIGN VARIANT
         #=================================================
         ind_id = ind.id
-        dv_dae = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\" + str(ind_id) + ".dae"
-        dv_dae_daylight = "F:\\kianwee_work\\case_study\\five_storey_office_example\\design_variants\\daylight\\" + str(ind_id) + "daylight.dae"
+        dv_dae = "F:\\design_variants\\" + str(ind_id) + ".dae"
+        dv_dae_daylight = "F:\\design_variants\\daylight\\" + str(ind_id) + "daylight.dae"
         parms = ind.genotype.values
         pt1 = parms[0]
         pt2 = parms[1]
@@ -456,8 +456,8 @@ for gencnt in range(ngeneration):
         cooling_system = system_dict["cooling_system"]
         
         description_string = "design variant" + str(ind_id) + "\n"+ \
-                            "Cooling Energy (kWh/m2/yr):" + str(cooling_energy) + "\n"+ \
-                            "Daylight (% <300 >2000):" + str(daylight) + "\n" + \
+                            "Cooling Energy (kWh/m2/yr):" + str(round(cooling_energy,2)) + "\n"+ \
+                            "Daylight (% <300 >2000):" + str(round(daylight,2)) + "\n" + \
                             "footprint_pt1:" + str(pt1) + "\n" + \
                             "footprint_pt2:" + str(pt2) + "\n" + \
                             "footprint_pt3:" + str(pt3) + "\n" + \
@@ -467,10 +467,10 @@ for gencnt in range(ngeneration):
                             "shade_strategy:" + str(shade_strategy) + "\n" + \
                             "win_mat:" + str(win_mat) + "\n" + \
                             "Cooling System:" + cooling_system + "\n" + \
-                            "Sensible Load (W):" + str(sensible_load) + "\n" + \
-                            "ettv:" + str(ettv) + "\n" + \
-                            "flr_area:" + str(flr_area) + "\n" + \
-                            "shape_factor:" + str(shape_factor) + "\n"
+                            "Sensible Load (W):" + str(round(sensible_load,2)) + "\n" + \
+                            "ettv:" + str(round(ettv,2)) + "\n" + \
+                            "flr_area:" + str(round(flr_area,2)) + "\n" + \
+                            "shape_factor:" + str(round(shape_factor,2)) + "\n"
                             
         if cooling_system == 'Radiant Panels & DVUs':
             supply_temperature = system_dict["supply_temperature_for_panels"]
@@ -482,7 +482,7 @@ for gencnt in range(ngeneration):
             ndvus = 0
             
         description_string2 = "supply_temperature:" + str(supply_temperature) + "\n" + \
-                                "panel_srf_area:" + str(panel_srf_area) + "\n" + \
+                                "panel_srf_area:" + str(round(panel_srf_area,2)) + "\n" + \
                                 "ndvus:" + str(ndvus) + "\n"
         description_string = description_string + description_string2
 
