@@ -8,15 +8,12 @@
   Total Number of Fields=       59094
   Processing Input Data File -- Start
   Echo of input lines is off. May be activated by setting the environmental variable DISPLAYINPUTINAUDIT=YES
-   ** Warning ** IP: IDF line~4811 Object=BUILDING, name=Building, entered with less than minimum number of fields.
-   **   ~~~   ** Attempting fill to minimum.
-   **   Add   ** 6.00000000000000   ! field=>Minimum Number of Warmup Days
   Processing Input Data File -- Complete
   Maximum number of Alpha IDF Args=          15
   Maximum number of Numeric IDF Args=          27
-  Number of IDF "Lines"=         629
-  Number of Defaulted Fields=           7
-  Number of Fields with Defaults=         495
+  Number of IDF "Lines"=         631
+  Number of Defaulted Fields=          10
+  Number of Fields with Defaults=         503
   Number of Autosized Fields=           0
   Number of Autosizable Fields =           4
   Number of Autocalculated Fields=           9
@@ -103,3 +100,6 @@
  maxEMSInternalVarsAvailable=           0
  NumOfNodeConnections=           4
  MaxNumOfNodeConnections=        1000
+ Unused Objects -- Objects in IDF that were never "gotten"
+ DAYLIGHTING:REFERENCEPOINT=1TEST
+ OUTPUT:ILLUMINANCEMAP=TEST

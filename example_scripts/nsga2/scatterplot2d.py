@@ -10,14 +10,7 @@ labellist =[]
 arealist = []
 colourlist = []
 print "NUMBER OF PARETO:", len(inds)
-for ind in inds:
-    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
-    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    pts.append(score_list)
-    labellist.append("")
-    arealist.append(30)
-    colourlist.append("red")
-    
+
 for ind in inds2:
     score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
     idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
@@ -26,6 +19,16 @@ for ind in inds2:
     arealist.append(10)
     colourlist.append("black")
     
+for ind in inds:
+    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
+    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
+    print idx
+    pts.append(score_list)
+    labellist.append("")
+    arealist.append(30)
+    colourlist.append("red")
+    
+
 #base_nshfai = 0.0712174412239
 #base_fai = 0.471696895423
 

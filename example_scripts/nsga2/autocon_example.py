@@ -370,7 +370,7 @@ time1 = time.clock()
 #INSTRUCTION: ADVANCE OPTIMISATION PARAMETERS
 #================================================================================
 resume = True
-ngeneration = 39
+ngeneration = 7
 init_population = 100
 mutation_rate = 0.01
 crossover_rate  = 0.8 

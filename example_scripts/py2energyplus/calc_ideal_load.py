@@ -36,12 +36,12 @@ idf_obj.add_output_surfaces_drawing("DXF")
 idf_obj.set_output_control_table_style("HTML","JtoKWH")
 idf_obj.add_output_table_summary_report("AllSummary")
 
-pyliburo.py2energyplus.RunPeriod("1", "1", "12", "31", idf_obj)
+pyliburo.py2energyplus.RunPeriod("1", "1", "1", "2", idf_obj)
 zone_name = "zone1"
 zone_obj = pyliburo.py2energyplus.IdfZone(zone_name,idf_obj)
 zone_obj.set_cool_schedule("09:00","17:00", "25")
 zone_obj.set_heat_schedule("09:00","17:00", "18")
-zone_obj.set_internal_gains_schedule("09:00","17:00", "20")
+#zone_obj.set_internal_gains_schedule("09:00","17:00", "20")
 
 srf_list = []
 
@@ -61,6 +61,7 @@ for roof in roof_list:
     name = "roof" + str(rcnt)
     con = "Medium Roof/Ceiling"
     boundary = "Outdoors"
+    roof = pyliburo.py3dmodel.modify.reverse_face(roof)
     pyptlist = pyliburo.py3dmodel.fetch.pyptlist_frm_occface(roof)
     srf = pyliburo.py2energyplus.IdfZoneSurface(name, pyptlist,con, "Roof", boundary)
     zone_obj.add_surface(srf)
@@ -70,7 +71,8 @@ fcnt = 0
 for floor in footprint_list:
     name = "floor" + str(fcnt)
     con = "Medium Floor"
-    boundary = "Ground"
+    boundary = "Adiabatic"
+    floor = pyliburo.py3dmodel.modify.reverse_face(floor)
     pyptlist = pyliburo.py3dmodel.fetch.pyptlist_frm_occface(floor)
     srf = pyliburo.py2energyplus.IdfZoneSurface(name, pyptlist,con, "Floor", boundary)
     zone_obj.add_surface(srf)

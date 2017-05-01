@@ -1,9 +1,9 @@
-Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 12:54
+Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 14:45
 1,5,Environment Title[],Latitude[deg],Longitude[deg],Time Zone[],Elevation[m]
 2,6,Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],Hour[],StartMinute[],EndMinute[],DayType
-3,3,Cumulative Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],DayType  ! When Daily Report Variables Requested
-4,2,Cumulative Days of Simulation[],Month[]  ! When Monthly Report Variables Requested
-5,1,Cumulative Days of Simulation[] ! When Run Period Report Variables Requested
+3,3,Cumulative Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],DayType  ! When Daily Meters Requested
+4,2,Cumulative Days of Simulation[],Month[]  ! When Monthly Meters Requested
+5,1,Cumulative Days of Simulation[] ! When Run Period Meters Requested
 59,1,Cooling:EnergyTransfer [J] !Hourly
 38,1,Heating:EnergyTransfer [J] !Hourly
 End of Data Dictionary

@@ -1,0 +1,6 @@
+Zone ,Sum ,Surface Average Face Conduction Heat Transfer Energy [J]
+
+Zone ,Sum ,Surface Window Net Heat Transfer Energy [J]
+
+Surface Inside Face Convection Heat Gain Energy 
+Zone Ideal Loads Zone Sensible Cooling Energy 

@@ -1,5 +1,4 @@
-Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 12:54,IDD_Version 8.7.0
-   ** Warning ** IP: Note -- Some missing fields have been filled with defaults. See the audit output file for details.
+Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 14:45,IDD_Version 8.7.0
    ** Warning ** CheckUsedConstructions: There are 222 nominally unused constructions in input.
    **   ~~~   ** Each Unused construction is shown.
    ************* Construction=LIGHT EXTERIOR WALL
@@ -233,6 +232,12 @@ Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 12:54,IDD_V
    ************* No node connection errors were found.
    ************* Beginning Simulation
    ************* Simulation Error Summary *************
+   ** Warning ** The following lines are "Unused Objects".  These objects are in the idf
+   **   ~~~   **  file but are never obtained by the simulation and therefore are NOT used.
+   **   ~~~   **  Only the first unused named object of an object class is shown.  Use Output:Diagnostics,DisplayAllWarnings to see all.
+   **   ~~~   **  See InputOutputReference document for more details.
+   ************* Object=DAYLIGHTING:REFERENCEPOINT=1TEST
+   **   ~~~   ** Object=OUTPUT:ILLUMINANCEMAP=TEST
    *************
    ************* ===== Final Error Summary =====
    ************* The following error categories occurred.  Consider correcting or noting.
@@ -243,4 +248,4 @@ Program Version,EnergyPlus, Version 8.7.0-78a111df4a, YMD=2017.04.25 12:54,IDD_V
    *************
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 0 Warning; 0 Severe Errors.
-   ************* EnergyPlus Completed Successfully-- 2 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  0.59sec
+   ************* EnergyPlus Completed Successfully-- 2 Warning; 0 Severe Errors; Elapsed Time=00hr 00min  0.50sec
