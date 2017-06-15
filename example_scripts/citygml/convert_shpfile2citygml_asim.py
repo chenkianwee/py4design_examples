@@ -553,13 +553,13 @@ current_path = os.path.dirname(__file__)
 parent_path = parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
 #specify all the shpfiles
-shpfile1 = os.path.join(parent_path, "example_files", "shp2citygml_example", "example_files","shp","yishun", "yishun_central_bldgs", "yishun_central_bldgs2.shp")
-shpfile2 = os.path.join(parent_path, "example_files", "shp2citygml_example", "example_files","shp","yishun","yishun_central_plots", "yishun_central_plots2.shp")
-shpfile3 = os.path.join(parent_path, "example_files", "shp2citygml_example", "example_files","shp","yishun","yishun_central_roads", "yishun_central_roads2.shp")
-shpfile4 = os.path.join(parent_path, "example_files", "shp2citygml_example", "example_files","shp","yishun","yishun_central_boundary", "yishun_central_boundary2.shp")
+shpfile1 = os.path.join(parent_path, "example_files", "shpfiles", "punggol_buildings", "punggol_buildings.shp")
+shpfile2 = os.path.join(parent_path, "example_files", "shpfiles", "punggol_plots", "punggol_plots.shp")
+shpfile3 = os.path.join(parent_path, "example_files", "shpfiles", "punggol_trpst_network","punggol_trpst_network.shp")
+shpfile4 = os.path.join(parent_path, "example_files", "shpfiles", "boundary_file", "punggol_boundary.shp")
 
 #specify the result citygml file
-citygml_filepath = os.path.join(parent_path, "example_files", "shp2citygml_example", "citygml","yishun_central.gml")
+citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol.gml")
 #=========================================================================================================================================
 #SPECIFY ALL THE NECCESSARY INPUTS
 #=========================================================================================================================================

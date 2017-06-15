@@ -14,22 +14,6 @@ for cnt in range(2):
     #citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+7) + ".gml"
     #dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+7) + "_rdi.dae"
         
-    '''
-    if cnt == 0:
-        citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\toa_payoh_central.gml"
-        dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\" + "toa_payoh_central_rdi.dae"
-
-        
-    if cnt == 1:
-        citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\yishun_central.gml"
-        dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\" + "yishun_central_rdi.dae"
-
-    if cnt == 2:
-        citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\punggol_central.gml"
-        dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\" + "punggol_central_rdi.dae"
-
-    '''
-    
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     #================================================================================
