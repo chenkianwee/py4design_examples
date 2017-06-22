@@ -3,10 +3,10 @@ import pyliburo
 
 
 site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\site.dae"
-design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2.dae"
 site_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\site.gml"
-design_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower.gml"
-design_variant_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower1.gml"
+design_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower2.gml"
+#design_variant_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower_res.gml"
 
 time1 = time.clock()
 for cnt in range(2):
@@ -53,21 +53,40 @@ print "TOTAL TIME TAKEN:", total_time
 
 #define the parameters
 bldg_height_parm = pyliburo.gmlparmpalette.BldgHeightParm()
-bldg_height_parm.define_int_range(32,240,4)
+bldg_height_parm.define_int_range(40,80,4)
 
 bldg_orientation_parm = pyliburo.gmlparmpalette.BldgOrientationParm()
 bldg_orientation_parm.define_int_range(0,350,10)
-bldg_orientation_parm.set_clash_detection(True)
+bldg_orientation_parm.set_clash_detection(False)
 bldg_orientation_parm.set_boundary_detection(True)
+
+bldg_twist_parm = pyliburo.gmlparmpalette.BldgTwistParm()
+bldg_twist_parm.define_int_range(0,90,5)
+bldg_twist_parm.define_flr2flr_height(4)
+
+bldg_bend_parm = pyliburo.gmlparmpalette.BldgBendParm()
+bldg_bend_parm.define_int_range(0,90,5)
+bldg_bend_parm.define_flr2flr_height(4)
 
 #append all the parameters into the parameterise class
 parameterise = pyliburo.gmlparameterise.Parameterise(citygml_filepath)
 parameterise.add_parm(bldg_height_parm)
 parameterise.add_parm(bldg_orientation_parm)
+parameterise.add_parm(bldg_twist_parm)
+parameterise.add_parm(bldg_bend_parm)
 
-parameters = parameterise.generate_random_parameters()
-
-parameterise.generate_design_variant(parameters, design_variant_citygml_filepath)
-print parameters
+for cnt in range(10):
+    parameters = parameterise.generate_random_parameters()
+    #parameters = [0.3884060551286753, 0.2420593187795531, 0.630990932565577, 0.4406287061645846]
+    #parameters = [0.1087480259695543, 0.11741306342602364, 0.17541402323153532, 0.28934495193261356]
+    #parameters = [0.07732975637179462, 0.9816693833334377, 0.43137778216553857, 0.6150097081703361]
+    #parameters = [0.8047426004822341, 0.698679189051934, 0.7931828730644793] # dont work
+    #parameters = [0.6521894144684426, 0.5103187645188341, 0.0865283523816307] #works
+    #parameters = [0.5, 0.6, 0.8, 0.2]
+    print parameters
+    design_variant_citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower2_res " + str(cnt) +".gml"
+    parameterise.generate_design_variant(parameters, design_variant_citygml_filepath)
+    
+    print cnt
 time3 = time.clock() 
 print "TIME TAKEN", (time3-time1)/60.0
