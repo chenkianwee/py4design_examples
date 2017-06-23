@@ -9,7 +9,7 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "punggol.gml" )
-citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower1_res0.gml"
+citygml_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\citygml\\test_tower1_res1.gml"
 #or just insert a citygml file you would like to analyse here 
 '''citygml_filepath = "C://file2analyse.gml"'''
 #================================================================================
