@@ -29,14 +29,6 @@ for cnt in range(3):
     xdim = 9
     ydim = 9
     
-    #==========================================================================================================================
-    
-    #80w/m2 is the benchmark envelope thermal transfer value for spore greenmark basic for commercial buildings
-    #its calculated as an hourly average, multiplying it by 8760 hrs, we get the rough value for the permissible annual solar heat gain
-    #1.5 is a factor to account for the raw irradiation falling on the surface, the higher we assume the better your envelope quality. 
-    #factor of 1.5 means we expect 60% of the heat to be transmitted through the envelope 
-    #==========================================================================================================================
-    
     irrad_threshold = (50*4549)/1000.0#kw/m2
     illum_threshold = 10000#lux ~~254kw/m2
     roof_irrad_threshold = 1280 #kwh/m2
