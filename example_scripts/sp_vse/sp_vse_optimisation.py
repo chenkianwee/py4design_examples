@@ -6,28 +6,28 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2.dae"
 site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\site.dae"
 weatherfilepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
 
 #configure the parameterisation
 height = True
-height_value_range = [120,194,4]
+height_value_range = [40,72,4]
 
-orientation = True
-orientation_value_range = [0,350,45]
+taper = True
+taper_value_range = [0.8, 1.6, 0.1]
 
 twist = True
 twist_value_range = [0,90,5] 
 
-taper = True
-taper_value_range = [1.0, 2.0, 0.1]
-
 slant = True
-slant_value_range = [0, 30, 3]
+slant_value_range = [0, 20, 2]
 
-bend = True
+bend = False
 bend_value_range = [0,90,5]
+
+orientation = True
+orientation_value_range = [0,350,45]
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
@@ -121,46 +121,58 @@ print "#==================================="
 parameterise = pyliburo.gmlparameterise.Parameterise(design_citygml_filepath)
 layer_height = 4
 
+design_space = 1 
+
 if height == True:
     bldg_height_parm = pyliburo.gmlparmpalette.BldgHeightParm()
     bldg_height_parm.define_int_range(height_value_range[0],height_value_range[1],height_value_range[2])
     parameterise.add_parm(bldg_height_parm)
-
-if orientation == True:
-    bldg_orientation_parm = pyliburo.gmlparmpalette.BldgOrientationParm()
-    bldg_orientation_parm.define_int_range(orientation_value_range[0],orientation_value_range[1],orientation_value_range[2])
-    bldg_orientation_parm.set_clash_detection(False)
-    bldg_orientation_parm.set_boundary_detection(True)
-    parameterise.add_parm(bldg_orientation_parm)
+    nheight = len(range(height_value_range[0],height_value_range[1] + height_value_range[2],height_value_range[2]))
+    design_space = design_space *nheight
+    
+if taper == True:
+    bldg_taper_parm = pyliburo.gmlparmpalette.BldgTaperParm()
+    bldg_taper_parm.define_float_range(taper_value_range[0],taper_value_range[1],taper_value_range[2])
+    bldg_taper_parm.define_flr2flr_height(layer_height)
+    parameterise.add_parm(bldg_taper_parm)
+    ntaper = len(pyliburo.utility.frange(taper_value_range[0],taper_value_range[1] + taper_value_range[2],taper_value_range[2]))
+    design_space = design_space *ntaper
 
 if twist == True:
     bldg_twist_parm = pyliburo.gmlparmpalette.BldgTwistParm()
     bldg_twist_parm.define_int_range(twist_value_range[0],twist_value_range[1],twist_value_range[2])
     bldg_twist_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_twist_parm)
-
-if taper == True:
-    bldg_taper_parm = pyliburo.gmlparmpalette.BldgTaperParm()
-    bldg_taper_parm.define_float_range(taper_value_range[0],taper_value_range[1],taper_value_range[2])
-    bldg_taper_parm.define_flr2flr_height(layer_height)
-    parameterise.add_parm(bldg_taper_parm)
+    ntwist = len(range(twist_value_range[0],twist_value_range[1] + twist_value_range[2],twist_value_range[2]))
+    design_space = design_space *ntwist
     
 if slant == True:
     bldg_slant_parm = pyliburo.gmlparmpalette.BldgSlantParm()
     bldg_slant_parm.define_int_range(slant_value_range[0],slant_value_range[1],slant_value_range[2])
     bldg_slant_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_slant_parm)
+    nslant = len(range(slant_value_range[0],slant_value_range[1] + slant_value_range[2],slant_value_range[2]))
+    design_space = design_space *nslant
     
 if bend == True:
     bldg_bend_parm = pyliburo.gmlparmpalette.BldgBendParm()
     bldg_bend_parm.define_int_range(bend_value_range[0],bend_value_range[1],bend_value_range[2])
     bldg_bend_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_bend_parm)
+    nbend = len(range(bend_value_range[0],bend_value_range[1] + bend_value_range[2],bend_value_range[2]))
+    design_space = design_space *nbend
+    
+if orientation == True:
+    bldg_orientation_parm = pyliburo.gmlparmpalette.BldgOrientationParm()
+    bldg_orientation_parm.define_int_range(orientation_value_range[0],orientation_value_range[1],orientation_value_range[2])
+    bldg_orientation_parm.set_clash_detection(False)
+    bldg_orientation_parm.set_boundary_detection(True)
+    parameterise.add_parm(bldg_orientation_parm)
+    norientation = len(range(orientation_value_range[0],orientation_value_range[1] + orientation_value_range[2],orientation_value_range[2]))
+    design_space = design_space *norientation
     
 parameterise.define_nparameters()
 nparms = parameterise.nparameters
-print nparms
-
 
 print "#==================================="
 print "OPTIMISING ... ...", design_citygml_filepath
@@ -172,6 +184,36 @@ init_population = 25
 mutation_rate = 0.1
 crossover_rate  = 0.8 
 
+#calculate design space
+
+
+#write exploration log
+log_dir = os.path.join(pef_dir, "csv")
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+    
+log_filepath = os.path.join(log_dir, "optimisation_log.csv")
+
+if not os.path.isfile(log_filepath):
+    log_file = open(log_filepath, "w")
+    header_str = "design_file_name,height,height_value,taper,taper_value,twist,twist_value,slant,slant_value,bend,bend_value,orientation,orientation_value,nparms,design_space,gen,init_pop,mutation_rate,crossover_rate,resume\n"
+    log_file.write(header_str)
+    
+else:
+    log_file = open(log_filepath, "a")
+    
+content_str = design_dae_file + "," +\
+str(height) + "," + str(height_value_range[0]) + " " + str(height_value_range[1]) + " " + str(height_value_range[2])  + "," +\
+str(taper) + "," + str(taper_value_range[0]) + " " + str(taper_value_range[1]) + " " + str(taper_value_range[2]) + "," +\
+str(twist) + "," + str(twist_value_range[0]) + " " + str(twist_value_range[1]) + " " + str(twist_value_range[2]) + "," +\
+str(slant) + "," + str(slant_value_range[0]) + " " + str(slant_value_range[1]) + " " + str(slant_value_range[2]) + "," +\
+str(bend) + "," + str(bend_value_range[0]) + " " + str(bend_value_range[1]) + " " + str(bend_value_range[2]) + "," +\
+str(orientation) + "," + str(orientation_value_range[0]) + " " + str(orientation_value_range[1]) + " " + str(orientation_value_range[2]) + "," +\
+str(nparms) + "," + str(design_space) + "," + str(ngeneration) + "," + str(init_population) + "," + str(mutation_rate) + "," + str(crossover_rate) + "," + str(resume) + "\n"
+
+log_file.write(content_str)
+log_file.close()
+    
 #generate the design variant directory
 dv_dir = os.path.join(pef_dir, "design_variant")
 if not os.path.exists(dv_dir):
@@ -225,11 +267,21 @@ def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     far = round(far_list[0],1)
     print "PLOT RATIO:", far
     
+    occsolids = evaluations.building_occsolids
+    total_face_list = []
+    for occsolid in occsolids:
+        face_list = pyliburo.py3dmodel.fetch.geom_explorer(occsolid, "face")
+        total_face_list.extend(face_list)
+    
+    nfaces = len(total_face_list)
+    
+    luse_face = evaluations.landuse_occpolygons
+
     evaluations.add_shadings_4_solar_analysis(site_citygml_filepath)
     xdim = 9
     ydim = 9
     
-    lower_irrad_threshold = 58#kw/m2
+    lower_irrad_threshold = 263#kw/m2
     upper_irrad_threshold = 364#kw/m2
     roof_irrad_threshold = 1280 #kwh/m2
     facade_irrad_threshold = 512 #kwh/m2
@@ -238,21 +290,22 @@ def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     nshffai = round(res_dict["afi"],2)
     
     print "NON SOLAR HEATED FACADE TO FLOOR AREA INDEX:", nshffai
-    d_str = "NSHFFAI: " + str(nshffai) + "\n" + "Plot Ratio: " + str(far)
+    d_str = "Design_Variant" + str(ind_id) + "\n" + "NSHFFAI: " + str(nshffai) + "\n" + "Plot Ratio: " + str(far)
     
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                    "kWh/m2", nshffai2_dae_filepath, description_str = d_str, 
-                                                   minval = 58, maxval = 1000)
+                                                   minval = 263, maxval = 1273, other_occface_list = luse_face)
     
     res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weatherfilepath,xdim,ydim)
     pvefai = round(res_dict["afi"][0],2)
     print "PV ENVELOPE TO FLOOR AREA INDEX :", pvefai
     
-    d_str = "PVEFAI: " + str(pvefai) + "\n" + "Plot Ratio: " + str(far)
+    d_str = "Design_Variant" + str(ind_id) + "\n" + "PVEFAI: " + str(pvefai) + "\n" + "Plot Ratio: " + str(far)
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
-                                                   description_str = d_str, minval = 180, maxval = roof_irrad_threshold)
+                                                   description_str = d_str, minval = 180, maxval = roof_irrad_threshold,
+                                                   other_occface_list = luse_face)
 
-    return nshffai, pvefai 
+    return nshffai, pvefai, nfaces
 
 #================================================================================
 #OPTIMISE THE DESIGN
@@ -266,6 +319,19 @@ if resume == False:
 if resume == True:
     population = pyliburo.runopt.resume_nsga2(gene_dict_list, score_dict_list, mutation_rate,crossover_rate,init_population,
               live_file,dead_file )
+    
+time_log_filepath = os.path.join(log_dir, "optimisation_time_log.csv")
+
+if not os.path.isfile(time_log_filepath):
+    log_file = open(time_log_filepath, "w")
+    header_str = "time\n"
+    log_file.write(header_str)
+    log_file.close()
+else:
+    log_file = open(time_log_filepath, "a")
+    content_str = "new_run\n"
+    log_file.write(content_str)
+    log_file.close()
     
 for gencnt in range(ngeneration):
     indlist = population.individuals
@@ -282,9 +348,11 @@ for gencnt in range(ngeneration):
         #==================================================
         #EVAL DESIGN VARIANT
         #==================================================
-        nshffai, pvefai = eval_solar(dv_citygml, weatherfilepath, dv_dir, ind_id)
+        nshffai, pvefai, nfaces = eval_solar(dv_citygml, weatherfilepath, dv_dir, ind_id)
         ind.set_score(0,nshffai)
         ind.set_score(1,pvefai)
+        derivedparams = [nfaces]
+        ind.add_derivedparams(derivedparams)
         
     #==================================================
     #NSGA FEEDBACK 
@@ -292,8 +360,16 @@ for gencnt in range(ngeneration):
     print "FEEDBACK ... ..."
     pyliburo.runopt.feedback_nsga2(population)
     time4 = time.clock() 
-    print "TIME TAKEN PER GENERATION", (time4-time3)/60.0
+    ttpg = (time4-time3)/60.0
+    log_file = open(time_log_filepath, "a")
+    log_file.write(str(ttpg) + "\n")
+    log_file.close()
+    print "TIME TAKEN PER GENERATION", ttpg
     
 print "DONE"
 time5 = time.clock() 
-print "TOTAL TIME TAKEN", (time5-time1)/60.0
+total_time = (time5-time1)/60.0
+log_file = open(time_log_filepath, "a")
+log_file.write(str(total_time))
+log_file.close()
+print "TOTAL TIME TAKEN", total_time
