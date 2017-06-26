@@ -44,7 +44,7 @@ log_filepath = os.path.join(log_dir, "exploration_log.csv")
 
 if not os.path.isfile(log_filepath):
     log_file = open(log_filepath, "w")
-    header_str = "design_file_name,plot_ratio,nshffai,pvefai,number_of_surfaces,total_time\n"
+    header_str = "design_file_name,plot_ratio,nshffai,number_of_surfaces,total_time\n"
     log_file.write(header_str)
 else:
     log_file = open(log_filepath, "a")
@@ -157,18 +157,19 @@ pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_
                                                "kWh/m2", nshffai2_dae_filepath, description_str = d_str, 
                                                minval = 263, maxval = 1273, other_occface_list = luse_face)
 
-
+'''
 res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weatherfilepath,xdim,ydim)
 pvefai = round(res_dict["afi"][0],2)
 print "PV ENVELOPE TO FLOOR AREA INDEX :", pvefai
 d_str = design_filename + "\n" + "PVEFAI: " + str(pvefai) + "\n" + "Plot Ratio: " + str(far)
 pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
                                                description_str = d_str, minval = 180, maxval = roof_irrad_threshold, other_occface_list = luse_face)
-    
+'''
+
 time3 = time.clock()
 total_time = (time3-time1)/60.0
 print "TOTAL TIME:",  total_time
 
-content_str = design_dae_file + "," + str(far) + "," + str(nshffai) + "," + str(pvefai) + "," + str(nfaces) + "," + str(total_time) + "\n"
+content_str = design_dae_file + "," + str(far) + "," + str(nshffai) + "," + str(nfaces) + "," + str(total_time) + "\n"
 log_file.write(content_str)
 log_file.close()

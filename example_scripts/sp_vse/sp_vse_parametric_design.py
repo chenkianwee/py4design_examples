@@ -62,7 +62,7 @@ if not os.path.exists(log_dir):
 log_filepath = os.path.join(log_dir, "parametric_log.csv")
 if not os.path.isfile(log_filepath):
     log_file = open(log_filepath, "w")
-    header_str = "design_file_name,plot_ratio,nshffai,pvefai,height,height_value,orientation,orientation_value,twist,twist_value,taper,taper_value,slant,slant_value,bend,bend_value,nparms,number_of_surfaces,total_time\n"
+    header_str = "design_file_name,plot_ratio,nshffai,height,height_value,orientation,orientation_value,twist,twist_value,taper,taper_value,slant,slant_value,bend,bend_value,nparms,number_of_surfaces,total_time\n"
     log_file.write(header_str)
 else:
     log_file = open(log_filepath, "a")
@@ -231,7 +231,7 @@ d_str = design_filename + "design variant\n" + "NSHFFAI: " + str(nshffai) + "\n"
 pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                "kWh/m2", nshffai2_dae_filepath, description_str = d_str, 
                                                minval = 263, maxval = 1273, other_occface_list = luse_face)
-
+'''
 res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weatherfilepath,xdim,ydim)
 pvefai = round(res_dict["afi"][0],2)
 print "PV ENVELOPE TO FLOOR AREA INDEX :", pvefai
@@ -239,12 +239,12 @@ d_str = design_filename + "design variant\n" + "PVEFAI: " + str(pvefai) + "\n" +
 pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
                                                description_str = d_str, minval = 180, maxval = roof_irrad_threshold, 
                                                other_occface_list = luse_face)
-    
+'''
 time4 = time.clock()
 total_time = (time4-time1)/60.0
 print "TOTAL TIME:",  total_time
 
-content_str = design_dae_file + "," + str(far) + "," + str(nshffai)  + "," + str(pvefai) + "," + str(height) + "," + str(height_value) + "," +\
+content_str = design_dae_file + "," + str(far) + "," + str(nshffai)  +  str(height) + "," + str(height_value) + "," +\
 str(orientation) + "," + str(orientation_value) + "," + str(twist) + "," + str(twist_value) + "," + str(taper) + "," +\
 str(taper_value) + "," + str(slant) + "," + str(slant_value) + "," + str(bend) + "," + str(bend_value) + "," +\
 str(nparms) + "," + str(nfaces) + "," + str(total_time) + "\n"

@@ -249,8 +249,8 @@ def generate_gene_dict_list(ngenes):
     
 def generate_score_dict_list():
     nsh_score = {"name":"nshffai", "minmax": "max"}
-    pv_score = {"name":"pvefai", "minmax": "max"}
-    dict_list = [nsh_score, pv_score]
+    far_score = {"name":"far", "minmax": "max"}
+    dict_list = [nsh_score, far_score]
     return dict_list
     
 #================================================================================
@@ -258,7 +258,7 @@ def generate_score_dict_list():
 #================================================================================
 def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     nshffai2_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv_nshffai.dae")
-    pv_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv_pv.dae")
+    #pv_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv_pv.dae")
     
     evaluations = pyliburo.citygml2eval.Evals(citygml_filepath)
     
@@ -283,8 +283,8 @@ def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     
     lower_irrad_threshold = 263#kw/m2
     upper_irrad_threshold = 364#kw/m2
-    roof_irrad_threshold = 1280 #kwh/m2
-    facade_irrad_threshold = 512 #kwh/m2
+    #roof_irrad_threshold = 1280 #kwh/m2
+    #facade_irrad_threshold = 512 #kwh/m2
     
     res_dict  = evaluations.nshffai2(lower_irrad_threshold, upper_irrad_threshold, weatherfilepath, xdim, ydim)
     nshffai = round(res_dict["afi"],2)
@@ -295,17 +295,16 @@ def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                    "kWh/m2", nshffai2_dae_filepath, description_str = d_str, 
                                                    minval = 263, maxval = 1273, other_occface_list = luse_face)
-    
+    '''
     res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weatherfilepath,xdim,ydim)
     pvefai = round(res_dict["afi"][0],2)
     print "PV ENVELOPE TO FLOOR AREA INDEX :", pvefai
-    
     d_str = "Design_Variant" + str(ind_id) + "\n" + "PVEFAI: " + str(pvefai) + "\n" + "Plot Ratio: " + str(far)
     pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
                                                    description_str = d_str, minval = 180, maxval = roof_irrad_threshold,
                                                    other_occface_list = luse_face)
-
-    return nshffai, pvefai, nfaces
+    '''
+    return nshffai, far, nfaces 
 
 #================================================================================
 #OPTIMISE THE DESIGN
@@ -348,9 +347,9 @@ for gencnt in range(ngeneration):
         #==================================================
         #EVAL DESIGN VARIANT
         #==================================================
-        nshffai, pvefai, nfaces = eval_solar(dv_citygml, weatherfilepath, dv_dir, ind_id)
+        nshffai, far, nfaces  = eval_solar(dv_citygml, weatherfilepath, dv_dir, ind_id)
         ind.set_score(0,nshffai)
-        ind.set_score(1,pvefai)
+        ind.set_score(1,far)
         derivedparams = [nfaces]
         ind.add_derivedparams(derivedparams)
         
