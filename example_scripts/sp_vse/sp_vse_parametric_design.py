@@ -23,7 +23,7 @@ twist_value = 45
 slant = True
 slant_value = 5
 
-bend = False
+bend = True
 bend_value = 30
 
 orientation = True
@@ -182,7 +182,6 @@ nparms = len(parameterise.parm_obj_dict_list)
 dv_citygml_file = os.path.join(citygml_dir, design_filename + "dv.gml")
 parameterise.generate_design_variant(parameters, dv_citygml_file)
 
-
 time3 = time.clock()
 print "#==================================="
 print "EVALUATING MODEL ... ...", dv_citygml_file
@@ -196,7 +195,8 @@ print "#====================================="
 print "PERFORMANCE RESULTS"
 print "#====================================="
 nshffai2_dae_filepath = os.path.join(dae_dir, design_filename + "dv_nshffai.dae")
-pv_dae_filepath = os.path.join(dae_dir, design_filename + "dv_pv.dae")
+dv_dae_filepath = os.path.join(dae_dir, design_filename + "dv.dae")
+pyliburo.gml3dmodel.citygml2collada(dv_citygml_file, dv_dae_filepath)
 
 evaluations = pyliburo.citygml2eval.Evals(dv_citygml_file)
 

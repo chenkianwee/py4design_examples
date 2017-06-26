@@ -5,7 +5,10 @@ points1 = [(0,5,0), (5,5,0), (6,0,0),(5,-5,0),(0,-5,0), (-5,-5,0),(-5,5,0)]#cloc
 face1 = pyliburo.py3dmodel.construct.make_polygon(points1)
 extrude1 = pyliburo.py3dmodel.construct.extrude(face1, (0,1,1), 10)
 
-trsfshape = pyliburo.py3dmodel.modify.uniform_scale(extrude1, 2, 2, 2,(0,5,0))
+trsfshape = pyliburo.py3dmodel.modify.uniform_scale(extrude1, 1, 2, 2,(0,5,0))
+mpt = pyliburo.py3dmodel.calculate.face_midpt(face1)
+trsfshape2 = pyliburo.py3dmodel.modify.scale(face1, 2,mpt)
+
 print pyliburo.py3dmodel.fetch.shape2shapetype(trsfshape)
 faces = pyliburo.py3dmodel.fetch.geom_explorer(trsfshape, "face")
 
@@ -20,6 +23,6 @@ for face in face_list:
 
 display2dlist = []
 #display2dlist.append(sensor_list)
-display2dlist.append([extrude1])
-display2dlist.append(faces)
+display2dlist.append([face1])
+display2dlist.append([trsfshape2])
 pyliburo.py3dmodel.construct.visualise(display2dlist, ["WHITE", 'BLACK'])

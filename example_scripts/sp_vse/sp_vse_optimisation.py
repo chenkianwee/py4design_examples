@@ -259,6 +259,8 @@ def generate_score_dict_list():
 def eval_solar(citygml_filepath, weatherfilepath, dv_dir, ind_id):
     nshffai2_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv_nshffai.dae")
     #pv_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv_pv.dae")
+    dv_dae_filepath = os.path.join(dv_dir, str(ind_id) + "dv.dae")
+    pyliburo.gml3dmodel.citygml2collada(citygml_filepath, dv_dae_filepath)
     
     evaluations = pyliburo.citygml2eval.Evals(citygml_filepath)
     
