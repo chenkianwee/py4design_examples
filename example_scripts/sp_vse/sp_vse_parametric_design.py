@@ -6,7 +6,7 @@ import ntpath
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower1.dae"
 site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\site.dae"
 weatherfilepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
 
@@ -18,16 +18,16 @@ taper = True
 taper_value = 1.6
 
 twist = True
-twist_value = 45
+twist_value = 90
 
 slant = True
 slant_value = 5
 
 bend = True
-bend_value = 30
+bend_value = 10
 
 orientation = True
-orientation_value = 90
+orientation_value = 45
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
@@ -244,7 +244,7 @@ time4 = time.clock()
 total_time = (time4-time1)/60.0
 print "TOTAL TIME:",  total_time
 
-content_str = design_dae_file + "," + str(far) + "," + str(nshffai)  +  str(height) + "," + str(height_value) + "," +\
+content_str = design_dae_file + "," + str(far) + "," + str(nshffai)  +","+  str(height) + "," + str(height_value) + "," +\
 str(orientation) + "," + str(orientation_value) + "," + str(twist) + "," + str(twist_value) + "," + str(taper) + "," +\
 str(taper_value) + "," + str(slant) + "," + str(slant_value) + "," + str(bend) + "," + str(bend_value) + "," +\
 str(nparms) + "," + str(nfaces) + "," + str(total_time) + "\n"

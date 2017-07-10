@@ -11,7 +11,8 @@ pypt2 = (100,100,0)
 edge = pyliburo.py3dmodel.construct.make_edge(pypt1, pypt2)
 
 res = pyliburo.py3dmodel.construct.boolean_common(face1,face2)
-res = pyliburo.py3dmodel.construct.boolean_difference(face1,face2)
+res = pyliburo.py3dmodel.construct.boolean_difference(face2,face1)
+
 face = pyliburo.py3dmodel.fetch.geom_explorer(res, "face")[0]
 sensor_surfaces, sensor_pts, sensor_dirs = pyliburo.gml3dmodel.generate_sensor_surfaces(face, 10,10)
 

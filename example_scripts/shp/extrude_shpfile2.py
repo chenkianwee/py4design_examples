@@ -1,8 +1,9 @@
 import pyliburo
 import shapefile
 #specify all the shpfiles
-shpfile = "F:\\kianwee_work\\case_study\\telok_kurau\\shp\\telok_kurau_polygon3\\telok_kurau_polygon2.shp"
-collada_filepath = "F:\\kianwee_work\\case_study\\telok_kurau\\collada\\telok_kurau2.dae"
+shpfile = "F:\\kianwee_work\\case_study\\telok_kurau\\shp\\telok_kurau_polygon_svy21\\telok_kurau_polygon_svy21.shp"
+collada_filepath = "F:\\kianwee_work\\case_study\\telok_kurau\\collada\\telok_kurau.dae"
+
 sf = shapefile.Reader(shpfile)
 shapeRecs=sf.shapeRecords()
 attrib_name_list = pyliburo.shp2citygml.get_field_name_list(sf)
@@ -10,7 +11,6 @@ solid_list = []
 cnt = 0
 for rec in shapeRecs:
     poly_attribs=rec.record
-    print poly_attribs
     height = poly_attribs[0]
     pypolygon_list2d = pyliburo.shp2citygml.get_geometry(rec)
     if pypolygon_list2d:
