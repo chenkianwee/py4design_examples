@@ -8,15 +8,19 @@ stl_filepath = "C:\\Users\\smrckwe\\Desktop\\for_omar\\shentonway.stl"
 sf = shapefile.Reader(shpfile)
 shapeRecs=sf.shapeRecords()
 attrib_name_list = pyliburo.shp2citygml.get_field_name_list(sf)
+print attrib_name_list
 solid_list = []
+face_list = []
 cnt = 0
 for rec in shapeRecs:
     poly_attribs=rec.record
-    height = 70#poly_attribs[0]
+    height = poly_attribs[0]
     pypolygon_list2d = pyliburo.shp2citygml.get_geometry(rec)
     if pypolygon_list2d:
         pypolygon_list3d = pyliburo.shp2citygml.pypolygon_list2d_2_3d(pypolygon_list2d, 0.0)
+        print pypolygon_list3d
         occface_list = pyliburo.py3dmodel.construct.make_occfaces_frm_pypolygons(pypolygon_list3d)
+        face_list.extend(occface_list)
         for occface in occface_list:
             if height >0:
                 occsolid = pyliburo.py3dmodel.construct.extrude(occface, (0,0,1), height)
@@ -35,6 +39,7 @@ cmpd = pyliburo.py3dmodel.construct.make_compound(solid_list)
 #export to stl
 pyliburo.py3dmodel.construct.write_2_stl(cmpd, stl_filepath )
 
+pyliburo.py3dmodel.construct.visualise([face_list[0:], face_list[1:]], ["WHITE", "RED"])
 print facade_area
 display_2dlist = []
 display_2dlist.append(solid_list)

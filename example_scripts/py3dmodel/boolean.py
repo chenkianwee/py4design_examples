@@ -10,10 +10,11 @@ pypt1 = (0,0,0)
 pypt2 = (100,100,0)
 edge = pyliburo.py3dmodel.construct.make_edge(pypt1, pypt2)
 
-res = pyliburo.py3dmodel.construct.boolean_common(face1,face2)
-res = pyliburo.py3dmodel.construct.boolean_difference(face2,face1)
+#res = pyliburo.py3dmodel.construct.boolean_common(face1,face2)
+res = pyliburo.py3dmodel.construct.boolean_difference(face1,face2)
 
 face = pyliburo.py3dmodel.fetch.geom_explorer(res, "face")[0]
+print pyliburo.py3dmodel.fetch.geom_explorer(face, "wire")
 sensor_surfaces, sensor_pts, sensor_dirs = pyliburo.gml3dmodel.generate_sensor_surfaces(face, 10,10)
 
 display2dlist = []
