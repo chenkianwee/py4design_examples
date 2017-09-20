@@ -3,14 +3,14 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-livexmlfile =  "C:\\Installation_References\\dae\\tower1_performance\\xml\\live.xml"
-deadxmlfile =  "C:\\Installation_References\\dae\\tower1_performance\\xml\\dead.xml"
+livexmlfile =  "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\live.xml"
+deadxmlfile =  "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\dead.xml"
 
 solar_index_filter = True
-solar_index_min_max = [0.1, 0.1]
+solar_index_min_max = [0.08, 0.1]
 
 plot_ratio_filter = True
-plot_ratio_min_max = [3.0,4.0]
+plot_ratio_min_max = [3.5,6.0]
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
@@ -19,9 +19,9 @@ plot_ratio_min_max = [3.0,4.0]
 #THE MAIN SCRIPT
 #====================================================================================================================
 parent_path = os.path.abspath(os.path.join(livexmlfile, os.pardir))
-overallxmlfile = os.path.join(parent_path, "overall.xml")
+overallxmlfile = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\overall.xml"
 
-pyliburo.pyoptimise.analyse_xml.combine_xml_files(livexmlfile, deadxmlfile,overallxmlfile)
+#pyliburo.pyoptimise.analyse_xml.combine_xml_files(livexmlfile, deadxmlfile,overallxmlfile)
 pyliburo.pyoptimise.analyse_xml.rmv_unevaluated_inds(overallxmlfile)
 
 print "READING XML ..."
@@ -55,7 +55,7 @@ for ind in inds:
         if smin<=solar<=smax:
             print "Filtered Design Variant ID:", idx
             pts.append(score_list)
-            labellist.append(str(idx))
+            #labellist.append(str(idx))
             arealist.append(60)
             colourlist.append("green")
             
@@ -65,7 +65,7 @@ for ind in inds:
         if pmin<=plot_ratio<=pmax:
             print "Filtered Design Variant ID:", idx
             pts.append(score_list)
-            labellist.append(str(idx))
+            #labellist.append(str(idx))
             arealist.append(60)
             colourlist.append("green")
             
@@ -79,7 +79,7 @@ for ind in inds:
             if pmin<=plot_ratio<=pmax:
                 print "Filtered Design Variant ID:", idx
                 pts.append(score_list)
-                labellist.append(str(idx))
+                #labellist.append(str(idx))
                 arealist.append(60)
                 colourlist.append("green")
             
@@ -96,9 +96,9 @@ for ind in p_inds:
     print "Pareto Design Variant ID:", idx
     score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
     pts.append(score_list)
-    labellist.append(str(idx))
+    #labellist.append(str(idx))
     arealist.append(60)
     colourlist.append("red")
         
 pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=14, labellist = labellist,
-                                            xlabel = "NSHFFAI", ylabel = "PLOT_RATIO", savefile = res_img_filepath)
+                                            xlabel = "NSHFFAI", ylabel = "FAR", savefile = res_img_filepath)

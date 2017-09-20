@@ -6,27 +6,27 @@ import ntpath
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower1.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower3.dae"
 site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\site.dae"
 weatherfilepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
 
 #configure the parameterisation
 height = True
-height_value = 40
+height_value = 90
 
 taper = True
-taper_value = 1.6
+taper_value = 0.5
 
 twist = True
-twist_value = 90
+twist_value = 15
 
 slant = True
-slant_value = 5
+slant_value = 0
 
-bend = True
+bend = False
 bend_value = 10
 
-orientation = True
+orientation = False
 orientation_value = 45
 #====================================================================================================================
 #INPUTS
@@ -174,7 +174,7 @@ if orientation == True:
     bldg_orientation_parm = pyliburo.gmlparmpalette.BldgOrientationParm()
     bldg_orientation_parm.define_int_range(0,orientation_value,1)
     bldg_orientation_parm.set_clash_detection(False)
-    bldg_orientation_parm.set_boundary_detection(True)
+    bldg_orientation_parm.set_boundary_detection(False)
     parameterise.add_parm(bldg_orientation_parm)
     
 #generate a design variant base on the parameters
@@ -219,7 +219,7 @@ evaluations.add_shadings_4_solar_analysis(site_citygml_filepath)
 xdim = 9
 ydim = 9
 
-lower_irrad_threshold = 263#kw/m2
+lower_irrad_threshold = 254#kw/m2
 upper_irrad_threshold = 364#kw/m2
 roof_irrad_threshold = 1280 #kwh/m2
 facade_irrad_threshold = 512 #kwh/m2

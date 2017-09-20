@@ -6,7 +6,7 @@ import ntpath
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "C:\\Installation_References\\dae\\test_tower3.dae"
+design_dae_file = "C:\\Installation_References\\dae\\test_tower1.dae"
 site_dae_file = "C:\\Installation_References\\dae\\site.dae"
 weatherfilepath = "C:\\Installation_References\\epw\\SGP_Singapore.486980_IWEC.epw"
 #====================================================================================================================
