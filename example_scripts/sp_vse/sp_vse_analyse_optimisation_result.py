@@ -3,8 +3,8 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-livexmlfile =  "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\live.xml"
-deadxmlfile =  "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\dead.xml"
+livexmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\1\\successful\\ken_design5_performance\\xml\\0\\live.xml"
+deadxmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\1\\successful\\ken_design5_performance\\xml\\0\\dead.xml"
 
 solar_index_filter = True
 solar_index_min_max = [0.08, 0.1]
@@ -19,9 +19,9 @@ plot_ratio_min_max = [3.5,6.0]
 #THE MAIN SCRIPT
 #====================================================================================================================
 parent_path = os.path.abspath(os.path.join(livexmlfile, os.pardir))
-overallxmlfile = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower2_performance\\xml\\overall.xml"
+overallxmlfile = os.path.join(parent_path, "overall.xml")
 
-#pyliburo.pyoptimise.analyse_xml.combine_xml_files(livexmlfile, deadxmlfile,overallxmlfile)
+pyliburo.pyoptimise.analyse_xml.combine_xml_files(livexmlfile, deadxmlfile,overallxmlfile)
 pyliburo.pyoptimise.analyse_xml.rmv_unevaluated_inds(overallxmlfile)
 
 print "READING XML ..."

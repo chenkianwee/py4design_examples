@@ -5,7 +5,7 @@ import pyliburo
 #=================================================================
 #specify the student folder to analyse
 data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1"
-student_id = 0
+student_id = 2
 #=================================================================
 #FUNCTIONS
 #=================================================================
@@ -70,7 +70,6 @@ def extract_design_concept(design_concept_dir):
                 rf2 = open(opt_time_filepath,"r")
                 line_list2 = rf2.readlines()
                 line_list2 = line_list2[1:]
-                
                 line_list3 = []
                 index_list = []
                 l2_cnt = 0
@@ -279,7 +278,6 @@ def extract_info_design_concept(design_concept_dict):
         avg_design_space = sum(design_space_list)/len(design_space_list)
         avg_gen = sum(ngen_list)/len(ngen_list)
         max_gen = max(ngen_list)
-        
         stage3_dict["total_time"] = o_total_time
         stage3_dict["feedback_time"] = o_feedback_time
         stage3_dict["avg_design_space"] = avg_design_space
@@ -471,7 +469,9 @@ far_range = far_max-far_min
 usffai_min = min(usffai_min_list)
 usffai_max = max(usffai_max_list)
 usffai_range = usffai_max - usffai_min
-ngen_max = max(max_gen_list)
+ngen_max = -1
+if max_gen_list:
+    ngen_max = max(max_gen_list)
 
 student_str = "student_id,n_design_concept_explored,success,unsuccessful,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen\n"
 student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
