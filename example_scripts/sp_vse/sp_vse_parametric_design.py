@@ -6,28 +6,28 @@ import ntpath
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower3.dae"
-site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\site.dae"
-weatherfilepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
+design_dae_file = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\24_need_work\\1.dae"
+site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\dae\\site.dae"
+weatherfilepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\epw\\SGP_Singapore.486980_IWEC.epw"
 
 #configure the parameterisation
-height = True
+height = False
 height_value = 90
 
-taper = True
+taper = False
 taper_value = 0.5
 
 twist = True
-twist_value = 15
+twist_value = 80
 
 slant = True
-slant_value = 0
+slant_value = 5
 
-bend = False
-bend_value = 10
+bend = True
+bend_value = 30
 
-orientation = False
-orientation_value = 45
+orientation = True
+orientation_value = 90
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================

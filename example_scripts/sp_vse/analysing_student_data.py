@@ -1,12 +1,6 @@
 import os
 import pyliburo
 #=================================================================
-#INPUTS
-#=================================================================
-#specify the student folder to analyse
-data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1"
-student_id = 2
-#=================================================================
 #FUNCTIONS
 #=================================================================
 def extract_design_concept(design_concept_dir):
@@ -91,10 +85,10 @@ def extract_design_concept(design_concept_dir):
                     if nindex == 1:
                         opt_time_list.append(line_list3[index_list[index_cnt]+1:])
                     else:
-                        if index_cnt != nindex:
+                        if index_cnt != nindex-1:
                             opt_time_list.append(line_list3[index_list[index_cnt]+1:index_list[index_cnt+1]])
                         else:
-                            opt_time_list.append(line_list2[index_list[index_cnt]+1:])
+                            opt_time_list.append(line_list3[index_list[index_cnt]+1:])
                         
                 l_cnt = 0
                 for line in line_list:
@@ -116,11 +110,12 @@ def extract_design_concept(design_concept_dir):
                         derived_parm_list = pyliburo.pyoptimise.analyse_xml.get_derivedparam(ind)
                         usffai = score_list[0]
                         far = score_list[1]
-                        alternative_dict = {}
-                        alternative_dict["far"] = float(far)
-                        alternative_dict["usffai"] = float(usffai)
-                        alternative_dict["nsurfaces"] = int(derived_parm_list[0])
-                        o_alternative_dict_2dlist[-1].append(alternative_dict)
+                        if far>0:
+                            alternative_dict = {}
+                            alternative_dict["far"] = float(far)
+                            alternative_dict["usffai"] = float(usffai)
+                            alternative_dict["nsurfaces"] = int(derived_parm_list[0])
+                            o_alternative_dict_2dlist[-1].append(alternative_dict)
                         
                     ninds = len(inds)
                     ngen = ninds/25
@@ -186,7 +181,8 @@ def extract_time(alternative_dict_list):
     time_list = []
     for adict in alternative_dict_list:
         time = adict["time"]
-        time_list.append(time)
+        if time > 0:
+            time_list.append(time)
     return time_list
 
 def extract_stage_lvl_core_info(alternative_dict_list):
@@ -194,9 +190,19 @@ def extract_stage_lvl_core_info(alternative_dict_list):
     nsurfaces = extract_avg_srf_cnt(alternative_dict_list)
     n_alternatives = len(alternative_dict_list)
     far_usffai_dict = extract_fai_usffai_from_dict(alternative_dict_list)
+    n_alt_for_feedback_time_calc_list = []
+    #alternatives with time as -1 means incomplete result
+    for adict in alternative_dict_list:
+        if "time" in adict:
+            if adict["time"] > 0:
+                n_alt_for_feedback_time_calc_list.append(adict)
+        else:
+            n_alt_for_feedback_time_calc_list.append(adict)
+                
     
     stage_dict["nsurfaces"] = nsurfaces
     stage_dict["nalternatives"] = n_alternatives
+    stage_dict["nalternatives_feedback"] = len(n_alt_for_feedback_time_calc_list)
     stage_dict["far_min"] = far_usffai_dict["far_min"]
     stage_dict["far_max"] = far_usffai_dict["far_max"]
     stage_dict["far_range"] = far_usffai_dict["far_range"]
@@ -213,17 +219,21 @@ def extract_info_design_concept(design_concept_dict):
     #design alternatives from exploration process
     #====================================================
     e_alternative_dict_list = design_concept_dict["design_alternatives_exp"]
-    total_alternative_dict_list.extend(e_alternative_dict_list)
-    
-    stage1_dict = extract_stage_lvl_core_info(e_alternative_dict_list)
-    
-    e_feedback_time_list = extract_time(e_alternative_dict_list) 
-    e_total_time = sum(e_feedback_time_list)
-    e_feedback_time = e_total_time/stage1_dict["nalternatives"]
-    
-    stage1_dict["total_time"] = e_total_time 
-    stage1_dict["feedback_time"] = e_feedback_time 
-    concept_info_dict["stage1"] = stage1_dict
+    e_total_time = 0
+    if e_alternative_dict_list:
+        total_alternative_dict_list.extend(e_alternative_dict_list)
+        stage1_dict = extract_stage_lvl_core_info(e_alternative_dict_list)
+        
+        e_feedback_time_list = extract_time(e_alternative_dict_list) 
+        e_total_time = sum(e_feedback_time_list)
+        if e_total_time == 0:
+            e_feedback_time = -1
+        else:
+            e_feedback_time = e_total_time/stage1_dict["nalternatives_feedback"]
+        
+        stage1_dict["total_time"] = e_total_time 
+        stage1_dict["feedback_time"] = e_feedback_time 
+        concept_info_dict["stage1"] = stage1_dict
     #====================================================
     #design alternatives from parametric process
     #====================================================
@@ -236,7 +246,11 @@ def extract_info_design_concept(design_concept_dict):
         
         p_feedback_time_list = extract_time(p_alternative_dict_list)
         p_total_time = sum(p_feedback_time_list)
-        p_feedback_time = p_total_time/stage2_dict["nalternatives"]
+        if p_total_time == 0:
+            p_feedback_time = -1
+        else:
+            p_feedback_time = p_total_time/stage2_dict["nalternatives_feedback"]
+        
         min_max_nparm_list = extract_nparms(p_alternative_dict_list)
         
         stage2_dict["total_time"] = p_total_time 
@@ -274,7 +288,7 @@ def extract_info_design_concept(design_concept_dict):
         stage3_dict = extract_stage_lvl_core_info(o_total_alternative_dict_list)
         
         o_total_time = sum(o_total_time_list)
-        o_feedback_time = o_total_time/stage3_dict["nalternatives"]
+        o_feedback_time = o_total_time/stage3_dict["nalternatives_feedback"]
         avg_design_space = sum(design_space_list)/len(design_space_list)
         avg_gen = sum(ngen_list)/len(ngen_list)
         max_gen = max(ngen_list)
@@ -291,258 +305,318 @@ def extract_info_design_concept(design_concept_dict):
     #=======================================================================
     overall_dict = extract_stage_lvl_core_info(total_alternative_dict_list)
     total_time = e_total_time + p_total_time + o_total_time
-    feedback_time = total_time/len(total_alternative_dict_list)
+    if total_time == 0:
+        feedback_time = -1
+    else:
+        feedback_time = total_time/overall_dict["nalternatives_feedback"]
     
     overall_dict["total_time"] = total_time
     overall_dict["feedback_time"] = feedback_time
     concept_info_dict["overall_dict"] = overall_dict
     return concept_info_dict
-    
-    
 #=================================================================
 #MAIN SCRIPT
-#=================================================================   
-student_dir = os.path.join(data_dir, str(student_id))
-#=================================================================
-#extract information about all unsuccessful design concept
-#=================================================================
-unsuccessful_dir = os.path.join(student_dir,"unsuccessful")
-u_dir_list = [name for name in os.listdir(unsuccessful_dir)]
-u_design_concept_dict_list = []
-for u_dir in u_dir_list:
-    u_design_concept_dir = os.path.join(unsuccessful_dir, u_dir)
-    u_design_concept_dict = extract_design_concept(u_design_concept_dir)
-    if u_design_concept_dict:
-        u_design_concept_dict_list.append(u_design_concept_dict)
-
-#=================================================================
-#extract information about all the successful design concept
-#=================================================================
-successful_dir = os.path.join(student_dir,"successful")
-#print successful_folder
-dir_list = [name for name in os.listdir(successful_dir)]
-
-design_concept_dict_list = []
-for adir in dir_list:
-    #each directory is a design concept
-    design_concept_dir = os.path.join(successful_dir, adir)
-    design_concept_dict = extract_design_concept(design_concept_dir)
-    if design_concept_dict:
-        design_concept_dict_list.append(design_concept_dict)
-        
-#==========================================================================================
-#process the extracted information
-#==========================================================================================
-#student level lists
-total_time_list = []
-total_nalternatives_list = []
-far_min_list = []
-far_max_list = []
-usffai_min_list = []
-usffai_max_list = []
-max_gen_list = []
-
-#student design stages level list
-stage1_concept_list = []
-stage2_concept_list = []
-stage3_concept_list = []
-
-stage1_alternative_list = []
-stage2_alternative_list = []
-stage3_alternative_list = []
-
-stage1_far_min_list = []
-stage2_far_min_list = []
-stage3_far_min_list = []
-
-stage1_far_max_list = []
-stage2_far_max_list = []
-stage3_far_max_list = []
-
-stage1_usffai_min_list = []
-stage2_usffai_min_list = []
-stage3_usffai_min_list = []
-
-stage1_usffai_max_list = []
-stage2_usffai_max_list = []
-stage3_usffai_max_list = []
-
-
-concept_str = "student_id,srf_cnt,nparms,design_space,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range\n"
-
-for ds in design_concept_dict_list:
-    concept_info_dict = extract_info_design_concept(ds)
-    overall_dict = concept_info_dict["overall_dict"]
+#=================================================================  
+for cnt in range(28):
+    #=================================================================
+    #INPUTS
+    #=================================================================
+    #specify the student folder to analyse
+    data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1"
+    student_id = cnt
+    #=================================================================
+    #MAIN SCRIPT
+    #=================================================================  
+    student_dir = os.path.join(data_dir, str(student_id))
+    #=================================================================
+    #extract information about all unsuccessful design concept
+    #=================================================================
+    unsuccessful_dir = os.path.join(student_dir,"unsuccessful")
+    u_dir_list = [name for name in os.listdir(unsuccessful_dir)]
+    u_design_concept_dict_list = []
+    for u_dir in u_dir_list:
+        u_design_concept_dir = os.path.join(unsuccessful_dir, u_dir)
+        u_design_concept_dict = extract_design_concept(u_design_concept_dir)
+        if u_design_concept_dict:
+            u_design_concept_dict_list.append(u_design_concept_dict)
     
-    time = overall_dict["total_time"]
-    total_time_list.append(time)
-    nalternatives = overall_dict["nalternatives"]
-    total_nalternatives_list.append(nalternatives)
-    c_far_min = overall_dict["far_min"]
-    far_min_list.append(c_far_min)
-    c_far_max = overall_dict["far_max"]
-    far_max_list.append(c_far_max)
-    c_usffai_min = overall_dict["usffai_min"]
-    usffai_min_list.append(c_usffai_min)
-    c_usffai_max = overall_dict["usffai_max"]
-    usffai_max_list.append(c_usffai_max)
+    #=================================================================
+    #extract information about all the successful design concept
+    #=================================================================
+    successful_dir = os.path.join(student_dir,"successful")
+    #print successful_folder
+    dir_list = [name for name in os.listdir(successful_dir)]
     
-    #==========================================================================================
-    #concept level data
-    #==========================================================================================
-    c_feedback_time = overall_dict["feedback_time"]
-    c_far_range = c_far_max - c_far_min
-    c_usffai_range = c_usffai_max - c_usffai_min
-    
-    stage1_dict = concept_info_dict["stage1"]
-    srf_cnt = stage1_dict["nsurfaces"]
-    e_nalternatives = stage1_dict["nalternatives"]
-    e_far_min = stage1_dict["far_min"]
-    e_far_max = stage1_dict["far_max"]
-    e_usffai_min = stage1_dict["usffai_min"]
-    e_usffai_max = stage1_dict["usffai_max"]
-    
-    stage1_concept_list.append(ds)
-    stage1_alternative_list.append(e_nalternatives)
-    stage1_far_min_list.append(e_far_min)
-    stage1_far_max_list.append(e_far_max)
-    stage1_usffai_min_list.append(e_usffai_min)
-    stage1_usffai_max_list.append(e_usffai_max)
-    
-    nparms = str(0)
-    if "stage2" in concept_info_dict:
-        stage2_dict = concept_info_dict["stage2"]
-        parm_range = stage2_dict["parm_range"]
-        nparms = str(parm_range[0]) + "_" + str(parm_range[1])
-        
-        p_nalternatives = stage2_dict["nalternatives"]
-        p_far_min = stage2_dict["far_min"]
-        p_far_max = stage2_dict["far_max"]
-        p_usffai_min = stage2_dict["usffai_min"]
-        p_usffai_max = stage2_dict["usffai_max"]
-        
-        stage2_concept_list.append(ds)
-        stage2_alternative_list.append(p_nalternatives)
-        stage2_far_min_list.append(p_far_min)
-        stage2_far_max_list.append(p_far_max)
-        stage2_usffai_min_list.append(p_usffai_min)
-        stage2_usffai_max_list.append(p_usffai_max)
-        
-    design_space = 0
-    if "stage3" in concept_info_dict:
-        stage3_dict = concept_info_dict["stage3"]
-        max_gen = stage3_dict["max_gen"]
-        max_gen_list.append(max_gen)
-        
-        design_space = stage3_dict["avg_design_space"]
-        
-        o_nalternatives = stage3_dict["nalternatives"]
-        o_far_min = stage3_dict["far_min"]
-        o_far_max = stage3_dict["far_max"]
-        o_usffai_min = stage3_dict["usffai_min"]
-        o_usffai_max = stage3_dict["usffai_max"]
-        
-        stage3_concept_list.append(ds)
-        stage3_alternative_list.append(o_nalternatives)
-        stage3_far_min_list.append(o_far_min)
-        stage3_far_max_list.append(o_far_max)
-        stage3_usffai_min_list.append(o_usffai_min)
-        stage3_usffai_max_list.append(o_usffai_max)
-    
-    concept_str = concept_str + str(student_id) + "," + str(srf_cnt) + "," + nparms + "," + str(design_space)\
-            + "," + str(nalternatives) + "," + str(c_feedback_time) + "," + str(c_far_min) + "," + str(c_far_max)\
-            + "," + str(c_far_range) + "," + str(c_usffai_min) + "," + str(c_usffai_max)\
-            + "," + str(c_usffai_range) + "\n"
-    
-#==========================================================================================
-#student level data
-#==========================================================================================
-n_success = len(design_concept_dict_list)
-n_unsuccess = len(u_design_concept_dict_list)
-ndc = n_success + n_unsuccess
-total_design_alternatives = sum(total_nalternatives_list)  
-total_time = sum(total_time_list)
-feedback_time = total_time/total_design_alternatives
-far_min = min(far_min_list)
-far_max = max(far_max_list)
-far_range = far_max-far_min
-usffai_min = min(usffai_min_list)
-usffai_max = max(usffai_max_list)
-usffai_range = usffai_max - usffai_min
-ngen_max = -1
-if max_gen_list:
-    ngen_max = max(max_gen_list)
-
-student_str = "student_id,n_design_concept_explored,success,unsuccessful,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen\n"
-student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
-            + "," + str(total_design_alternatives) + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max)\
-            + "," + str(far_range) + "," + str(usffai_min) + "," + str(usffai_max)\
-            + "," + str(usffai_range) + "," + str(ngen_max) + "\n"
+    design_concept_dict_list = []
+    for adir in dir_list:
+        #each directory is a design concept
+        design_concept_dir = os.path.join(successful_dir, adir)
+        design_concept_dict = extract_design_concept(design_concept_dir)
+        if design_concept_dict:
+            design_concept_dict_list.append(design_concept_dict)
             
-student_filepath = os.path.join(student_dir, "student_exploration.csv")
-sf = open(student_filepath, "w")
-sf.write(student_str)
-sf.close()
-
-#==========================================================================================
-#write to concept file
-#==========================================================================================
-concept_filepath = os.path.join(student_dir, "concept_exploration.csv")
-cf = open(concept_filepath, "w")
-cf.write(concept_str)
-cf.close()
-
-#==========================================================================================
-#student level design stage level data
-#==========================================================================================
-stage_str = "student_id,n_design_concept1,n_design_alternatives1,far_min1,far_max1,far_range1,usffai_min1,usffai_max1,usffai_range1,"+\
-            "n_design_concept2,n_design_alternatives2,far_min2,far_max2,far_range2,usffai_min2,usffai_max2,usffai_range2," +\
-            "n_design_concept3,n_design_alternatives3,far_min3,far_max3,far_range3,usffai_min3,usffai_max3,usffai_range3\n"
-#stage1
-nconcept1 = len(stage1_concept_list)
-nalternative1 = sum(stage1_alternative_list)
-far_min1 = min(stage1_far_min_list)
-far_max1 = max(stage1_far_max_list)
-far_range1 = far_max1-far_min1
-usffai_min1 = min(stage1_usffai_min_list)
-usffai_max1 = max(stage1_usffai_max_list)
-usffai_range1 = usffai_max1 - usffai_min1
-stage1_str = str(student_id) + "," + str(nconcept1) + "," + str(nalternative1) + "," + str(far_min1) + "," + str(far_max1) +\
-            "," + str(far_range1) + "," + str(usffai_min1) + "," + str(usffai_max1) + "," + str(usffai_range1) + ","
-
-#stage2
-if stage2_concept_list:
-    nconcept2 = len(stage2_concept_list)
-    nalternative2 = sum(stage2_alternative_list)
-    far_min2 = min(stage2_far_min_list)
-    far_max2 = max(stage2_far_max_list)
-    far_range2 = far_max2-far_min2
-    usffai_min2 = min(stage2_usffai_min_list)
-    usffai_max2 = max(stage2_usffai_max_list)
-    usffai_range2 = usffai_max2 - usffai_min2
-    stage2_str = str(nconcept2) + "," + str(nalternative2) + "," + str(far_min2) + "," + str(far_max2) +\
-                "," + str(far_range2) + "," + str(usffai_min2) + "," + str(usffai_max2) + "," + str(usffai_range2) + ","
-else:
-    stage2_str = "0,0,-1,-1,-1,-1,-1,-1,"
-
-#stage3
-if stage3_concept_list:
-    nconcept3 = len(stage3_concept_list)
-    nalternative3 = sum(stage3_alternative_list)
-    far_min3 = min(stage3_far_min_list)
-    far_max3 = max(stage3_far_max_list)
-    far_range3 = far_max3-far_min3
-    usffai_min3 = min(stage3_usffai_min_list)
-    usffai_max3 = max(stage3_usffai_max_list)
-    usffai_range3 = usffai_max3 - usffai_min3
-    stage3_str = str(nconcept3) + "," + str(nalternative3) + "," + str(far_min3) + "," + str(far_max3) +\
-                "," + str(far_range3) + "," + str(usffai_min3) + "," + str(usffai_max3) + "," + str(usffai_range3) + "\n"
-else:
-    stage3_str = "0,0,-1,-1,-1,-1,-1,-1\n"
+    #==========================================================================================
+    #process the extracted information
+    #==========================================================================================
+    #student level lists
+    total_time_list = []
+    total_nalternatives_list = []
+    total_time_alternatives = []
+    far_min_list = []
+    far_max_list = []
+    usffai_min_list = []
+    usffai_max_list = []
+    max_gen_list = []
     
-stage_str = stage_str + stage1_str + stage2_str + stage3_str
-
-stage_filepath = os.path.join(student_dir, "stage_exploration.csv")
-sf2 = open(stage_filepath, "w")
-sf2.write(stage_str)
-sf2.close()
+    #student design stages level list
+    stage1_concept_list = []
+    stage2_concept_list = []
+    stage3_concept_list = []
+    
+    stage1_alternative_list = []
+    stage2_alternative_list = []
+    stage3_alternative_list = []
+    
+    stage1_far_min_list = []
+    stage2_far_min_list = []
+    stage3_far_min_list = []
+    
+    stage1_far_max_list = []
+    stage2_far_max_list = []
+    stage3_far_max_list = []
+    
+    stage1_usffai_min_list = []
+    stage2_usffai_min_list = []
+    stage3_usffai_min_list = []
+    
+    stage1_usffai_max_list = []
+    stage2_usffai_max_list = []
+    stage3_usffai_max_list = []
+    
+    stage1_time_list = []
+    stage2_time_list = []
+    stage3_time_list = []
+    
+    stage1_alternative_time_list = []
+    stage2_alternative_time_list = []
+    stage3_alternative_time_list = []
+    
+    concept_str = "student_id,name,srf_cnt,nparms,design_space,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range\n"
+    
+    for ds in design_concept_dict_list:
+        name = ds["name"]
+        concept_info_dict = extract_info_design_concept(ds)
+        overall_dict = concept_info_dict["overall_dict"]
+        
+        time = overall_dict["total_time"]
+        total_time_list.append(time)
+        nalternatives = overall_dict["nalternatives"]
+        total_nalternatives_list.append(nalternatives)
+        ntime_alternatives = overall_dict["nalternatives_feedback"]
+        total_time_alternatives.append(ntime_alternatives)
+        c_far_min = overall_dict["far_min"]
+        far_min_list.append(c_far_min)
+        c_far_max = overall_dict["far_max"]
+        far_max_list.append(c_far_max)
+        c_usffai_min = overall_dict["usffai_min"]
+        usffai_min_list.append(c_usffai_min)
+        c_usffai_max = overall_dict["usffai_max"]
+        usffai_max_list.append(c_usffai_max)
+        
+        #==========================================================================================
+        #concept level data
+        #==========================================================================================
+        c_feedback_time = overall_dict["feedback_time"]
+        c_far_range = c_far_max - c_far_min
+        c_usffai_range = c_usffai_max - c_usffai_min
+        srf_cnt = 0
+        if "stage1" in concept_info_dict:
+            stage1_dict = concept_info_dict["stage1"]
+            srf_cnt = stage1_dict["nsurfaces"]
+            e_nalternatives = stage1_dict["nalternatives"]
+            e_far_min = stage1_dict["far_min"]
+            e_far_max = stage1_dict["far_max"]
+            e_usffai_min = stage1_dict["usffai_min"]
+            e_usffai_max = stage1_dict["usffai_max"]
+            e_time = stage1_dict["total_time"]
+            e_nalternatives_time = stage1_dict["nalternatives_feedback"]
+            
+            stage1_concept_list.append(ds)
+            stage1_alternative_list.append(e_nalternatives)
+            stage1_far_min_list.append(e_far_min)
+            stage1_far_max_list.append(e_far_max)
+            stage1_usffai_min_list.append(e_usffai_min)
+            stage1_usffai_max_list.append(e_usffai_max)
+            stage1_time_list.append(e_time)
+            stage1_alternative_time_list.append(e_nalternatives_time)
+        
+        nparms = str(0)
+        if "stage2" in concept_info_dict:
+            stage2_dict = concept_info_dict["stage2"]
+            parm_range = stage2_dict["parm_range"]
+            nparms = str(parm_range[0]) + "_" + str(parm_range[1])
+            
+            p_nalternatives = stage2_dict["nalternatives"]
+            p_far_min = stage2_dict["far_min"]
+            p_far_max = stage2_dict["far_max"]
+            p_usffai_min = stage2_dict["usffai_min"]
+            p_usffai_max = stage2_dict["usffai_max"]
+            p_time = stage2_dict["total_time"]
+            p_nalternatives_time = stage2_dict["nalternatives_feedback"]
+            
+            stage2_concept_list.append(ds)
+            stage2_alternative_list.append(p_nalternatives)
+            stage2_far_min_list.append(p_far_min)
+            stage2_far_max_list.append(p_far_max)
+            stage2_usffai_min_list.append(p_usffai_min)
+            stage2_usffai_max_list.append(p_usffai_max)
+            stage2_time_list.append(p_time)
+            stage2_alternative_time_list.append(p_nalternatives_time)
+            
+        design_space = 0
+        if "stage3" in concept_info_dict:
+            stage3_dict = concept_info_dict["stage3"]
+            max_gen = stage3_dict["max_gen"]
+            max_gen_list.append(max_gen)
+            
+            design_space = stage3_dict["avg_design_space"]
+            
+            o_nalternatives = stage3_dict["nalternatives"]
+            o_far_min = stage3_dict["far_min"]
+            o_far_max = stage3_dict["far_max"]
+            o_usffai_min = stage3_dict["usffai_min"]
+            o_usffai_max = stage3_dict["usffai_max"]
+            o_time = stage3_dict["total_time"]
+            o_nalternatives_time = stage3_dict["nalternatives_feedback"]
+            
+            stage3_concept_list.append(ds)
+            stage3_alternative_list.append(o_nalternatives)
+            stage3_far_min_list.append(o_far_min)
+            stage3_far_max_list.append(o_far_max)
+            stage3_usffai_min_list.append(o_usffai_min)
+            stage3_usffai_max_list.append(o_usffai_max)
+            stage3_time_list.append(o_time)
+            stage3_alternative_time_list.append(o_nalternatives_time)
+        
+        concept_str = concept_str + str(student_id) + "," + name + "," + str(srf_cnt) + "," + nparms + "," + str(design_space)\
+                + "," + str(nalternatives) + "," + str(c_feedback_time) + "," + str(c_far_min) + "," + str(c_far_max)\
+                + "," + str(c_far_range) + "," + str(c_usffai_min) + "," + str(c_usffai_max)\
+                + "," + str(c_usffai_range) + "\n"
+        
+    #==========================================================================================
+    #student level data
+    #==========================================================================================
+    n_success = len(design_concept_dict_list)
+    n_unsuccess = len(u_design_concept_dict_list)
+    ndc = n_success + n_unsuccess
+    total_design_alternatives = sum(total_nalternatives_list)  
+    
+    total_time = sum(total_time_list)
+    n_alternatives_with_time = sum(total_time_alternatives)
+    feedback_time = total_time/n_alternatives_with_time
+    
+    far_min = min(far_min_list)
+    far_max = max(far_max_list)
+    far_range = far_max-far_min
+    usffai_min = min(usffai_min_list)
+    usffai_max = max(usffai_max_list)
+    usffai_range = usffai_max - usffai_min
+    ngen_max = -1
+    if max_gen_list:
+        ngen_max = max(max_gen_list)
+    
+    student_str = "student_id,n_design_concept_explored,success,unsuccessful,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen\n"
+    student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
+                + "," + str(total_design_alternatives) + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max)\
+                + "," + str(far_range) + "," + str(usffai_min) + "," + str(usffai_max)\
+                + "," + str(usffai_range) + "," + str(ngen_max) + "\n"
+                
+    student_filepath = os.path.join(student_dir, "student_exploration.csv")
+    sf = open(student_filepath, "w")
+    sf.write(student_str)
+    sf.close()
+    
+    #==========================================================================================
+    #write to concept file
+    #==========================================================================================
+    concept_filepath = os.path.join(student_dir, "concept_exploration.csv")
+    cf = open(concept_filepath, "w")
+    cf.write(concept_str)
+    cf.close()
+    
+    #==========================================================================================
+    #student level design stage level data
+    #==========================================================================================
+    stage_str = "student_id,n_design_concept1,n_design_alternatives1,feedback_time1,far_min1,far_max1,far_range1,usffai_min1,usffai_max1,usffai_range1,"+\
+                "n_design_concept2,n_design_alternatives2,feedback_time2,far_min2,far_max2,far_range2,usffai_min2,usffai_max2,usffai_range2," +\
+                "n_design_concept3,n_design_alternatives3,feedback_time3,far_min3,far_max3,far_range3,usffai_min3,usffai_max3,usffai_range3\n"
+    #stage1
+    nconcept1 = len(stage1_concept_list)
+    nalternative1 = sum(stage1_alternative_list)
+    far_min1 = min(stage1_far_min_list)
+    far_max1 = max(stage1_far_max_list)
+    far_range1 = far_max1-far_min1
+    usffai_min1 = min(stage1_usffai_min_list)
+    usffai_max1 = max(stage1_usffai_max_list)
+    usffai_range1 = usffai_max1 - usffai_min1
+    time1 = sum(stage1_time_list)
+    nalt_time1 = sum(stage1_alternative_time_list)
+    if time1 == 0:
+        feedback_time1 = -1
+    else:
+        feedback_time1 = time1/nalt_time1
+            
+    stage1_str = str(student_id) + "," + str(nconcept1) + "," + str(nalternative1) + "," + str(feedback_time1) + "," + str(far_min1) + "," + str(far_max1) +\
+                "," + str(far_range1) + "," + str(usffai_min1) + "," + str(usffai_max1) + "," + str(usffai_range1) + ","
+    
+    #stage2
+    if stage2_concept_list:
+        nconcept2 = len(stage2_concept_list)
+        nalternative2 = sum(stage2_alternative_list)
+        far_min2 = min(stage2_far_min_list)
+        far_max2 = max(stage2_far_max_list)
+        far_range2 = far_max2-far_min2
+        usffai_min2 = min(stage2_usffai_min_list)
+        usffai_max2 = max(stage2_usffai_max_list)
+        usffai_range2 = usffai_max2 - usffai_min2
+        time2 = sum(stage2_time_list)
+        nalt_time2 = sum(stage2_alternative_time_list)
+        if time2 == 0:
+            feedback_time2 = -1
+        else:
+            feedback_time2 = time2/nalt_time2
+    
+        stage2_str = str(nconcept2) + "," + str(nalternative2) + "," + str(feedback_time2) + "," + str(far_min2) + "," + str(far_max2) +\
+                    "," + str(far_range2) + "," + str(usffai_min2) + "," + str(usffai_max2) + "," + str(usffai_range2) + ","
+    else:
+        stage2_str = "0,0,-1,-1,-1,-1,-1,-1,-1,"
+    
+    #stage3
+    if stage3_concept_list:
+        nconcept3 = len(stage3_concept_list)
+        nalternative3 = sum(stage3_alternative_list)
+        far_min3 = min(stage3_far_min_list)
+        far_max3 = max(stage3_far_max_list)
+        far_range3 = far_max3-far_min3
+        usffai_min3 = min(stage3_usffai_min_list)
+        usffai_max3 = max(stage3_usffai_max_list)
+        usffai_range3 = usffai_max3 - usffai_min3
+        time3 = sum(stage3_time_list)
+        nalt_time3 = sum(stage3_alternative_time_list)
+        feedback_time3 = time3/nalt_time3
+        if time3 == 0:
+            feedback_time3 = -1
+        else:
+            feedback_time3 = time3/nalt_time3
+        
+        stage3_str = str(nconcept3) + "," + str(nalternative3) + "," + str(feedback_time3) + "," + str(far_min3) + "," + str(far_max3) +\
+                    "," + str(far_range3) + "," + str(usffai_min3) + "," + str(usffai_max3) + "," + str(usffai_range3) + "\n"
+    else:
+        stage3_str = "0,0,-1,-1,-1,-1,-1,-1,-1\n"
+        
+    stage_str = stage_str + stage1_str + stage2_str + stage3_str
+    
+    stage_filepath = os.path.join(student_dir, "stage_exploration.csv")
+    sf2 = open(stage_filepath, "w")
+    sf2.write(stage_str)
+    sf2.close()

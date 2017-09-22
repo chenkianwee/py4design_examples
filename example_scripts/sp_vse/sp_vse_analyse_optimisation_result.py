@@ -3,8 +3,8 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-livexmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\1\\successful\\ken_design5_performance\\xml\\0\\live.xml"
-deadxmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\1\\successful\\ken_design5_performance\\xml\\0\\dead.xml"
+livexmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\27\\successful\\proto20_performance\\xml\\0\\live.xml"
+deadxmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\27\\successful\\proto20_performance\\xml\\0\\dead.xml"
 
 solar_index_filter = True
 solar_index_min_max = [0.08, 0.1]
