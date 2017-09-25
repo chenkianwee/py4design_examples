@@ -11,9 +11,9 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 dae_file = os.path.join(parent_path, "example_files", "collada2citygml_example",  "dae", "example4_4_part.dae")
 dae_file = os.path.join(parent_path, "example_files", "form_eval_example",  "dae", "example4_4_part.dae")
 
-dae_file1 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\processed\\24\\Assignment_2\\3dv_nshffai.dae"
-dae_file2 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\processed\\24\\2.dae"
-dae_file3 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\processed\\24\\3.dae"
+dae_file1 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\15\\successful\\1.dae"
+dae_file2 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\15\\successful\\321.dae"
+dae_file3 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\15\\successful\\3.dae"
 #dae_file = os.path.join(parent_path, "example_files","5x5ptblks", "dae", "5x5ptblks.dae")
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"'''
@@ -23,8 +23,9 @@ dae_file3 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\proce
 display_2dlist = []
 colour_list = []
 display_list = []
-dae_list = [dae_file1]
+dae_list = [dae_file1, dae_file2, dae_file3]
 for dae_file in dae_list:     
+    display_list2 = []
     mesh = Collada(dae_file)
     unit = mesh.assetInfo.unitmeter or 1
     geoms = mesh.scene.objects('geometry')
@@ -43,15 +44,14 @@ for dae_file in dae_list:
                         is_face_null = pyliburo.py3dmodel.fetch.is_face_null(occpolygon)
                         if not is_face_null:
                             display_list.append(occpolygon)
+                            display_list2.append(occpolygon)
                         g_cnt +=1
                     elif type(prim) == lineset.Line:
                         pyptlist = prim.vertices.tolist()
                         occpolygon = pyliburo.py3dmodel.construct.make_edge(pyptlist[0], pyptlist[1])
                         #display_list.append(occpolygon)
                         g_cnt +=1
-    print len(display_list)
-
-#print display_list
+    print len(display_list2)
 
 display_2dlist.append(display_list)
 colour_list.append("WHITE")

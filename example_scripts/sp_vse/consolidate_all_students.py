@@ -3,7 +3,7 @@ import os
 #INPUTS
 #=================================================================
 n_students = 28
-data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1"
+data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data"
 
 #=================================================================
 #MAIN SCRIPT
