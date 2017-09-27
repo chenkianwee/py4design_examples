@@ -28,6 +28,7 @@ def extract_design_concept(design_concept_dir, student_id):
                     element_list = line.split(",")
                     alternative_dict["far"] = float(element_list[1])
                     alternative_dict["usffai"] = float(element_list[2])
+                    alternative_dict["nparms"] = 0
                     alternative_dict["nsurfaces"] = int(element_list[3])
                     alternative_dict["time"] = float(element_list[4].replace("\n",""))
                     alternative_dict["concept_name"] = concept_name
@@ -108,7 +109,8 @@ def extract_design_concept(design_concept_dir, student_id):
                     #each line is a design alternative
                     element_list = line.split(",")
                     optimisation_setting = {}
-                    optimisation_setting["nparms"] = int(element_list[13])
+                    nparms = int(element_list[13])
+                    optimisation_setting["nparms"] = nparms
                     optimisation_setting["design_space"] = int(element_list[14])
                     optimisation_setting["opt_time"] = sum(opt_time_list[l_cnt])
                     
@@ -127,10 +129,12 @@ def extract_design_concept(design_concept_dir, student_id):
                             alternative_dict = {}
                             alternative_dict["far"] = float(far)
                             alternative_dict["usffai"] = float(usffai)
+                            alternative_dict["nparms"] = nparms
                             alternative_dict["nsurfaces"] = int(derived_parm_list[0])
                             alternative_dict["concept_name"] = concept_name
                             alternative_dict["student_id"] = student_id
                             alternative_dict["stage"] = "stage3"
+                            
                             o_alternative_dict_2dlist[-1].append(alternative_dict)
                         
                     ninds = len(inds)
@@ -156,6 +160,7 @@ def extract_fai_usffai_from_dict(alternative_dict_list):
     for adict in alternative_dict_list:
         far = adict["far"]
         usffai = adict["usffai"]
+
         far_list.append(far)
         usffai_list.append(usffai)
         
@@ -181,6 +186,7 @@ def extract_avg_srf_cnt(alternative_dict_list):
     for adict in alternative_dict_list:
         nsurfaces = adict["nsurfaces"]
         nsurfaces_list.append(nsurfaces)
+    
     avg_surfaces = sum(nsurfaces_list)/len(nsurfaces_list)
     return avg_surfaces
 
@@ -381,14 +387,16 @@ def draw_pareto_scatterplot(pareto_list, npareto_list, label, res_img_filepath):
 #=================================================================
 #MAIN SCRIPT
 #=================================================================  
+data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data"
 total_alternative_list = []
 pareto_2dlist = []
+far_max_limit = 15
+far_min_limit = 2
 for cnt in range(28):
     #=================================================================
     #INPUTS
     #=================================================================
     #specify the student folder to analyse
-    data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data"
     student_id = cnt
     #=================================================================
     #MAIN SCRIPT
@@ -429,11 +437,13 @@ for cnt in range(28):
     total_time_list = []
     total_nalternatives_list = []
     total_time_alternatives = []
+    total_srf_cnt_list = []
     far_min_list = []
     far_max_list = []
     usffai_min_list = []
     usffai_max_list = []
     max_gen_list = []
+    avg_design_space_list =[]
     
     #student design stages level list
     stage1_concept_list = []
@@ -500,7 +510,6 @@ for cnt in range(28):
         c_feedback_time = overall_dict["feedback_time"]
         c_far_range = c_far_max - c_far_min
         c_usffai_range = c_usffai_max - c_usffai_min
-        srf_cnt = 0
         if "stage1" in concept_info_dict:
             stage1_dict = concept_info_dict["stage1"]
             srf_cnt = stage1_dict["nsurfaces"]
@@ -523,7 +532,8 @@ for cnt in range(28):
         else:
             #look for the csv that documents the srf cnt of the initial model
             srf_cnt = ds["initial_nsurfaces"]
-        
+            
+        total_srf_cnt_list.append(srf_cnt)
         nparms = str(0)
         if "stage2" in concept_info_dict:
             stage2_dict = concept_info_dict["stage2"]
@@ -554,7 +564,7 @@ for cnt in range(28):
             max_gen_list.append(max_gen)
             
             design_space = stage3_dict["avg_design_space"]
-            
+            avg_design_space_list.append(design_space)
             o_nalternatives = stage3_dict["nalternatives"]
             o_far_min = stage3_dict["far_min"]
             o_far_max = stage3_dict["far_max"]
@@ -585,9 +595,11 @@ for cnt in range(28):
     ndc = n_success + n_unsuccess
     total_design_alternatives = sum(total_nalternatives_list)  
     
+    srf_cnt_min = min(total_srf_cnt_list)
+    srf_cnt_max = max(total_srf_cnt_list)
     total_time = sum(total_time_list)
     n_alternatives_with_time = sum(total_time_alternatives)
-    feedback_time = total_time/n_alternatives_with_time
+    feedback_time = int(total_time/n_alternatives_with_time)
     
     far_min = min(far_min_list)
     far_max = max(far_max_list)
@@ -595,27 +607,81 @@ for cnt in range(28):
     usffai_min = min(usffai_min_list)
     usffai_max = max(usffai_max_list)
     usffai_range = usffai_max - usffai_min
+    
     ngen_max = -1
     if max_gen_list:
         ngen_max = max(max_gen_list)
     
+    far_list_filtered = []
+    usffai_list_filtered = []
     stu_falt_list = []
+    stu_nparms_list = []
     for stu_alt in student_alt_list:
+        stu_nparms = stu_alt["nparms"]
+        stu_nparms_list.append(stu_nparms)
         stu_far = stu_alt["far"]
         stu_usffai = stu_alt["usffai"]
-        if stu_far<20:
+        if far_min_limit<=stu_far<far_max_limit:
             stu_falt_list.append(stu_alt)
+            far_list_filtered.append(stu_far)
+            usffai_list_filtered.append(stu_usffai)
         
     student_score_2dlist = alternative_dict_list2_score_2d_list(stu_falt_list)
     stu_pareto_list, stu_npareto_list = extract_pareto_front_alt_dict(stu_falt_list, student_score_2dlist)
+    
+    stage1_list = []
+    stage2_list = []
+    stage3_list = []
+    for pa in stu_pareto_list:
+        stage = pa["stage"]
+        if stage == "stage1":
+            stage1_list.append(pa)
+        if stage == "stage2":
+            stage2_list.append(pa)
+        if stage == "stage3":
+            stage3_list.append(pa)
+            
+    npa = float(len(stu_pareto_list))
+    stage1_percent = round((len(stage1_list)/npa)*100,2)
+    stage2_percent = round((len(stage2_list)/npa)*100,2)
+    stage3_percent = round((len(stage3_list)/npa)*100,2)
+    
+    avg_nparms = sum(stu_nparms_list)/len(stu_nparms_list)
+    stu_avg_design_space = 0
+    if avg_design_space_list:
+        stu_avg_design_space = sum(avg_design_space_list)/len(avg_design_space_list)
+    
+    res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\ind_pareto.png"
+    draw_pareto_scatterplot(stu_pareto_list, stu_npareto_list,"stage", res_img_filepath)
+    
     pareto_2dlist.append(stu_pareto_list)
     
-    student_str = "student_id,n_design_concept_explored,success,unsuccessful,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen\n"
+    #print "FILTERED VS UNFILTERED DA:", len(student_alt_list), len(stu_falt_list)
+    far_min_filtered = min(far_list_filtered)
+    far_max_filtered = max(far_list_filtered)
+    far_range_filtered = far_max_filtered-far_min_filtered
+    usffai_min_filtered = min(usffai_list_filtered)
+    usffai_max_filtered = max(usffai_list_filtered)
+    usffai_range_filtered = usffai_max_filtered - usffai_min
+    
+    student_str = "student_id,n_design_concept_explored,success,unsuccessful,avg_nparms,srf_cnt_min, srf_cnt_max,"+\
+                "n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen,"+\
+                "stage1%,stage2%,stage3%,avg_design_space,dominate,avg_c_measure,s_measure\n"
+               
+    
     student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
-                + "," + str(total_design_alternatives) + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max)\
-                + "," + str(far_range) + "," + str(usffai_min) + "," + str(usffai_max)\
-                + "," + str(usffai_range) + "," + str(ngen_max) + "\n"
-                
+                + "," + str(avg_nparms) + "," + str(srf_cnt_min) + "," + str(srf_cnt_max) + "," + str(total_design_alternatives)\
+                + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max) + "," + str(far_range)\
+                + "," + str(usffai_min) + "," + str(usffai_max) + "," + str(usffai_range) + "," + str(ngen_max)\
+                + "," + str(stage1_percent) + "," + str(stage2_percent) + "," + str(stage3_percent)\
+                + "," + str(stu_avg_design_space) + "\n"
+    '''
+    student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
+                + "," + str(avg_nparms) + "," + str(srf_cnt_min) + "," + str(srf_cnt_max) + "," + str(total_design_alternatives)\
+                + "," + str(feedback_time) + "," + str(far_min_filtered) + "," + str(far_max_filtered) + "," + str(far_range_filtered)\
+                + "," + str(usffai_min_filtered) + "," + str(usffai_max_filtered) + "," + str(usffai_range_filtered) + "," + str(ngen_max)\
+                + "," + str(stage1_percent) + "," + str(stage2_percent) + "," + str(stage3_percent) + "\n"
+    '''    
     student_filepath = os.path.join(student_dir, "student_exploration.csv")
     sf = open(student_filepath, "w")
     sf.write(student_str)
@@ -717,12 +783,12 @@ f_alt_list = []
 for alt_dict in total_alternative_list:
     far = alt_dict["far"]
     usffai = alt_dict["usffai"]
-    if far < 15:
+    if far_min_limit<= far < far_max_limit:
         f_alt_list.append(alt_dict)
     
 score_2dlist = alternative_dict_list2_score_2d_list(f_alt_list)
 pareto_list, npareto_list = extract_pareto_front_alt_dict(f_alt_list, score_2dlist)
-draw_pareto_scatterplot(pareto_list, npareto_list,"student_id", res_img_filepath)
+draw_pareto_scatterplot(pareto_list, npareto_list,"stage", res_img_filepath)
 print "TOTAL NO. OF ALTERNATIVES:", len(f_alt_list)
 print "NO. OF PARETO:", len(pareto_list)
 print "NO. OF NON-PARETO:", len(npareto_list)
@@ -734,20 +800,38 @@ ref_pt = [0,0]
 pcnt = 0
 for pareto_list in pareto_2dlist:
     print pcnt
+    student_filepath = os.path.join(data_dir, str(pcnt),"student_exploration.csv")
+    sf = open(student_filepath, "r")
+    lines = sf.readlines()
+    line0 = lines[0]
+    line1 = lines[1]
+    
+    sf.close()
     score_2dlist1 = alternative_dict_list2_score_2d_list(pareto_list)
-    s_measure = pyliburo.pyoptimise.analyse_xml.hyper_volume(score_2dlist1, ref_pt, min_max_list)
+    s_measure = round(pyliburo.pyoptimise.analyse_xml.hyper_volume(score_2dlist1, ref_pt, min_max_list),2)
     print "S MEASURES:", s_measure
-    pcnt+=1
-    
-    '''        
-    res_img_filepath1 = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\cmeasure_pareto.png"
-    score_2dlist1 = alternative_dict_list2_score_2d_list(pareto_2dlist[0])
-    score_2dlist2 = alternative_dict_list2_score_2d_list(pareto_2dlist[3])
-    print len(score_2dlist1)
-    c_measure = pyliburo.pyoptimise.analyse_xml.c_measures(score_2dlist2, score_2dlist1, [1,1])
-    pareto_list, npareto_list = extract_pareto_front_alt_dict(pareto_2dlist[0] + pareto_2dlist[3], score_2dlist1 + score_2dlist2)
-    draw_pareto_scatterplot(pareto_list, npareto_list,"student_id", res_img_filepath1)
-    print "C MEASURE:", c_measure
-    pcnt+=1
-    '''
-    
+    pareto_2dlist2 = pareto_2dlist[:]
+    pareto_2dlist2.pop(pcnt)
+    dominate_list = []
+    c_measure_list = []
+    for pareto_list2 in pareto_2dlist2:
+        score_2dlist2 = alternative_dict_list2_score_2d_list(pareto_list2)
+        c_measure1 = pyliburo.pyoptimise.analyse_xml.c_measures(score_2dlist1, score_2dlist2, min_max_list)
+        c_measure2 = pyliburo.pyoptimise.analyse_xml.c_measures(score_2dlist2, score_2dlist1, min_max_list)
+        c_measure_list.append(c_measure1)
+        if c_measure1 > c_measure2:
+            dominate_list.append(pareto_list2)
+        #print "CMEASURE:", c_measure1, c_measure2
+
+
+    domination = len(dominate_list)
+    avg_cmeasure = round(sum(c_measure_list)/len(c_measure_list),2)
+    print "DOMINATION:", domination
+    line1.replace("\n","")
+    index = line1.index("\n")
+    line1 = line1[0:index]
+    line1 = line1 + "," + str(domination) + "," + str(avg_cmeasure) + "," + str(s_measure) + "\n"
+    sf = open(student_filepath, "w")
+    sf.write(line0+line1)
+    sf.close()
+    pcnt+=1    
