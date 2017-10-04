@@ -6,28 +6,28 @@ import ntpath
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\24_need_work\\1.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\10\\successful\\BUILDING_DESIGN_3.dae"
 site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\dae\\site.dae"
 weatherfilepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\epw\\SGP_Singapore.486980_IWEC.epw"
 
 #configure the parameterisation
 height = False
-height_value = 90
+height_value = 72
 
 taper = False
-taper_value = 0.5
+taper_value = 1.6
 
-twist = True
-twist_value = 80
+twist = False
+twist_value = 45
 
-slant = True
+slant = False
 slant_value = 5
 
 bend = True
 bend_value = 30
 
-orientation = True
-orientation_value = 90
+orientation = False
+orientation_value = 40
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================

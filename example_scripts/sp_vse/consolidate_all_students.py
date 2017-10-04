@@ -10,7 +10,7 @@ data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data"
 #================================================================= 
 all_student = "student_id,n_design_concept_explored,success,unsuccessful,avg_nparms,srf_cnt_min, srf_cnt_max,"+\
                 "n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen,"+\
-                "stage1%,stage2%,stage3%,avg_design_space,dominate,avg_c_measure,s_measure,facilitate,consider\n"
+                "stage1%,stage2%,stage3%,avg_design_space,npareto,dominate,avg_c_measure,s_measure,facilitate,consider\n"
 
 all_concept = "student_id,name,srf_cnt,nparms,design_space,n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range\n"
 
@@ -38,7 +38,6 @@ for scnt in range(n_students):
         facilitate_list_yes.append(facilitate)
     if consider == "yes":
         consider_list_yes.append(consider)
-    print facilitate, consider
     #=================================================================
     #read the student exp file
     #=================================================================
@@ -99,49 +98,51 @@ for sline2 in sline_list2:
     a_nconcept = int(sline_split_list[2])
     nconcept = nconcept + a_nconcept
     
-    a_nda = int(sline_split_list[6])
+    a_nda = int(sline_split_list[7])
     nda = nda + a_nda
     
-    feedback_time = float(sline_split_list[7])
+    feedback_time = float(sline_split_list[8])
     time = feedback_time*a_nda
     total_time = total_time + time
     
-    asrf_cnt_min = float(sline_split_list[4])
-    asrf_cnt_max = float(sline_split_list[5])
+    asrf_cnt_min = float(sline_split_list[5])
+    asrf_cnt_max = float(sline_split_list[6])
     if asrf_cnt_min < srf_cnt_min:
         srf_cnt_min = asrf_cnt_min
     if asrf_cnt_max > srf_cnt_max:
         srf_cnt_max = asrf_cnt_max
         
-    afar_min = float(sline_split_list[8])
-    afar_max = float(sline_split_list[9])
+    afar_min = float(sline_split_list[9])
+    afar_max = float(sline_split_list[10])
     if afar_min < far_min:
         far_min = afar_min
     if afar_max > far_max:
         far_max = afar_max
         
-    ausffai_min = float(sline_split_list[11])
-    ausffai_max = float(sline_split_list[12])
+    ausffai_min = float(sline_split_list[12])
+    ausffai_max = float(sline_split_list[13])
     if ausffai_min < usffai_min:
         usffai_min = ausffai_min
     if ausffai_max > usffai_max:
         usffai_max = ausffai_max
         
-    stage1_percent+=float(sline_split_list[-7])
-    stage2_percent+=float(sline_split_list[-6])
-    stage3_percent+=float(sline_split_list[-5])
+    npareto = float(sline_split_list[-4])
+    stage1_percent+=(int(sline_split_list[-8])/npareto)*100
+    stage2_percent+=(int(sline_split_list[-7])/npareto)*100
+    stage3_percent+=(int(sline_split_list[-6])/npareto)*100
     
     avg_nparms+=int(sline_split_list[4])
     
-    avg_space+=int(sline_split_list[-4])
+    avg_space+=int(sline_split_list[-5])
     
     domination = int(sline_split_list[-3])
     s_measure = float(sline_split_list[-1])
     s_measure_dict[sline+ "," + facilitate_list[scnt]+ "," + consider_list[scnt] + "\n"] = (domination,s_measure)
+    all_student = all_student + sline+ "," + facilitate_list[scnt]+ "," + consider_list[scnt] + "\n"
     scnt +=1
     
-for key, value in sorted(s_measure_dict.iteritems(), key=lambda (k,v): (v,k), reverse = True):
-    all_student = all_student + key
+#for key, value in sorted(s_measure_dict.iteritems(), key=lambda (k,v): (v,k), reverse = True):
+#    all_student = all_student + key
     
 print nconcept/28.0
 print nda, nda/28.0

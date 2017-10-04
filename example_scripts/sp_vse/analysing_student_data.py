@@ -34,6 +34,7 @@ def extract_design_concept(design_concept_dir, student_id):
                     alternative_dict["concept_name"] = concept_name
                     alternative_dict["student_id"] = student_id
                     alternative_dict["stage"] = "stage1"
+                    alternative_dict["name"] = concept_name
                     e_alternative_dict_list.append(alternative_dict)
                 rf.close()
                     
@@ -60,6 +61,7 @@ def extract_design_concept(design_concept_dir, student_id):
                             alternative_dict["concept_name"] = concept_name
                             alternative_dict["student_id"] = student_id
                             alternative_dict["stage"] = "stage2"
+                            alternative_dict["name"] = concept_name
                             p_alternative_dict_list.append(alternative_dict)
                 rf.close()
                 if "exploration_log.csv" not in csv_list:
@@ -122,6 +124,7 @@ def extract_design_concept(design_concept_dir, student_id):
                     o_alternative_dict_2dlist.append([])
                     for ind in inds:
                         score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
+                        ind_id = pyliburo.pyoptimise.analyse_xml.get_id(ind)
                         derived_parm_list = pyliburo.pyoptimise.analyse_xml.get_derivedparam(ind)
                         usffai = score_list[0]
                         far = score_list[1]
@@ -134,6 +137,7 @@ def extract_design_concept(design_concept_dir, student_id):
                             alternative_dict["concept_name"] = concept_name
                             alternative_dict["student_id"] = student_id
                             alternative_dict["stage"] = "stage3"
+                            alternative_dict["name"] = ind_id
                             
                             o_alternative_dict_2dlist[-1].append(alternative_dict)
                         
@@ -378,6 +382,7 @@ def draw_pareto_scatterplot(pareto_list, npareto_list, label, res_img_filepath):
         print idx
         pts.append(score_list)
         labellist.append(str(idx))
+        #labellist.append("")
         arealist.append(60)
         colourlist.append("red")
     
@@ -611,7 +616,7 @@ for cnt in range(28):
     ngen_max = -1
     if max_gen_list:
         ngen_max = max(max_gen_list)
-    
+    #get the pareto fronts for each student
     far_list_filtered = []
     usffai_list_filtered = []
     stu_falt_list = []
@@ -629,9 +634,14 @@ for cnt in range(28):
     student_score_2dlist = alternative_dict_list2_score_2d_list(stu_falt_list)
     stu_pareto_list, stu_npareto_list = extract_pareto_front_alt_dict(stu_falt_list, student_score_2dlist)
     
+    #if student_id == 26:
+    #    res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\ind_pareto.png"
+    #    draw_pareto_scatterplot(stu_pareto_list, stu_npareto_list,"concept_name", res_img_filepath)
+    
     stage1_list = []
     stage2_list = []
     stage3_list = []
+    stu_concept_list = []
     for pa in stu_pareto_list:
         stage = pa["stage"]
         if stage == "stage1":
@@ -642,17 +652,22 @@ for cnt in range(28):
             stage3_list.append(pa)
             
     npa = float(len(stu_pareto_list))
-    stage1_percent = round((len(stage1_list)/npa)*100,2)
-    stage2_percent = round((len(stage2_list)/npa)*100,2)
-    stage3_percent = round((len(stage3_list)/npa)*100,2)
+    #stage1_percent = round((len(stage1_list)/npa)*100,2)
+    #stage2_percent = round((len(stage2_list)/npa)*100,2)
+    #stage3_percent = round((len(stage3_list)/npa)*100,2)
+    
+    stage1_percent = len(stage1_list)
+    stage2_percent = len(stage2_list)
+    stage3_percent = len(stage3_list)
     
     avg_nparms = sum(stu_nparms_list)/len(stu_nparms_list)
     stu_avg_design_space = 0
     if avg_design_space_list:
         stu_avg_design_space = sum(avg_design_space_list)/len(avg_design_space_list)
     
-    res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\ind_pareto.png"
-    draw_pareto_scatterplot(stu_pareto_list, stu_npareto_list,"stage", res_img_filepath)
+    n_pareto = len(stu_pareto_list)
+    
+    
     
     pareto_2dlist.append(stu_pareto_list)
     
@@ -666,7 +681,7 @@ for cnt in range(28):
     
     student_str = "student_id,n_design_concept_explored,success,unsuccessful,avg_nparms,srf_cnt_min, srf_cnt_max,"+\
                 "n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen,"+\
-                "stage1%,stage2%,stage3%,avg_design_space,dominate,avg_c_measure,s_measure\n"
+                "stage1%,stage2%,stage3%,avg_design_space,npareto,dominate,avg_c_measure,s_measure\n"
                
     
     student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
@@ -674,13 +689,14 @@ for cnt in range(28):
                 + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max) + "," + str(far_range)\
                 + "," + str(usffai_min) + "," + str(usffai_max) + "," + str(usffai_range) + "," + str(ngen_max)\
                 + "," + str(stage1_percent) + "," + str(stage2_percent) + "," + str(stage3_percent)\
-                + "," + str(stu_avg_design_space) + "\n"
+                + "," + str(stu_avg_design_space) + "," + str(n_pareto) + "\n"
     '''
     student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
                 + "," + str(avg_nparms) + "," + str(srf_cnt_min) + "," + str(srf_cnt_max) + "," + str(total_design_alternatives)\
                 + "," + str(feedback_time) + "," + str(far_min_filtered) + "," + str(far_max_filtered) + "," + str(far_range_filtered)\
                 + "," + str(usffai_min_filtered) + "," + str(usffai_max_filtered) + "," + str(usffai_range_filtered) + "," + str(ngen_max)\
-                + "," + str(stage1_percent) + "," + str(stage2_percent) + "," + str(stage3_percent) + "\n"
+                + "," + str(stage1_percent) + "," + str(stage2_percent) + "," + str(stage3_percent)\
+                + "," + str(stu_avg_design_space) + "," + str(n_pareto) + "\n"
     '''    
     student_filepath = os.path.join(student_dir, "student_exploration.csv")
     sf = open(student_filepath, "w")
@@ -779,6 +795,7 @@ for cnt in range(28):
 res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\overall_pareto.png"
 min_max_list = [1,1]
 #filter the dict list to make sure all of the alt make sense
+print "TOTAL NO. OF ALTERNATIVES:", len(total_alternative_list)
 f_alt_list = []
 for alt_dict in total_alternative_list:
     far = alt_dict["far"]
@@ -788,7 +805,7 @@ for alt_dict in total_alternative_list:
     
 score_2dlist = alternative_dict_list2_score_2d_list(f_alt_list)
 pareto_list, npareto_list = extract_pareto_front_alt_dict(f_alt_list, score_2dlist)
-draw_pareto_scatterplot(pareto_list, npareto_list,"stage", res_img_filepath)
+draw_pareto_scatterplot(pareto_list, npareto_list,"name", res_img_filepath)
 print "TOTAL NO. OF ALTERNATIVES:", len(f_alt_list)
 print "NO. OF PARETO:", len(pareto_list)
 print "NO. OF NON-PARETO:", len(npareto_list)
@@ -809,7 +826,7 @@ for pareto_list in pareto_2dlist:
     sf.close()
     score_2dlist1 = alternative_dict_list2_score_2d_list(pareto_list)
     s_measure = round(pyliburo.pyoptimise.analyse_xml.hyper_volume(score_2dlist1, ref_pt, min_max_list),2)
-    print "S MEASURES:", s_measure
+    #print "S MEASURES:", s_measure
     pareto_2dlist2 = pareto_2dlist[:]
     pareto_2dlist2.pop(pcnt)
     dominate_list = []
@@ -826,7 +843,7 @@ for pareto_list in pareto_2dlist:
 
     domination = len(dominate_list)
     avg_cmeasure = round(sum(c_measure_list)/len(c_measure_list),2)
-    print "DOMINATION:", domination
+    #print "DOMINATION:", domination
     line1.replace("\n","")
     index = line1.index("\n")
     line1 = line1[0:index]

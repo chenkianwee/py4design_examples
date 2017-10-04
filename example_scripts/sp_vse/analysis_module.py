@@ -3,13 +3,13 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-livexmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\27\\successful\\proto20_performance\\xml\\0\\live.xml"
-deadxmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data1\\27\\successful\\proto20_performance\\xml\\0\\dead.xml"
+livexmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\10\\successful\\TEST_TOWER_2_performance\\xml\\0\\live.xml"
+deadxmlfile =  "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data\\10\\successful\\TEST_TOWER_2_performance\\xml\\0\\dead.xml"
 
-solar_index_filter = True
+solar_index_filter = False
 solar_index_min_max = [0.08, 0.1]
 
-plot_ratio_filter = True
+plot_ratio_filter = False
 plot_ratio_min_max = [3.5,6.0]
 #====================================================================================================================
 #INPUTS
@@ -32,7 +32,7 @@ res_img_filepath = os.path.join(parent_path, "result_img.png")
 inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(overallxmlfile)
 print "EXTRACTING PARETO ..."
 
-pfront, nonpfront = pyliburo.pyoptimise.analyse_xml.extract_pareto_front(inds, [1,1])
+pfront, nonpfront = pyliburo.pyoptimise.analyse_xml.extract_pareto_front_inds(inds, [1,1])
 pyliburo.pyoptimise.analyse_xml.write_inds_2_xml(pfront, pareto_file)
 pyliburo.pyoptimise.analyse_xml.write_inds_2_xml(nonpfront, npareto_file)
 
@@ -101,4 +101,4 @@ for ind in p_inds:
     colourlist.append("red")
         
 pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=14, labellist = labellist,
-                                            xlabel = "NSHFFAI", ylabel = "FAR", savefile = res_img_filepath)
+                                            xlabel = "USFFAI", ylabel = "FAR", savefile = res_img_filepath)
