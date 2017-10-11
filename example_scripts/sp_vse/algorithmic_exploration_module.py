@@ -6,7 +6,7 @@ import pyliburo
 #====================================================================================================================
 #INPUTS
 #====================================================================================================================
-design_dae_file = "C:\\test_tower2.dae"
+design_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\dae\\test_tower1.dae"
 site_dae_file = "C:\\site.dae"
 weatherfilepath = "C:\\SGP_Singapore.486980_IWEC.epw"
 
