@@ -7,6 +7,7 @@ Simple examples demonstrating the use of GLMeshItem.
 ## Add path to library (just for examples; you do not need this)
 import initExample
 
+import PyQt5
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
@@ -42,7 +43,7 @@ faces = np.array([
 ])
 colors = np.array([
     [11, 255, 255, 1],
-    [0, 1, 0, 1],
+    [255, 1, 0, 1],
     [0, 0, 1, 1],
     [1, 1, 0, 1]
 ])

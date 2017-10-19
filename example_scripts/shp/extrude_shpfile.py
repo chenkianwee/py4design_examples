@@ -8,8 +8,8 @@ import numpy as np
 #===========================================================================================
 #INPUTS
 #===========================================================================================
-bldg_footprint_shp_file = "F:\\kianwee_work\\smart\\DeliveryHeightDTM\\punggol_bldg_footprint\\punggol_bldg_footprint.shp"
-dtm_tif_file = "F:\\kianwee_work\\smart\\DeliveryHeightDTM\\punggol_dtm\\punggol_dtm_2.tif"
+bldg_footprint_shp_file = "F:\\kianwee_work\\smart\\DeliveryHeightDTM\\punggol_bldg_footprint\\punggol_bldg_footprint_lesser.shp"
+dtm_tif_file = "F:\\kianwee_work\\smart\\DeliveryHeightDTM\\punggol_dtm\\punggol_dtm_1.tif"
 
 #specify the name of the height attribute
 height_attrib = "heightmedi"

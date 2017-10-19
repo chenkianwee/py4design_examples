@@ -1,0 +1,1 @@
+rmember to copy and paste the platforms folder onto the top level
