@@ -179,20 +179,6 @@ def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win
     total_sensor_srf_list.extend(sensor_surfaces)
     total_sensor_pt_list.extend(sensor_pts)
     total_sensor_dir_list.extend(sensor_dirs)
-    '''
-    #generate sensor pts
-    for flr in flr_list:
-        #move the flr 0.8 metres up 
-        reversed_flr = py3dmodel.modify.reverse_face(flr)
-        flr_midpt = py3dmodel.calculate.face_midpt(reversed_flr)
-        loc_pt = py3dmodel.modify.move_pt(flr_midpt, (0,0,1), 0.8)
-        moved_flr = py3dmodel.fetch.shape2shapetype(py3dmodel.modify.move(flr_midpt, loc_pt, reversed_flr))
-        #offset_flr = py3dmodel.construct.make_offset(moved_flr, 0.5)
-        sensor_surfaces, sensor_pts, sensor_dirs = gml3dmodel.generate_sensor_surfaces(moved_flr,2,2)
-        total_sensor_srf_list.extend(sensor_surfaces)
-        total_sensor_pt_list.extend(sensor_pts)
-        total_sensor_dir_list.extend(sensor_dirs)
-    '''
     rad.set_sensor_points(total_sensor_pt_list, total_sensor_dir_list)
     rad.create_sensor_input_file()
     

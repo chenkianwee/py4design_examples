@@ -1,5 +1,4 @@
 import pyliburo
-import os
 import time
 
 base_file_path = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_scripts\\py2energyplus\\base.idf"
