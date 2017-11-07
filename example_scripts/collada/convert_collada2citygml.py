@@ -1,6 +1,6 @@
 import os
 import time
-import pyliburo
+from pyliburo import templaterulepalette, massing2citygml, analysisrulepalette
 
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
@@ -8,11 +8,8 @@ import pyliburo
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-#dae_file = os.path.join(parent_path, "example_files", "form_eval_example",  "dae", "example9.dae")
-#citygml_filepath = os.path.join(parent_path, "example_files", "form_eval_example", "citygml", "example9.gml")
-
-dae_file = "F:\\kianwee_work\\case_study\\5x5ptblks\\dae\\5x5ptblks2.dae"
-citygml_filepath = "F:\\kianwee_work\\case_study\\5x5ptblks\\citygml\\5x5ptblks2.gml"
+dae_file = os.path.join(parent_path, "example_files", "dae", "example1_1.dae")
+citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "example1_1.gml")
 
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"
@@ -27,32 +24,32 @@ time1 = time.clock()
 print "#==================================="
 print "READING COLLADA...", dae_file
 print "#==================================="
-massing_2_citygml = pyliburo.massing2citygml.Massing2Citygml()
+massing_2_citygml = massing2citygml.Massing2Citygml()
 massing_2_citygml.read_collada(dae_file)
 
 #first set up the analysis rule necessary for the template rules
-is_shell_closed = pyliburo.analysisrulepalette.IsShellClosed()
-is_shell_in_boundary = pyliburo.analysisrulepalette.IsShellInBoundary()
-shell_boundary_contains = pyliburo.analysisrulepalette.ShellBoundaryContains()
-is_edge_in_boundary = pyliburo.analysisrulepalette.IsEdgeInBoundary()
+is_shell_closed = analysisrulepalette.IsShellClosed()
+is_shell_in_boundary = analysisrulepalette.IsShellInBoundary()
+shell_boundary_contains = analysisrulepalette.ShellBoundaryContains()
+is_edge_in_boundary = analysisrulepalette.IsEdgeInBoundary()
 
 #then set up the template rules and append it into the massing2citygml obj
-id_bldgs = pyliburo.templaterulepalette.IdentifyBuildingMassings()
+id_bldgs = templaterulepalette.IdentifyBuildingMassings()
 id_bldgs.add_analysis_rule(is_shell_closed, True)
 id_bldgs.add_analysis_rule(is_shell_in_boundary, True)
 id_bldgs.add_analysis_rule(shell_boundary_contains, False)
 
-id_terrains = pyliburo.templaterulepalette.IdentifyTerrainMassings()
+id_terrains = templaterulepalette.IdentifyTerrainMassings()
 id_terrains.add_analysis_rule(is_shell_closed, False)
 id_terrains.add_analysis_rule(is_shell_in_boundary, False)
 id_terrains.add_analysis_rule(shell_boundary_contains, True)
 
-id_landuses = pyliburo.templaterulepalette.IdentifyLandUseMassings()
+id_landuses = templaterulepalette.IdentifyLandUseMassings()
 id_landuses.add_analysis_rule(is_shell_closed, False)
 id_landuses.add_analysis_rule(is_shell_in_boundary, True)
 id_landuses.add_analysis_rule(shell_boundary_contains, True)
 
-id_roads = pyliburo.templaterulepalette.IdentifyRoadMassings()
+id_roads = templaterulepalette.IdentifyRoadMassings()
 id_roads.add_analysis_rule(is_edge_in_boundary, True)
 
 massing_2_citygml.add_template_rule(id_bldgs)

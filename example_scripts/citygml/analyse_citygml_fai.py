@@ -1,7 +1,6 @@
 import os
 import time
-from pyliburo import citygml2eval
-from pyliburo import py3dmodel
+from pyliburo import py3dmodel, citygml2eval
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================
@@ -9,8 +8,8 @@ from pyliburo import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
-    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_fai.dae" )
+    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1_1.gml" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_1_fai.dae" )
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     #================================================================================

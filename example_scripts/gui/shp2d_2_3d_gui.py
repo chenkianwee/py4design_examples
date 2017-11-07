@@ -1,11 +1,9 @@
 import os
-import pyliburo
+from pyliburo import py3dmodel, shp2citygml, urbangeom
 import shapefile
 import gdal
 import numpy as np
 
-#import PySide.QtCore
-#from PySide import QtGui, QtCore, QtOpenGL, QtSvg
 import PyQt5
 import pyqtgraph as pg
 from pyqtgraph.parametertree import Parameter, ParameterTree
@@ -156,19 +154,19 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             display_2dlist = []
             #read the tif terrain file and create a tin from it 
             pyptlist = raster_reader(dtm_tif_file)
-            
             QtGui.QApplication.processEvents()
             self.params.param('Result View').param('Progress').setValue("Constructing the Terrain ... ...")
             self.progress = 10
-            #self.params.param('Progress View').param('Construct Terrain').setValue("CONSTRUCTING THE TERRAIN ... ...")
-            tin_occface_list = pyliburo.py3dmodel.construct.delaunay3d(pyptlist)
-            terrain_shell = pyliburo.py3dmodel.construct.make_shell_frm_faces(tin_occface_list)[0]
+            tin_occface_list = py3dmodel.construct.delaunay3d(pyptlist)
+            terrain_shell = py3dmodel.construct.sew_faces(tin_occface_list)[0]
             #===========================================================================================
             #EXTRUDE THE BUILDING
             #===========================================================================================
+            
             sf = shapefile.Reader(bldg_footprint_shp_file)
             shapeRecs=sf.shapeRecords()
-            attrib_name_list = pyliburo.shp2citygml.get_field_name_list(sf)
+            attrib_name_list = shp2citygml.get_field_name_list(sf)
+            print attrib_name_list
             height_index = attrib_name_list.index(height_attrib) - 1
             
             solid_list = []
@@ -184,23 +182,23 @@ class Shp2DTo3DGUI(QtGui.QWidget):
                 
                 poly_attribs=rec.record
                 height = poly_attribs[height_index]
-                pypolygon_list2d = pyliburo.shp2citygml.get_geometry(rec)
+                pypolygon_list2d = shp2citygml.get_geometry(rec)
                 if pypolygon_list2d:
-                    pypolygon_list3d = pyliburo.shp2citygml.pypolygon_list2d_2_3d(pypolygon_list2d, 0.0)
-                    occface_list = pyliburo.shp2citygml.shp_pypolygon_list3d_2_occface_list(pypolygon_list3d)
+                    pypolygon_list3d = shp2citygml.pypolygon_list2d_2_3d(pypolygon_list2d, 0.0)
+                    occface_list = shp2citygml.shp_pypolygon_list3d_2_occface_list(pypolygon_list3d)
                     for occface in occface_list:
                         if height >0:
-                            occsolid = pyliburo.py3dmodel.construct.extrude(occface, (0,0,1), height)
+                            occsolid = py3dmodel.construct.extrude(occface, (0,0,1), height)
                             solid_list.append(occsolid)
                             face_list.append(occface)
                 cnt+=1
             
             #move all the faces to a very high elevation and project them down onto the terrain so that we know where to place the buildings
-            face_cmpd = pyliburo.py3dmodel.construct.make_compound(face_list)
-            f_midpt = pyliburo.py3dmodel.calculate.get_centre_bbox(face_cmpd)
+            face_cmpd = py3dmodel.construct.make_compound(face_list)
+            f_midpt = py3dmodel.calculate.get_centre_bbox(face_cmpd)
             loc_pt = [f_midpt[0], f_midpt[1], 1000]
-            t_face_cmpd = pyliburo.py3dmodel.modify.move(f_midpt, loc_pt, face_cmpd)
-            face_list2 = pyliburo.py3dmodel.fetch.geom_explorer(t_face_cmpd, "face")
+            t_face_cmpd = py3dmodel.modify.move(f_midpt, loc_pt, face_cmpd)
+            face_list2 = py3dmodel.fetch.topo_explorer(t_face_cmpd, "face")
             #face_list2 = face_list2[0:10]
             
             msolid_list = []
@@ -210,25 +208,25 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             self.progress = 50
             fcnt = 0
             for face2 in face_list2:
-                pyptlist = pyliburo.py3dmodel.fetch.pyptlist_frm_occface(face2)
+                pyptlist = py3dmodel.fetch.points_frm_occface(face2)
                 #print "NUM PTS:", len(pyptlist)
                 z_list = []
                 for pypt in pyptlist:
                     
                     QtGui.QApplication.processEvents()
                     
-                    interpt, interface = pyliburo.py3dmodel.calculate.intersect_shape_with_ptdir(terrain_shell, pypt, (0,0,-1))
+                    interpt, interface = py3dmodel.calculate.intersect_shape_with_ptdir(terrain_shell, pypt, (0,0,-1))
                     if interpt:
-                        z = interpt.Z()
+                        z = interpt[2]
                         z_list.append(z)
                 if z_list:
                     min_z = min(z_list)
                     #print min_z
                     face = face_list[fcnt]
-                    face_midpt = pyliburo.py3dmodel.calculate.face_midpt(face)
+                    face_midpt = py3dmodel.calculate.face_midpt(face)
                     bldg_loc_pt = [face_midpt[0], face_midpt[1], min_z]
                     bsolid = solid_list[fcnt]
-                    m_bsolid = pyliburo.py3dmodel.modify.move(face_midpt, bldg_loc_pt, bsolid)
+                    m_bsolid = py3dmodel.modify.move(face_midpt, bldg_loc_pt, bsolid)
                     msolid_list.append(m_bsolid)
                 fcnt+=1
                         
@@ -243,23 +241,23 @@ class Shp2DTo3DGUI(QtGui.QWidget):
                 
                 QtGui.QApplication.processEvents()
                 
-                facade_list, roof_list, footprint_list = pyliburo.gml3dmodel.identify_building_surfaces(solid)
+                facade_list, roof_list, footprint_list = urbangeom.identify_building_surfaces(solid)
                 total_facade_list.extend(facade_list)
                 total_roof_list.extend(roof_list)
                 total_footprint_list.extend(footprint_list)
                 
-            n_list,s_list, e_list, w_list=pyliburo.gml3dmodel.identify_surface_direction(total_facade_list)
+            n_list,s_list, e_list, w_list= urbangeom.identify_surface_direction(total_facade_list)
             
             QtGui.QApplication.processEvents()
             self.params.param('Result View').param('Progress').setValue("Writing the Building Surfaces ... ...")
             self.progress = 100
-            pyliburo.utility3d.write_2_collada(n_list, north_facade_collada_filepath)
-            pyliburo.utility3d.write_2_collada(s_list, south_facade_collada_filepath)
-            pyliburo.utility3d.write_2_collada(e_list, east_facade_collada_filepath)
-            pyliburo.utility3d.write_2_collada(w_list, west_facade_collada_filepath)
-            pyliburo.utility3d.write_2_collada(total_roof_list, roof_collada_filepath)
-            pyliburo.utility3d.write_2_collada(total_footprint_list, footprint_collada_filepath)
-            pyliburo.utility3d.write_2_collada([terrain_shell], terrain_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(n_list, north_facade_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(s_list, south_facade_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(e_list, east_facade_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(w_list, west_facade_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(total_roof_list, roof_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(total_footprint_list, footprint_collada_filepath)
+            py3dmodel.export_collada.write_2_collada([terrain_shell], terrain_collada_filepath)
             
             time2 = time.clock()
             time = (time2-time1)/60.0

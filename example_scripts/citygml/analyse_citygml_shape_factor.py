@@ -1,14 +1,12 @@
 import os
 import time
-from pyliburo import pycitygml
-from pyliburo import gml3dmodel
-from pyliburo import urbangeom
-from pyliburo import urbanformeval
+from pyliburo import py3dmodel, pycitygml, gml3dmodel, urbangeom, urbanformeval
 
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
+    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "punggol_luse101_shape.dae" )
     
     time1 = time.clock()
     print "#==================================="
@@ -34,8 +32,8 @@ for cnt in range(1):
     print "TIME TAKEN", (time2-time1)/60
     print "Average shape factor", avg_shp_factor
     d_str = "AVERAGE Shape Factor: " + str(avg_shp_factor)
-    #pyliburo.utility3d.write_2_collada_falsecolour(bsolid_list, shape_factor_list, "Shape Factor", dae_filepath, 
-    #                                               description_str = d_str, minval = 0.0, maxval = 0.8)
+    py3dmodel.export_collada.write_2_collada_falsecolour(bsolid_list, shape_factor_list, "Shape Factor", dae_filepath, 
+                                                         description_str = d_str, minval = 0.0, maxval = 0.8)
 
     bvol_list = urbangeom.calculate_urban_vol(bsolid_list)
     print "URBAN VOL (m3)", sum(bvol_list)

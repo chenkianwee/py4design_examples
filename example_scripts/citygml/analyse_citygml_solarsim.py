@@ -1,6 +1,6 @@
 import time
 import os
-import pyliburo
+from pyliburo import py3dmodel, citygml2eval
 #=========================================================================================================================================
 #SPECIFY ALL THE NECCESSARY INPUTS
 #=========================================================================================================================================
@@ -9,7 +9,7 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
-for cnt in range(3):
+for cnt in range(1):
     citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
     dae_result_name = "punggol_luse101"
     dae_filepath1 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_nshffai.dae" )
@@ -25,11 +25,12 @@ for cnt in range(3):
     #change the filepath to where you want to save the file to 
     weatherfilepath = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw" )
     
-    evaluations = pyliburo.citygml2eval.Evals(citygml_filepath)
+    evaluations = citygml2eval.Evals(citygml_filepath)
     xdim = 9
     ydim = 9
     
-    irrad_threshold = (50*4549)/1000.0#kw/m2
+    lower_irrad_threshold = 254#kw/m2
+    upper_irrad_threshold = 364#kw/m2
     illum_threshold = 10000#lux ~~254kw/m2
     roof_irrad_threshold = 1280 #kwh/m2
     facade_irrad_threshold = 512 #kwh/m2
@@ -45,21 +46,22 @@ for cnt in range(3):
     print "EVALUATING MODEL ... ...", citygml_filepath
     print "#==================================="
     
-    
-    res_dict  = evaluations.nshffai(irrad_threshold,weatherfilepath,xdim,ydim)
+    res_dict  = evaluations.nshffai(upper_irrad_threshold,weatherfilepath,xdim,ydim)
     print "NON SOLAR HEATED FACADE TO FLOOR AREA INDEX:", res_dict["afi"]
     print "NON SOLAR HEATED FACADE AREA INDEX:", res_dict["ai"]
     
     d_str = "NSHFFAI: " + str(res_dict["afi"]) + "\n" + "NSHFAI: " + str(res_dict["ai"])
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                    "kWh/m2", dae_filepath1, description_str = d_str, 
                                                    minval = 0, maxval = 758.17)
 
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"], "NSHFFAI", 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"], "NSHFFAI", 
                                                    dae_filepath2, description_str = d_str, 
                                                    minval = 0.0, maxval = 0.8)
     
-
+    us_dict = evaluations.usffai(lower_irrad_threshold, upper_irrad_threshold,weatherfilepath,xdim,ydim)
+    print "USEFUL SOLAR FACADE TO FLOOR AREA INDEX :", us_dict["afi"]
+    
     #==========================================================================================================================
     #illum threshold (lux)
     #==========================================================================================================================
@@ -70,20 +72,18 @@ for cnt in range(3):
     
     d_str = "DFFAI: " + str(res_dict["afi"]) + "\n" + "DFAI: " + str(res_dict["ai"])
     
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                    "lx", dae_filepath3, description_str = d_str, 
                                                    minval = 0, maxval = 11111.11)
     
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"], "DFFAI", 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"], "DFFAI", 
                                                    dae_filepath4, description_str = d_str, 
                                                    minval = 0.0, maxval = 0.8)
     
 
-    #==========================================================================================================================
+    #==============================================================================================
     #solar potential measures the potential energy that can be generated on the building surfaces
-    #==========================================================================================================================
-    
-                                                                              
+    #==============================================================================================
     res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weatherfilepath,xdim,ydim)
                                                                                        
     print "PV ENVELOPE TO FACADE AREA INDEX :", res_dict["afi"]
@@ -91,15 +91,14 @@ for cnt in range(3):
     
     
     d_str = "PVEFAI: " + str(res_dict["afi"]) + "\n" + "PVEAI: " + str(res_dict["ai"])
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", dae_filepath5, 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", dae_filepath5, 
                                                    description_str = d_str, minval = 180, maxval = roof_irrad_threshold)
     
     bsolid = res_dict["building_solids"]
-    print "solid list", len(bsolid)
-    pyliburo.utility3d.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"][0], "PVEFAI", 
+    py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["building_solids"], res_dict["afi_list"][0], "PVEFAI", 
                                                    dae_filepath6, description_str = d_str, 
                                                    minval = 0.0, maxval = 0.8)
-    '''
+    
     time2 = time.clock()
     print "TIME TAKEN", (time2-time1)/60
     print "MODEL EVALUATED!"
@@ -111,4 +110,3 @@ for cnt in range(3):
     res_dict = evaluations.pvafai(facade_irrad_threshold, weatherfilepath,xdim,ydim, surface = "facade")  
                                                                                        
     print "PV FACADE TO FLOOR AREA INDEX :", res_dict["afi"]
-    '''

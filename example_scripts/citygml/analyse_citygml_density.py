@@ -1,8 +1,5 @@
 import os
-from pyliburo import pycitygml
-from pyliburo import py3dmodel
-from pyliburo import gml3dmodel
-from pyliburo import urbangeom
+from pyliburo import pycitygml, py3dmodel, gml3dmodel, urbangeom
 
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
