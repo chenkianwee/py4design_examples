@@ -12,11 +12,11 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
 dae_file = os.path.join(parent_path, "example_files", "dae", "example1_1.dae")
 weatherfilepath = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw" )
-nshffai_filepath = os.path.join(parent_path, "example_files", "dae", "py2radiance_nshffai")
-dffai_filepath = os.path.join(parent_path, "example_files", "dae", "py2radiance_dffai")
-pvafai_filepath = os.path.join(parent_path, "example_files", "dae", "py2radiance_pvafai")
-pvefai_filepath = os.path.join(parent_path, "example_files", "dae", "py2radiance_pvefai")
-daysim_filepath = os.path.join(parent_path, "example_files", "dae", "daysim_data")
+nshffai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "py2radiance_nshffai")
+dffai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "py2radiance_dffai")
+pvafai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "py2radiance_pvafai")
+pvefai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "py2radiance_pvefai")
+daysim_filepath = os.path.join(parent_path, "example_files", "dae", "results", "daysim_data")
 
 lower_irrad_threshold = 254#kw/m2
 upper_irrad_threshold = 364#kw/m2

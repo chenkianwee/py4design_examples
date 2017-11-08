@@ -166,7 +166,6 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             sf = shapefile.Reader(bldg_footprint_shp_file)
             shapeRecs=sf.shapeRecords()
             attrib_name_list = shp2citygml.get_field_name_list(sf)
-            print attrib_name_list
             height_index = attrib_name_list.index(height_attrib) - 1
             
             solid_list = []

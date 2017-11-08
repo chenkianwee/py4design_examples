@@ -9,7 +9,7 @@ import read_collada_4_evalurbanform as read_collada
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-dae_file = os.path.join(parent_path, "example_files", "dae", "example1.dae")
+dae_file = os.path.join(parent_path, "example_files", "dae", "example1_1.dae")
 
 display2dlist = []
 colourlist = []

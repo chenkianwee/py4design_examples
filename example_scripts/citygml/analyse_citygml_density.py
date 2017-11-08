@@ -7,7 +7,7 @@ from pyliburo import pycitygml, py3dmodel, gml3dmodel, urbangeom
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
+citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1_1.gml" )
 '''citygml_filepath = "C://file2analyse.gml"'''
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE

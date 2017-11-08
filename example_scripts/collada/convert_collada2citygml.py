@@ -9,7 +9,7 @@ from pyliburo import templaterulepalette, massing2citygml, analysisrulepalette
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 dae_file = os.path.join(parent_path, "example_files", "dae", "example1_1.dae")
-citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "example1_1.gml")
+citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "results", "example1_1.gml")
 
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"

@@ -8,7 +8,7 @@ from pyliburo import pycitygml, gml3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol.gml")
-result_citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol_luse101.gml")
+result_citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "results", "punggol_luse101.gml")
 
 print "READING CITYGML FILE ... ..."
 #================================================================================

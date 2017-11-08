@@ -1,9 +1,14 @@
-import pyliburo
-overallxmlfile = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\overall.xml"
-inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(overallxmlfile)
-result_dict = pyliburo.pyoptimise.analyse_xml.kmeans_inds(inds,"score", n_clusters = 3)
+import os
+from pyliburo import pyoptimise
+
+current_path = os.path.dirname(__file__)
+parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+overallxmlfile = os.path.join(parent_path, "example_files", "xml", "dead.xml")
+
+inds = pyoptimise.analyse_xml.get_inds_frm_xml(overallxmlfile)
+result_dict = pyoptimise.analyse_xml.kmeans_inds(inds,"score", n_clusters = 3)
 cluster_list = result_dict["cluster_list"]
-res_img_filepath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\clusters.png"
+res_img_filepath = os.path.join(parent_path, "example_files", "xml", "results", "clusters.png")
 
 pts = []
 labellist =[]
@@ -13,8 +18,8 @@ colourlist = []
 cluster_cnt = 0
 for cluster in cluster_list:
     for ind in cluster:
-        score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
-        idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
+        score_list = pyoptimise.analyse_xml.get_score(ind)
+        idx = pyoptimise.analyse_xml.get_id(ind)
         pts.append(score_list)
         labellist.append("")
         arealist.append(10)
@@ -32,6 +37,6 @@ for cluster in cluster_list:
     cluster_cnt+=1
         
 print "DRAWING GRAPH ..."
-pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=12, labellist = labellist,
-                                            xlabel = "cooling", ylabel = "daylight", savefile = res_img_filepath )
+pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=12, labellist = labellist,
+                                   xlabel = "cooling", ylabel = "daylight", savefile = res_img_filepath )
 

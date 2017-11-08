@@ -8,11 +8,8 @@ from pyliburo import citygml2eval, py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
-    citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1.gml" )
-    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_rdi.dae" )
-    
-    #citygml_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\citygml\\example" + str(cnt+7) + ".gml"
-    #dae_filepath = "F:\\kianwee_work\\case_study\\form_eval_example\\dae\\example" + str(cnt+7) + "_rdi.dae"
+    citygml_filepath = os.path.join(parent_path, "example_files", "mdpi_urbform_eg", "citygml", "yishun_central.gml" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "results", "yishun_central_rdi.dae" )
         
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''

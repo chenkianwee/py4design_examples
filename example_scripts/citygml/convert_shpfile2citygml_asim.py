@@ -4,8 +4,6 @@ import uuid
 
 import shapefile
 from pyliburo import shp2citygml, py3dmodel, gml3dmodel, pycitygml
-
-
 #=========================================================================================================================================
 #main convert function
 #=========================================================================================================================================
@@ -561,7 +559,7 @@ shpfile3 = os.path.join(parent_path, "example_files", "shpfiles", "punggol_trpst
 shpfile4 = os.path.join(parent_path, "example_files", "shpfiles", "boundary_file", "punggol_boundary.shp")
 
 #specify the result citygml file
-citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol.gml")
+citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "results", "punggol.gml")
 #=========================================================================================================================================
 #SPECIFY ALL THE NECCESSARY INPUTS
 #=========================================================================================================================================
@@ -581,8 +579,6 @@ citygml_writer_origlvl.write(citygml_filepath)
 
 convert([shpfile1,shpfile2,shpfile3],citygml_writer)
 citygml_writer.write(citygml_filepath)
-
-
 
 time2 = time.clock()
 time = (time2-time1)/60.0

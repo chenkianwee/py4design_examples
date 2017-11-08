@@ -6,7 +6,7 @@ current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
     citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
-    dae_filepath = os.path.join(parent_path, "example_files","dae", "punggol_luse101_shape.dae" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "results", "punggol_luse101_shape.dae" )
     
     time1 = time.clock()
     print "#==================================="

@@ -21,8 +21,8 @@ face2 = py3dmodel.construct.make_polygon(points2)
 extrude2 = py3dmodel.construct.extrude(face2, (0,0,1), 80)
 
 min_dist = py3dmodel.calculate.minimum_distance(extrude1, extrude2)
-nrml_edges = py3dmodel.calculate.visualise_face_normal_as_edges(ext1_faces, normal_magnitude = 10)
+nrml_edges = py3dmodel.calculate.face_normal_as_edges(ext1_faces, normal_magnitude = 10)
 display2dlist = []
 display2dlist.append(ext1_faces)
 display2dlist.append(nrml_edges)
-py3dmodel.construct.visualise(display2dlist, ["WHITE", "BLACK"])
+py3dmodel.utility.visualise(display2dlist, ["WHITE", "BLACK"])

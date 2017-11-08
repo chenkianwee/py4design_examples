@@ -1,5 +1,5 @@
 import os
-import pyliburo
+from pyliburo import pyoptimise
 #=================================================================
 #FUNCTIONS
 #=================================================================
@@ -120,12 +120,12 @@ def extract_design_concept(design_concept_dir, student_id):
                     #read the xml and get all the design alternatives
                     xml_dir = os.path.join(design_concept_dir,"xml", str(l_cnt))
                     overall_filepath = os.path.join(xml_dir,"overall.xml")
-                    inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(overall_filepath)
+                    inds = pyoptimise.analyse_xml.get_inds_frm_xml(overall_filepath)
                     o_alternative_dict_2dlist.append([])
                     for ind in inds:
-                        score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
-                        ind_id = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-                        derived_parm_list = pyliburo.pyoptimise.analyse_xml.get_derivedparam(ind)
+                        score_list = pyoptimise.analyse_xml.get_score(ind)
+                        ind_id = pyoptimise.analyse_xml.get_id(ind)
+                        derived_parm_list = pyoptimise.analyse_xml.get_derivedparam(ind)
                         usffai = score_list[0]
                         far = score_list[1]
                         if far>0:
@@ -357,7 +357,7 @@ def extract_pareto_front_alt_dict(alternative_dict_list, score_2dlist):
     for alt_dict in alternative_dict_list:
         score_list = [alt_dict["far"], alt_dict["usffai"]]
         if (len(score_list)-1) !=0:     
-            if pyliburo.pyoptimise.analyse_xml.on_pareto_front(score_list, score_2dlist, [1,1]):
+            if pyoptimise.analyse_xml.on_pareto_front(score_list, score_2dlist, [1,1]):
                 pareto_list.append(alt_dict)
             else:
                 npareto_list.append(alt_dict) 
@@ -386,13 +386,13 @@ def draw_pareto_scatterplot(pareto_list, npareto_list, label, res_img_filepath):
         arealist.append(60)
         colourlist.append("red")
     
-    pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=14, labellist = labellist,
+    pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=14, labellist = labellist,
                                                 xlabel = "FAR", ylabel = "USFFAI", savefile = res_img_filepath)
 
 #=================================================================
 #MAIN SCRIPT
 #=================================================================  
-data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\data"
+data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_opt_design\\data"
 total_alternative_list = []
 pareto_2dlist = []
 far_max_limit = 15
@@ -792,7 +792,7 @@ for cnt in range(28):
 #GET THE PARETO FRONT OF ALL THE DESIGN ALTERNATIVES 
 #=================================================================  
 #filter the alternatives to make sure there are no ridiculous far 
-res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\overall_pareto.png"
+res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_opt_design\\img\\png\\overall_pareto.png"
 min_max_list = [1,1]
 #filter the dict list to make sure all of the alt make sense
 print "TOTAL NO. OF ALTERNATIVES:", len(total_alternative_list)
@@ -825,7 +825,7 @@ for pareto_list in pareto_2dlist:
     
     sf.close()
     score_2dlist1 = alternative_dict_list2_score_2d_list(pareto_list)
-    s_measure = round(pyliburo.pyoptimise.analyse_xml.hyper_volume(score_2dlist1, ref_pt, min_max_list),2)
+    s_measure = round(pyoptimise.analyse_xml.hyper_volume(score_2dlist1, ref_pt, min_max_list),2)
     #print "S MEASURES:", s_measure
     pareto_2dlist2 = pareto_2dlist[:]
     pareto_2dlist2.pop(pcnt)
@@ -833,8 +833,8 @@ for pareto_list in pareto_2dlist:
     c_measure_list = []
     for pareto_list2 in pareto_2dlist2:
         score_2dlist2 = alternative_dict_list2_score_2d_list(pareto_list2)
-        c_measure1 = pyliburo.pyoptimise.analyse_xml.c_measures(score_2dlist1, score_2dlist2, min_max_list)
-        c_measure2 = pyliburo.pyoptimise.analyse_xml.c_measures(score_2dlist2, score_2dlist1, min_max_list)
+        c_measure1 = pyoptimise.analyse_xml.c_measures(score_2dlist1, score_2dlist2, min_max_list)
+        c_measure2 = pyoptimise.analyse_xml.c_measures(score_2dlist2, score_2dlist1, min_max_list)
         c_measure_list.append(c_measure1)
         if c_measure1 > c_measure2:
             dominate_list.append(pareto_list2)

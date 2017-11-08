@@ -1,3 +1,5 @@
+import os
+
 from pyliburo import py3dmodel, pycitygml, gml3dmodel, citygml2eval, pyoptimise
 import collada
 from collada import polylist, triangleset
@@ -5,15 +7,19 @@ from collada import polylist, triangleset
 #INPUTS
 #==================================================
 resume = False
-dae_file = "F:\\kianwee_work\\case_study\\5x5ptblks\\dae\\5x5ptblks.dae"
-base_citygml_file =  "F:\\kianwee_work\\case_study\\5x5ptblks\\citygml\\5x5ptblks.gml"
+#specify the citygml file
+current_path = os.path.dirname(__file__)
+parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+
+dae_file = os.path.join(parent_path, "example_files", "dae", "5x5ptblks.dae")
+base_citygml_file =  os.path.join(parent_path, "example_files", "citygml", "results", "5x5ptblks.gml")
 
 ngeneration = 3
-init_population = 2
+init_population = 3
 mutation_rate = 0.01
 crossover_rate  = 0.8 
-live_file =  "F:\\kianwee_work\\case_study\\5x5ptblks\\nsga2_xml\\live.xml"
-dead_file =  "F:\\kianwee_work\\case_study\\5x5ptblks\\nsga2_xml\\dead.xml"
+live_file = os.path.join(parent_path, "example_files", "dae", "results", "live.xml")
+dead_file = os.path.join(parent_path, "example_files", "dae", "results", "dead.xml")
 #==================================================
 #FUNCTIONS
 #==================================================   
@@ -190,7 +196,9 @@ def eval_daylight(citygml_filepath):
     evaluations = citygml2eval.Evals(citygml_filepath)
     xdim = 9
     ydim = 9
-    weatherfilepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
+    current_path = os.path.dirname(__file__)
+    parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+    weatherfilepath = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw")
     '''
     illum threshold (lux)
     '''
@@ -275,7 +283,7 @@ for gencnt in range(ngeneration):
         #GENERATE DESIGN VARIANT
         #=================================================
         ind_id = ind.id
-        dv_citygml ="F:\\kianwee_work\\case_study\\5x5ptblks\\design_variants\\" + str(ind_id) + ".gml"
+        dv_citygml = os.path.join(parent_path, "example_files", "citygml", "results", "designvariant" + str(ind_id) + ".gml")
         parmlist = ind.genotype.values
         design_variant = parameterise_citygml(base_citygml_file, parmlist, dv_citygml)
         #==================================================

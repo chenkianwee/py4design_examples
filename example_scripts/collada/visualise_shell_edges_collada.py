@@ -8,7 +8,7 @@ from pyliburo import py3dmodel
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-dae_file = os.path.join(parent_path, "example_files", "dae", "punggol_central.dae")
+dae_file = os.path.join(parent_path, "example_files", "dae", "example1.dae")
 #dae_file = os.path.join(parent_path, "example_files","5x5ptblks", "dae", "5x5ptblks.dae")
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"'''

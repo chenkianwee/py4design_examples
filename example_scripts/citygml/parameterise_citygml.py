@@ -8,7 +8,7 @@ from pyliburo import gmlparmpalette, gmlparameterise
 current_path = os.path.dirname(__file__)
 parent_path = parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml")
-result_citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_variant5.gml" )
+result_citygml_filepath = os.path.join(parent_path, "example_files","citygml", "results", "punggol_variant.gml" )
 
 '''citygml_filepath = "C://file2analyse.gml"
 result_citygml_filepath = "C://result.gml'''

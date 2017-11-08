@@ -12,12 +12,12 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
     citygml_filepath = os.path.join(parent_path, "example_files","citygml", "punggol_luse101.gml" )
     dae_result_name = "punggol_luse101"
-    dae_filepath1 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_nshffai.dae" )
-    dae_filepath2 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_nshffai2.dae" )
-    dae_filepath3 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_dffai.dae" )
-    dae_filepath4 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_dffai2.dae" )
-    dae_filepath5 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_pvefai.dae" )
-    dae_filepath6 = os.path.join(parent_path, "example_files","dae", dae_result_name + "_pvefai2.dae" )
+    dae_filepath1 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_nshffai.dae" )
+    dae_filepath2 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_nshffai2.dae" )
+    dae_filepath3 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_dffai.dae" )
+    dae_filepath4 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_dffai2.dae" )
+    dae_filepath5 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_pvefai.dae" )
+    dae_filepath6 = os.path.join(parent_path, "example_files","dae", "results", dae_result_name + "_pvefai2.dae" )
         
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''

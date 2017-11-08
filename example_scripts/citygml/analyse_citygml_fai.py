@@ -9,7 +9,7 @@ current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 for cnt in range(1):
     citygml_filepath = os.path.join(parent_path, "example_files","citygml", "example1_1.gml" )
-    dae_filepath = os.path.join(parent_path, "example_files","dae", "example1_1_fai.dae" )
+    dae_filepath = os.path.join(parent_path, "example_files","dae", "results", "example1_1_fai.dae" )
     #or just insert a citygml file you would like to analyse here 
     '''citygml_filepath = "C://file2analyse.gml"'''
     #================================================================================
@@ -24,7 +24,7 @@ for cnt in range(1):
     print "EVALUATING MODEL ... ...", citygml_filepath
     print "#==================================="
     wind_dir = (1,1,0)
-    res_dict = evaluations.fai(wind_dir)
+    res_dict = evaluations.fai(wind_dir, xdim = 50, ydim = 50)
     os_cmpd = py3dmodel.construct.make_compound(res_dict["vertical_surface_list"])
     occedge_list = py3dmodel.fetch.topo_explorer(os_cmpd, "edge")
     time2 = time.clock()
