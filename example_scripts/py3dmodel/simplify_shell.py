@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 pyptlist = [[5,5,0],[10,5,0],[10,10,0],[15,10,0],[15,5,0],[20,5,0],[20,15,0],[5,15,0]]
 face = py3dmodel.construct.make_polygon(pyptlist)

@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 import random
 cylinder_radius = 0.038
 cylinder_height = 0.06

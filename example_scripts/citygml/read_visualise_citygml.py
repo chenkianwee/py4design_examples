@@ -1,6 +1,6 @@
 import os
 import time
-from pyliburo import pycitygml, py3dmodel
+from py4design import pycitygml, py3dmodel
 
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE

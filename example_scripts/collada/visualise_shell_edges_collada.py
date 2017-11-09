@@ -1,7 +1,7 @@
 import os
 import collada
 from collada import polylist, triangleset, lineset
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================

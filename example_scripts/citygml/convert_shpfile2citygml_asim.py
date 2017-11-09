@@ -3,7 +3,7 @@ import time
 import uuid
 
 import shapefile
-from pyliburo import shp2citygml, py3dmodel, gml3dmodel, pycitygml
+from py4design import shp2citygml, py3dmodel, gml3dmodel, pycitygml
 #=========================================================================================================================================
 #main convert function
 #=========================================================================================================================================

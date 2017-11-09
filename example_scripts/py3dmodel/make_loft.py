@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 points1 = [(50,100,0), (75,75,0), (75,60,0),(100,60,0),(100,50,0), (50,0,0),(0,50,0)]#clockwise
 points2 = [(60,50,10),(40,50,10),(50,40,10)]
 face1 = py3dmodel.construct.make_polygon(points1)

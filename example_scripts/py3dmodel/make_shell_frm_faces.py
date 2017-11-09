@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 display_list = []
 points1 = [(50,100,0), (75,75,0), (75,60,0),(100,60,0),(100,50,0), (50,0,0),(0,50,0)]#clockwise

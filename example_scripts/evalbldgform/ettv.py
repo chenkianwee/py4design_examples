@@ -1,6 +1,6 @@
 import os
 import time
-from pyliburo import py3dmodel, urbangeom, buildingformeval
+from py4design import py3dmodel, urbangeom, buildingformeval
 time1 = time.clock()
 #construct the bldg to be analysed
 pypt_list = [(0,20,0), (20,0,0), (40,0,0),(60,20,0), (60,40,0),(40,60,0),(20,60,0),(0,40,0)]

@@ -1,1 +1,4 @@
-rmember to copy and paste the platforms folder onto the top level
+remember to copy and paste the platforms folder onto the top level when deployment.
+
+search for platforms in the python environment
+copy and paste the folder onto the top

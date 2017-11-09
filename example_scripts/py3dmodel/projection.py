@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 displaylist1 = []
 displaylist2 = []

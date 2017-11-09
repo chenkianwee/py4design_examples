@@ -1,4 +1,4 @@
-from pyliburo import shp2citygml, py3dmodel
+from py4design import shp2citygml, py3dmodel
 import shapefile
 import time
 #specify all the shpfiles

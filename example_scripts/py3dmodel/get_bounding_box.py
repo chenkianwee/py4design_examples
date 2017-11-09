@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 pypt1 = [0,0,0]
 pypt2 = [5,5,0]

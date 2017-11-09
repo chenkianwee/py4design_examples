@@ -1,6 +1,6 @@
 import os
 import time
-from pyliburo import py3dmodel, citygml2eval, massing2citygml, analysisrulepalette, templaterulepalette
+from py4design import py3dmodel, citygml2eval, massing2citygml, analysisrulepalette, templaterulepalette
 import ntpath
 
 #====================================================================================================================

@@ -1,5 +1,5 @@
 import os
-from pyliburo import pyoptimise
+from py4design import pyoptimise
 
 print "READING XML ..."
 current_path = os.path.dirname(__file__)

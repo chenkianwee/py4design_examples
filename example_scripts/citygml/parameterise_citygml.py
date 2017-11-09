@@ -1,6 +1,6 @@
 import os
 import time
-from pyliburo import gmlparmpalette, gmlparameterise
+from py4design import gmlparmpalette, gmlparameterise
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================

@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 edge1 = py3dmodel.construct.make_edge((0,0,0),(5,3,0))
 edge2 = py3dmodel.construct.make_edge((0,5,0),(5,0,0))

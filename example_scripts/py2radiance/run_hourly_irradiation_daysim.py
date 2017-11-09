@@ -1,23 +1,14 @@
 import os 
-from pyliburo import py2radiance, py3dmodel
+from py4design import py2radiance, py3dmodel
 
-def avg_daysim_res(res_dict):
+def avg_daysim_res(res):
     """
     for daysim hourly simulation
-    """
-    npts = len(res_dict.values()[0])
-    sensorptlist = []
-    for _ in range(npts):
-        sensorptlist.append([])
-        
-    for res in res_dict.values():
-        for rnum in range(npts):
-            sensorptlist[rnum].append(res[rnum])
-            
+    """     
     cumulative_list = []
     sunuphrs = rad.sunuphrs
     illum_ress = []
-    for sensorpt in sensorptlist:
+    for sensorpt in res:
         cumulative_sensorpt = sum(sensorpt)
         avg_illuminance = cumulative_sensorpt/sunuphrs
         cumulative_list.append(cumulative_sensorpt)
@@ -36,6 +27,8 @@ rad = py2radiance.Rad(base_filepath, data_folderpath)
 #create a box 10x10x10m
 box = py3dmodel.construct.make_box(10,10,10)
 occfaces = py3dmodel.fetch.faces_frm_solid(box)
+cmpd = py3dmodel.construct.make_compound(occfaces)
+edges = py3dmodel.fetch.topo_explorer(cmpd, "edge")
 displaylist = []
 displaylist.append(box)
 #display2dlist.append(displaylist)
@@ -71,7 +64,7 @@ daysim_dir = os.path.join(current_path, 'daysim_data')
 rad.initialise_daysim(daysim_dir)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
 #a 60min weatherfile is generated
-weatherfilepath = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw" )
+weatherfilepath = os.path.join(parent_path, "py2radiance", "SGP_Singapore.486980_IWEC.epw")
 rad.execute_epw2wea(weatherfilepath)
 rad.execute_radfiles2daysim()
 
@@ -81,9 +74,9 @@ rad.create_sensor_input_file()
 rad.write_default_radiance_parameters()#the default settings are the complex scene 1 settings of daysimPS
 rad.execute_gen_dc("w/m2") #lux
 rad.execute_ds_illum()
-res_dict = rad.eval_ill()
-avg_irrad = avg_daysim_res(res_dict)
-print avg_irrad
+res = rad.eval_ill_per_sensor()
+watt_ress = avg_daysim_res(res)
+print watt_ress
 print "DONE"
-py3dmodel.utility.visualise_falsecolour_topo(display2dlist, avg_irrad, other_occtopo_2dlist = [occfaces], 
+py3dmodel.utility.visualise_falsecolour_topo(display2dlist, watt_ress, other_occtopo_2dlist = [edges], 
                                              other_colour_list = ['WHITE'] )

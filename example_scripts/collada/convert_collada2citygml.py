@@ -1,6 +1,6 @@
 import os
 import time
-from pyliburo import templaterulepalette, massing2citygml, analysisrulepalette
+from py4design import templaterulepalette, massing2citygml, analysisrulepalette
 
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE

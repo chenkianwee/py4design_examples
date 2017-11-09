@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel, urbangeom
+from py4design import py3dmodel, urbangeom
 
 displaylist = []
 points1 = [(0,5,0), (5,5,0), (6,0,0),(5,-5,0),(0,-5,0), (-5,-5,0),(-5,5,0)]#clockwise

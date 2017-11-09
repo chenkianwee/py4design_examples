@@ -1,7 +1,7 @@
 import os
 import time
 
-from pyliburo import py3dmodel, py2radiance, buildingformeval, pyoptimise, urbangeom
+from py4design import py3dmodel, py2radiance, buildingformeval, pyoptimise, urbangeom
 
 #setup the parametric model
 def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, courtyard_size, wwr, shade_strategy):

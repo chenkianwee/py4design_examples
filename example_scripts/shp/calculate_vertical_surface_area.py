@@ -1,6 +1,7 @@
-from pyliburo import py3dmodel, shp2citygml, urbangeom
+from py4design import py3dmodel, shp2citygml, urbangeom
 import shapefile
 import time
+print "CALCULATING"
 #specify all the shpfiles
 shpfile = "F:\\kianwee_work\\smart\\DeliveryHeightDTM\\extracted_info\\telok_kurau\\shp\\telok_kurau_polygon_svy21\\telok_kurau_polygon_svy21.shp"
 #the shpfile_pt should only have one single point
@@ -31,6 +32,7 @@ m_occrec = py3dmodel.fetch.topo2topotype(m_occrec)
 #===========================================================================================
 #GET ALL THE SHAPES WITHIN THIS BOUNDARY
 #===========================================================================================
+print "READING THE SHAPEFILES"
 sf = shapefile.Reader(shpfile)
 shapeRecs=sf.shapeRecords()
 attrib_name_list = shp2citygml.get_field_name_list(sf)
@@ -92,6 +94,7 @@ for grid_face in grid_face_list:
                 total_grid_facade_list.extend(grid_facade_diff_list)
             gcnt+=1
             
+print "WRITING THE CALCULATION RESULTS"
 area_list = []
 for grid_facade_list in grid_facade_2dlist:
     area = 0

@@ -1,4 +1,4 @@
-from pyliburo import py3dmodel
+from py4design import py3dmodel
 
 points1 = [(50,100,50), (75,75,50), (75,60,50),(100,60,50),(100,50,50), (50,0,50),(0,50,50)]#clockwise
 points2 = [(60,50,0), (50,75,0),(40,50,0),(50,40,0)]#counterclockwise

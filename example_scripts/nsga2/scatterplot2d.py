@@ -1,5 +1,5 @@
 import os
-from pyliburo import pyoptimise
+from py4design import pyoptimise
 
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))

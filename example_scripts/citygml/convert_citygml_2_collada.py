@@ -1,5 +1,5 @@
 import os
-from pyliburo import gml3dmodel
+from py4design import gml3dmodel
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================
