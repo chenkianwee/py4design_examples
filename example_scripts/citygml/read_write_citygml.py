@@ -1,14 +1,14 @@
 import os
 import time
-import pyliburo
+from py4design import pycitygml, gml3dmodel
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-citygml_filepath = os.path.join(parent_path, "example_files", "shp2citygml_punggol_example", "citygml","punggol_citygml_asim_origlvl.gml")
-result_citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol_luse101.gml")
+citygml_filepath = os.path.join(parent_path, "example_files", "citygml","punggol.gml")
+result_citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "results", "punggol_luse101.gml")
 
 print "READING CITYGML FILE ... ..."
 #================================================================================
@@ -20,7 +20,7 @@ time1 = time.clock()
 #===================================================================================================
 #read the citygml file 
 #===================================================================================================
-read_citygml = pyliburo.pycitygml.Reader()
+read_citygml = pycitygml.Reader()
 read_citygml.load_filepath(citygml_filepath)
 buildings = read_citygml.get_buildings()
 landuses = read_citygml.get_landuses()
@@ -51,7 +51,7 @@ for building in buildings:
     polygons = read_citygml.get_polygons(building)
     for polygon in polygons:
         polygon_id = polygon.attrib["{%s}id" % read_citygml.namespaces['gml']]
-        pos_list = read_citygml.get_poslist(polygon)
+        pos_list = read_citygml.get_polygon_pt_list(polygon)
        
 print "SORTING CITYGML FILE ... ..."
 #===================================================================================================
@@ -63,7 +63,7 @@ landuses = [landuses[x] for x in indexes]
 #find all the buildings inside the landuse 
 bldgs_2_write = []
 for landuse in landuses:
-    bldgs_on_luse = pyliburo.gml3dmodel.buildings_on_landuse(landuse,buildings,read_citygml)
+    bldgs_on_luse = gml3dmodel.buildings_on_landuse(landuse,buildings,read_citygml)
     bldgs_2_write.extend(bldgs_on_luse)
 
 #===================================================================================================
@@ -71,17 +71,17 @@ for landuse in landuses:
 #write the citygml from scratch 
 #===================================================================================================
 print "WRITING CITYGML FILE ... ..."
-citygml_writer = pyliburo.pycitygml.Writer()
+citygml_writer = pycitygml.Writer()
 
 for luse in landuses:
     cityobj = citygml_writer.create_cityobjectmember()
     cityobj.append(luse)
-    citygml_writer.citymodelnode.append(cityobj)
+    citygml_writer.citymodel_node.append(cityobj)
 
 for building in bldgs_2_write:
     cityobj = citygml_writer.create_cityobjectmember()
     cityobj.append(building)
-    citygml_writer.citymodelnode.append(cityobj)
+    citygml_writer.citymodel_node.append(cityobj)
                    
 
 citygml_writer.write(result_citygml_filepath)

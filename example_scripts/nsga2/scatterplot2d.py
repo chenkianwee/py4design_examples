@@ -1,12 +1,18 @@
-import pyliburo
-xmlfile = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\pareto.xml"
-xmlfile2 = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\npareto.xml"
-xmlfile3 = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\overall.xml"
-res_img_filepath = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\filtered.png"
-res_img_filepath2 = "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\archive\\pcp.png"
-inds = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile)
-inds2 = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile2)
-inds3 = pyliburo.pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile3)
+import os
+from py4design import pyoptimise
+
+current_path = os.path.dirname(__file__)
+parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+
+xmlfile = os.path.join(parent_path, "example_files", "xml", "pareto.xml")
+xmlfile2 = os.path.join(parent_path, "example_files", "xml", "npareto.xml")
+xmlfile3 = os.path.join(parent_path, "example_files", "xml", "dead.xml")
+
+res_img_filepath = os.path.join(parent_path, "example_files", "xml", "results", "filtered.png")
+res_img_filepath2 = os.path.join(parent_path, "example_files", "xml", "results", "pcp.png")
+inds = pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile)
+inds2 = pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile2)
+inds3 = pyoptimise.analyse_xml.get_inds_frm_xml(xmlfile3)
 
 pts = []
 labellist =[]
@@ -14,25 +20,6 @@ arealist = []
 colourlist = []
 print "NUMBER OF PARETO:", len(inds)
 print "NUMBER OF NPARETO", len(inds2)
-
-'''
-for ind in inds2:
-    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
-    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    pts.append(score_list)
-    labellist.append("")
-    arealist.append(10)
-    colourlist.append("black")
-    
-for ind in inds:
-    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
-    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    print idx
-    pts.append(score_list)
-    labellist.append("")
-    arealist.append(30)
-    colourlist.append("red")
-'''
 
 plot2dlist = []
 style_list = []
@@ -59,14 +46,14 @@ minx = float("inf")
 maxx = 0
 
 for ind in inds3:
-    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
+    idx = pyoptimise.analyse_xml.get_id(ind)
+    score_list = pyoptimise.analyse_xml.get_score(ind)
     cooling = score_list[0]
     daylight = score_list[1]
     
-    input_list = pyliburo.pyoptimise.analyse_xml.get_inputparam(ind)
+    input_list = pyoptimise.analyse_xml.get_inputparam(ind)
     
-    dparm_list = pyliburo.pyoptimise.analyse_xml.get_derivedparam(ind)
+    dparm_list = pyoptimise.analyse_xml.get_derivedparam(ind)
     ettv = float(dparm_list[0])
     shape_factor = float(dparm_list[1])
     sens_load = float(dparm_list[2])/1000
@@ -152,11 +139,11 @@ for ind in inds3:
 
 
 for ind in inds:
-    idx = pyliburo.pyoptimise.analyse_xml.get_id(ind)
-    score_list = pyliburo.pyoptimise.analyse_xml.get_score(ind)
+    idx = pyoptimise.analyse_xml.get_id(ind)
+    score_list = pyoptimise.analyse_xml.get_score(ind)
     cooling = score_list[0]
     daylight = score_list[1]
-    input_list = pyliburo.pyoptimise.analyse_xml.get_inputparam(ind)
+    input_list = pyoptimise.analyse_xml.get_inputparam(ind)
     plot_list = score_list + input_list
     if cooling <42 and daylight>0.62:
         #print idx
@@ -209,5 +196,5 @@ print "DRAWING GRAPH ..."
 #pyliburo.pyoptimise.draw_graph.scatter_plot(pts, colourlist, arealist, label_size=24, labellist = labellist,
 #                                            xlabel = "Cooling", ylabel = "Daylight", savefile = res_img_filepath)
 
-pyliburo.pyoptimise.draw_graph.parallel_coordinates(plot2dlist, plot_axes_label_list,
+pyoptimise.draw_graph.parallel_coordinates(plot2dlist, plot_axes_label_list,
                                                     savefile = res_img_filepath2, style = style_list)

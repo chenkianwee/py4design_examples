@@ -1,6 +1,6 @@
 import os
 import time
-import pyliburo
+from py4design import pycitygml, py3dmodel
 
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
@@ -9,8 +9,6 @@ import pyliburo
 current_path = os.path.dirname(__file__)
 parent_path = parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "punggol.gml" )
-citygml_filepath1 = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower_performance\\citygml\\test_tower.gml"
-citygml_filepath2 = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\dae\\test_tower_performance\\citygml\\site.gml"
 #or just insert a citygml file you would like to analyse here 
 '''citygml_filepath = "C://file2analyse.gml"'''
 #================================================================================
@@ -22,7 +20,7 @@ colour_list = []
 #===================================================================================================
 #read the citygml file 
 #===================================================================================================
-citygml_list = [citygml_filepath1, citygml_filepath2]
+citygml_list = [citygml_filepath]
 road_occedges = []
 stations = []
 ldisplay_list = []
@@ -31,7 +29,7 @@ bdisplay_list = []
 rdisplay_list = []
 
 for citygml_filepath in citygml_list:
-    read_citygml = pyliburo.pycitygml.Reader()
+    read_citygml = pycitygml.Reader()
     read_citygml.load_filepath(citygml_filepath)
     buildings = read_citygml.get_buildings()
     landuses = read_citygml.get_landuses()
@@ -47,8 +45,8 @@ for citygml_filepath in citygml_list:
     for road in roads:
         polylines = read_citygml.get_pylinestring_list(road)
         for polyline in polylines:
-            occ_wire = pyliburo.py3dmodel.construct.make_wire(polyline)
-            edge_list = pyliburo.py3dmodel.fetch.geom_explorer(occ_wire, "edge")
+            occ_wire = py3dmodel.construct.make_wire(polyline)
+            edge_list = py3dmodel.fetch.topo_explorer(occ_wire, "edge")
             road_occedges.extend(edge_list)
     
     #get all the polygons of the landuses
@@ -61,15 +59,15 @@ for citygml_filepath in citygml_list:
         polygons = read_citygml.get_polygons(building)
         for polygon in polygons:
             polygon_id = polygon.attrib["{%s}id" % read_citygml.namespaces['gml']]
-            pos_list = read_citygml.get_poslist(polygon)
+            pos_list = read_citygml.get_polygon_pt_list(polygon)
             
     
     #extract all the footprint of the buildings 
     bcnt = 0
     for building in buildings:
         pypolgon_list = read_citygml.get_pypolygon_list(building)
-        solid = pyliburo.py3dmodel.construct.make_occsolid_frm_pypolygons(pypolgon_list)
-        edgelist = pyliburo.py3dmodel.fetch.geom_explorer(solid, "edge")
+        solid = py3dmodel.construct.make_occsolid_frm_pypolygons(pypolgon_list)
+        edgelist = py3dmodel.fetch.topo_explorer(solid, "edge")
         bdisplay_list.append(solid)
         edgedisplay_list.extend(edgelist)
         bcnt+=1
@@ -81,9 +79,9 @@ for citygml_filepath in citygml_list:
         lpolygons = read_citygml.get_polygons(landuse)
         if lpolygons:
             for lpolygon in lpolygons:
-                landuse_pts = read_citygml.polygon_2_pt_list(lpolygon)
-                lface = pyliburo.py3dmodel.construct.make_polygon(landuse_pts)
-                fedgelist = pyliburo.py3dmodel.fetch.geom_explorer(lface, "edge")
+                landuse_pts = read_citygml.polygon_2_pyptlist(lpolygon)
+                lface = py3dmodel.construct.make_polygon(landuse_pts)
+                fedgelist = py3dmodel.fetch.topo_explorer(lface, "edge")
                 edgedisplay_list.extend(fedgelist)
                 ldisplay_list.append(lface)
           
@@ -91,7 +89,7 @@ for citygml_filepath in citygml_list:
     for relief in reliefs:
         pytri_list = read_citygml.get_pytriangle_list(relief)
         for pytri in pytri_list:
-            rface = pyliburo.py3dmodel.construct.make_polygon(pytri)
+            rface = py3dmodel.construct.make_polygon(pytri)
             rdisplay_list.append(rface)
     
 time2 = time.clock()   
@@ -110,4 +108,4 @@ colour_list.append('WHITE')
 colour_list.append('WHITE')
 colour_list.append('BLACK')
 colour_list.append('BLACK')
-pyliburo.py3dmodel.construct.visualise(display_2dlist, colour_list)
+py3dmodel.utility.visualise(display_2dlist, colour_list)

@@ -1,10 +1,7 @@
-from pyliburo import py3dmodel
-from pyliburo import gml3dmodel
-from pyliburo import py2radiance
-from pyliburo import utility3d
-from pyliburo import buildingformeval
-from pyliburo import runopt
+import os
 import time
+
+from py4design import py3dmodel, py2radiance, buildingformeval, pyoptimise, urbangeom
 
 #setup the parametric model
 def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, courtyard_size, wwr, shade_strategy):
@@ -13,7 +10,7 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
     #procedure
     #first generate the grid
     grid_occface = py3dmodel.construct.make_rectangle(80, 60)
-    occedge_list = py3dmodel.fetch.geom_explorer(grid_occface, "edge")
+    occedge_list = py3dmodel.fetch.topo_explorer(grid_occface, "edge")
     
     edge_pt_list = []
     pts_grid_edge_list = [ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4 ]
@@ -52,25 +49,25 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
         loc_pt = py3dmodel.modify.move_pt(ftprint_midpt, (0,0,1), flr2flr_height*fcnt)
         
         nxt_flr = py3dmodel.modify.move(ftprint_midpt,loc_pt, ftprint)
-        nxt_flr = py3dmodel.fetch.shape2shapetype(nxt_flr)
+        nxt_flr = py3dmodel.fetch.topo2topotype(nxt_flr)
         
         nxt_courtyard = py3dmodel.modify.move(ftprint_midpt,loc_pt, courtyard)
-        nxt_courtyard = py3dmodel.fetch.shape2shapetype(nxt_courtyard)
+        nxt_courtyard = py3dmodel.fetch.topo2topotype(nxt_courtyard)
         
         flr_courtyard = py3dmodel.construct.boolean_difference(nxt_flr, nxt_courtyard)
-        flr_courtyard = py3dmodel.fetch.geom_explorer(flr_courtyard, "face")[0]
+        flr_courtyard = py3dmodel.fetch.topo_explorer(flr_courtyard, "face")[0]
         flr_list.append(flr_courtyard)
         
         extruded_flr = py3dmodel.construct.extrude(nxt_flr, (0,0,1), flr2flr_height)
-        external_wall_list, up_list, down_list = gml3dmodel.identify_building_surfaces(extruded_flr)
+        external_wall_list, up_list, down_list = urbangeom.identify_building_surfaces(extruded_flr)
         
         extruded_courtyard = py3dmodel.construct.extrude(nxt_courtyard, (0,0,1), flr2flr_height)
-        courtyard_wall_list, up_list, down_list = gml3dmodel.identify_building_surfaces(extruded_courtyard)
+        courtyard_wall_list, up_list, down_list = urbangeom.identify_building_surfaces(extruded_courtyard)
         
         for external_wall in external_wall_list:
             ew_midpt = py3dmodel.calculate.face_midpt(external_wall)
             external_win = py3dmodel.modify.uniform_scale(external_wall, 0.98, 0.98, wwr/0.98, ew_midpt)
-            external_win = py3dmodel.fetch.shape2shapetype(external_win)
+            external_win = py3dmodel.fetch.topo2topotype(external_win)
             win_list.append(external_win)
             tri_external_wall = triangulate_wall_with_hole(external_wall, external_win)
             wall_list.extend(tri_external_wall)
@@ -83,7 +80,7 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
             courtyard_wall = py3dmodel.modify.reverse_face(courtyard_wall)
             cw_midpt = py3dmodel.calculate.face_midpt(courtyard_wall)
             courtyard_win = py3dmodel.modify.uniform_scale(courtyard_wall, 0.98, 0.98, wwr/0.98, cw_midpt)
-            courtyard_win = py3dmodel.fetch.shape2shapetype(courtyard_win)
+            courtyard_win = py3dmodel.fetch.topo2topotype(courtyard_win)
             win_list.append(courtyard_win)
             tri_courtyard_wall = triangulate_wall_with_hole(courtyard_wall, courtyard_win)
             wall_list.extend(tri_courtyard_wall)
@@ -100,15 +97,15 @@ def generate_design_variant(ftprint_pt1, ftprint_pt2, ftprint_pt3, ftprint_pt4, 
     nflrs = len(flr_list)
     loc_pt = py3dmodel.modify.move_pt(ftprint_midpt, (0,0,1), nflrs*flr2flr_height)   
     roof = py3dmodel.modify.move(ftprint_midpt, loc_pt, flr_list[0])
-    roof =  py3dmodel.fetch.shape2shapetype(roof)
-    roof = py3dmodel.modify.reverse_face(roof)
+    roof =  py3dmodel.fetch.topo2topotype(roof)
+    #roof = py3dmodel.modify.reverse_face(roof)
     roof_list.append(roof)
     
     return wall_list, flr_list, roof_list, win_list, bldg_shade_list
     
 def triangulate_wall_with_hole(wall, window):
     wall_occface = py3dmodel.construct.boolean_difference(wall,window)
-    wall_occface = py3dmodel.fetch.geom_explorer(wall_occface, "face")[0]
+    wall_occface = py3dmodel.fetch.topo_explorer(wall_occface, "face")[0]
     new_tri_occface_list = triangulate_face(wall_occface)
     return new_tri_occface_list
 
@@ -130,11 +127,11 @@ def triangulate_face(occface):
 def create_win_shades(win):
     nrml = py3dmodel.calculate.face_normal(win)
     shade_extrude = py3dmodel.construct.extrude(win,nrml,1)
-    vert_list, shade_list, down_list = gml3dmodel.identify_building_surfaces(shade_extrude)
+    vert_list, shade_list, down_list = urbangeom.identify_building_surfaces(shade_extrude)
     return shade_list
                 
 def find_footprint_midpt(occface):
-    edge_list= py3dmodel.fetch.geom_explorer(occface,"edge")
+    edge_list= py3dmodel.fetch.topo_explorer(occface,"edge")
     midpt_list = []
     for edge in edge_list:
         lbound, ubound = py3dmodel.fetch.edge_domain(edge)
@@ -150,10 +147,13 @@ def find_footprint_midpt(occface):
     return midpt_list[0]
     
 def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win_srfmat_parm, dae_filepath):
-    rad_base_filepath = "F:\\kianwee_work\\spyder_workspace\\pyliburo\\py2radiance\\base.rad"
-    rad_folderpath = "F:\\design_variants\\rad_data"
-    daysim_folderpath = "F:\\design_variants\\daysim_data"
-    epwweatherfile = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
+    current_path = os.path.dirname(__file__)
+    parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+    
+    rad_base_filepath = os.path.join(parent_path, "example_files", "rad", "base.rad")
+    rad_folderpath = os.path.join(parent_path, "example_files", "rad", "rad_data")
+    daysim_folderpath = os.path.join(parent_path, "example_files", "rad", "daysim_data")
+    epwweatherfile = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw")
     
     rad = py2radiance.Rad(rad_base_filepath, rad_folderpath)
     opaque_srfmat = "light_painted_concrete"
@@ -173,26 +173,12 @@ def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win
     reversed_flr = py3dmodel.modify.reverse_face(chosen_flr)
     flr_midpt = py3dmodel.calculate.face_midpt(reversed_flr)
     loc_pt = py3dmodel.modify.move_pt(flr_midpt, (0,0,1), 0.8)
-    moved_flr = py3dmodel.fetch.shape2shapetype(py3dmodel.modify.move(flr_midpt, loc_pt, reversed_flr))
+    moved_flr = py3dmodel.fetch.topo2topotype(py3dmodel.modify.move(flr_midpt, loc_pt, reversed_flr))
     #offset_flr = py3dmodel.construct.make_offset(moved_flr, 0.5)
-    sensor_surfaces, sensor_pts, sensor_dirs = gml3dmodel.generate_sensor_surfaces(moved_flr,2,2)
+    sensor_surfaces, sensor_pts, sensor_dirs = urbangeom.generate_sensor_surfaces(moved_flr,2,2)
     total_sensor_srf_list.extend(sensor_surfaces)
     total_sensor_pt_list.extend(sensor_pts)
     total_sensor_dir_list.extend(sensor_dirs)
-    '''
-    #generate sensor pts
-    for flr in flr_list:
-        #move the flr 0.8 metres up 
-        reversed_flr = py3dmodel.modify.reverse_face(flr)
-        flr_midpt = py3dmodel.calculate.face_midpt(reversed_flr)
-        loc_pt = py3dmodel.modify.move_pt(flr_midpt, (0,0,1), 0.8)
-        moved_flr = py3dmodel.fetch.shape2shapetype(py3dmodel.modify.move(flr_midpt, loc_pt, reversed_flr))
-        #offset_flr = py3dmodel.construct.make_offset(moved_flr, 0.5)
-        sensor_surfaces, sensor_pts, sensor_dirs = gml3dmodel.generate_sensor_surfaces(moved_flr,2,2)
-        total_sensor_srf_list.extend(sensor_surfaces)
-        total_sensor_pt_list.extend(sensor_pts)
-        total_sensor_dir_list.extend(sensor_dirs)
-    '''
     rad.set_sensor_points(total_sensor_pt_list, total_sensor_dir_list)
     rad.create_sensor_input_file()
     
@@ -207,24 +193,24 @@ def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win
     opaque_srf_list = wall_list + bldg_shade_list + tri_rf_list
     srf_cnt = 0
     for opaque_srf in opaque_srf_list:
-        pypolygon = py3dmodel.fetch.pyptlist_frm_occface(opaque_srf)
+        pypolygon = py3dmodel.fetch.points_frm_occface(opaque_srf)
         srfname = "opaque" + str(srf_cnt)
         py2radiance.RadSurface(srfname, pypolygon, opaque_srfmat, rad)
         #reverse the opaque srf
         reversed_opaque = py3dmodel.modify.reverse_face(opaque_srf)
-        r_pypolygon = py3dmodel.fetch.pyptlist_frm_occface(reversed_opaque)
+        r_pypolygon = py3dmodel.fetch.points_frm_occface(reversed_opaque)
         r_srfname = "opaque_reverse" + str(srf_cnt)
         py2radiance.RadSurface(r_srfname, r_pypolygon, opaque_srfmat, rad)
         srf_cnt +=1
         
     win_cnt = 0
     for win in win_list:
-        pypolygon = py3dmodel.fetch.pyptlist_frm_occface(win)
+        pypolygon = py3dmodel.fetch.points_frm_occface(win)
         srfname = "win" + str(win_cnt)
         py2radiance.RadSurface(srfname, pypolygon, win_srfmat, rad)
         #reverse the opaque srf
         reversed_win = py3dmodel.modify.reverse_face(win)
-        r_pypolygon = py3dmodel.fetch.pyptlist_frm_occface(reversed_win)
+        r_pypolygon = py3dmodel.fetch.points_frm_occface(reversed_win)
         r_srfname = "win_reverse" + str(win_cnt)
         py2radiance.RadSurface(r_srfname, r_pypolygon, win_srfmat, rad)
         win_cnt +=1
@@ -252,18 +238,20 @@ def eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win
         mean_illum_ress.append(mean_illum)
     
     cmpd = py3dmodel.construct.make_compound(opaque_srf_list+win_list)
-    edges = py3dmodel.fetch.geom_explorer(cmpd, "edge")
+    edges = py3dmodel.fetch.topo_explorer(cmpd, "edge")
     daylight_level = float(len(useful_ill_list))/float(len(mean_illum_ress))
     d_str = "% of floor area > 300lx: " + str(daylight_level)
-    utility3d.write_2_collada_falsecolour(total_sensor_srf_list, mean_illum_ress, "lx", 
-                                          dae_filepath, description_str = d_str,
-                                          minval = 87.5, maxval = 2212.5,
-                                          other_occedge_list = edges)
+    py3dmodel.export_collada.write_2_collada_falsecolour(total_sensor_srf_list, mean_illum_ress, "lx", 
+                                                         dae_filepath, description_str = d_str,
+                                                         minval = 87.5, maxval = 2212.5,
+                                                         other_occedge_list = edges)
         
     return daylight_level
 
 def eval_cooling_energy(wall_list, flr_list, roof_list, win_list, bldg_shade_list, win_srfmat_parm):
-    epwweatherfile = "F:\\kianwee_work\\spyder_workspace\\pyliburo_example_files\\example_files\\weatherfile\\SGP_Singapore.486980_IWEC.epw"
+    current_path = os.path.dirname(__file__)
+    parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+    epwweatherfile = os.path.join(parent_path, "example_files", "weatherfile", "SGP_Singapore.486980_IWEC.epw")
     
     if win_srfmat_parm == 0:
         win_uvalue = 5.2
@@ -369,23 +357,26 @@ time1 = time.clock()
 #================================================================================
 #INSTRUCTION: ADVANCE OPTIMISATION PARAMETERS
 #================================================================================
-resume = True
-ngeneration = 7
-init_population = 100
+resume = False
+ngeneration = 3
+init_population = 5
 mutation_rate = 0.01
 crossover_rate  = 0.8 
-live_file =  "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\live.xml"
-dead_file =   "F:\\kianwee_work\\case_study\\five_storey_office_example\\xml\\dead.xml"
+current_path = os.path.dirname(__file__)
+parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+    
+live_file = os.path.join(parent_path, "example_files", "xml", "results", "office_live.xml")
+dead_file = os.path.join(parent_path, "example_files", "xml", "results", "office_dead.xml")
 
 print "OPTIMISING ... ..."
 gene_dict_list = generate_gene_dict_list()
 score_dict_list = generate_score_dict_list()
 
 if resume == False:
-    population = runopt.initialise_nsga2(gene_dict_list, score_dict_list, mutation_rate,crossover_rate,init_population,
+    population = pyoptimise.initialise_nsga2(gene_dict_list, score_dict_list, mutation_rate,crossover_rate,init_population,
               live_file,dead_file )
 if resume == True:
-    population = runopt.resume_nsga2(gene_dict_list, score_dict_list, mutation_rate,crossover_rate,init_population,
+    population = pyoptimise.resume_nsga2(gene_dict_list, score_dict_list, mutation_rate,crossover_rate,init_population,
               live_file,dead_file )
     
 for gencnt in range(ngeneration):
@@ -396,8 +387,8 @@ for gencnt in range(ngeneration):
         #GENERATE DESIGN VARIANT
         #=================================================
         ind_id = ind.id
-        dv_dae = "F:\\design_variants\\" + str(ind_id) + ".dae"
-        dv_dae_daylight = "F:\\design_variants\\daylight\\" + str(ind_id) + "daylight.dae"
+        dv_dae = os.path.join(parent_path, "example_files", "dae", "results", str(ind_id) + ".dae")
+        dv_dae_daylight = os.path.join(parent_path, "example_files", "dae", "results", str(ind_id) + "daylight.dae")
         parms = ind.genotype.values
         pt1 = parms[0]
         pt2 = parms[1]
@@ -444,7 +435,6 @@ for gencnt in range(ngeneration):
         daylight = eval_daylight(wall_list, flr_list, roof_list, win_list, bldg_shade_list,win_mat, dv_dae_daylight)
         cooling_energy = system_dict["energy_consumed_yr_m2"]
         
-        description_string = "test"
 
         ettv = ettv_dict["ettv"]
         roof_area = ettv_dict["roof_area"]
@@ -487,7 +477,7 @@ for gencnt in range(ngeneration):
         description_string = description_string + description_string2
 
         
-        utility3d.write_2_collada_text_string(cmpd_list, description_string, dv_dae, face_rgb_colour_list=rgb_colour_list)
+        py3dmodel.export_collada.write_2_collada(cmpd_list, dv_dae, face_rgb_colour_list=rgb_colour_list, text_string = description_string)
         print 'COOLING ENERGY', cooling_energy , "DAYLIGHT", daylight
         ind.set_score(0,cooling_energy)
         ind.set_score(1,daylight)
@@ -499,7 +489,7 @@ for gencnt in range(ngeneration):
     #NSGA FEEDBACK 
     #=================================================
     print "FEEDBACK ... ..."
-    runopt.feedback_nsga2(population)
+    pyoptimise.feedback_nsga2(population)
     time2 = time.clock() 
     print "TIME TAKEN", (time2-time1)/60.0
     

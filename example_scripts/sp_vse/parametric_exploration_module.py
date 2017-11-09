@@ -1,6 +1,6 @@
 import os
 import time
-import pyliburo
+from py4design import py3dmodel, citygml2eval, massing2citygml, analysisrulepalette, templaterulepalette, gmlparmpalette, gmlparameterise,gml3dmodel
 import ntpath
 
 #====================================================================================================================
@@ -11,22 +11,22 @@ site_dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_m
 weatherfilepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\sp_workshop\\sp_vse_materials\\epw\\SGP_Singapore.486980_IWEC.epw"
 
 #configure the parameterisation
-height = False
+height = True
 height_value = 72
 
-taper = False
+taper = True
 taper_value = 1.6
 
-twist = False
+twist = True
 twist_value = 45
 
-slant = False
+slant = True
 slant_value = 5
 
 bend = True
 bend_value = 30
 
-orientation = False
+orientation = True
 orientation_value = 40
 #====================================================================================================================
 #INPUTS
@@ -69,24 +69,24 @@ else:
 
 time1 = time.clock()
 for cnt in range(2):
-    massing_2_citygml = pyliburo.massing2citygml.Massing2Citygml()
+    massing_2_citygml = massing2citygml.Massing2Citygml()
     #first set up the analysis rule necessary for the template rules
-    is_shell_closed = pyliburo.analysisrulepalette.IsShellClosed()
-    is_shell_in_boundary = pyliburo.analysisrulepalette.IsShellInBoundary()
-    shell_boundary_contains = pyliburo.analysisrulepalette.ShellBoundaryContains()
+    is_shell_closed = analysisrulepalette.IsShellClosed()
+    is_shell_in_boundary = analysisrulepalette.IsShellInBoundary()
+    shell_boundary_contains = analysisrulepalette.ShellBoundaryContains()
     
     if cnt == 0:
         massing_2_citygml.read_collada(site_dae_file)
         #then set up the template rules and append it into the massing2citygml obj
-        id_bldgs = pyliburo.templaterulepalette.IdentifyBuildingMassings()
+        id_bldgs = templaterulepalette.IdentifyBuildingMassings()
         id_bldgs.add_analysis_rule(is_shell_closed, True)
         
-        id_landuses = pyliburo.templaterulepalette.IdentifyLandUseMassings()
+        id_landuses = templaterulepalette.IdentifyLandUseMassings()
         id_landuses.add_analysis_rule(is_shell_closed, False)
         id_landuses.add_analysis_rule(shell_boundary_contains, True)
         id_landuses.add_analysis_rule(is_shell_in_boundary, True)
         
-        id_terrains = pyliburo.templaterulepalette.IdentifyTerrainMassings()
+        id_terrains = templaterulepalette.IdentifyTerrainMassings()
         id_terrains.add_analysis_rule(is_shell_closed, False)
         id_terrains.add_analysis_rule(is_shell_in_boundary, False)
         id_terrains.add_analysis_rule(shell_boundary_contains, True)
@@ -107,10 +107,10 @@ for cnt in range(2):
     if cnt == 1:
         massing_2_citygml.read_collada(design_dae_file)
         #then set up the template rules and append it into the massing2citygml obj
-        id_bldgs = pyliburo.templaterulepalette.IdentifyBuildingMassings()
+        id_bldgs = templaterulepalette.IdentifyBuildingMassings()
         id_bldgs.add_analysis_rule(is_shell_closed, True)
         
-        id_landuses = pyliburo.templaterulepalette.IdentifyLandUseMassings()
+        id_landuses = templaterulepalette.IdentifyLandUseMassings()
         id_landuses.add_analysis_rule(is_shell_closed, False)
         id_landuses.add_analysis_rule(shell_boundary_contains, True)
         
@@ -131,47 +131,47 @@ print "#==================================="
 print "PARAMETERISING ... ...", design_citygml_filepath
 print "#==================================="
 #define the parameters
-parameterise = pyliburo.gmlparameterise.Parameterise(design_citygml_filepath)
+parameterise = gmlparameterise.Parameterise(design_citygml_filepath)
 parameters = []
 layer_height = 4
 
 if height == True:
     parameters.append(1.0)
-    bldg_height_parm = pyliburo.gmlparmpalette.BldgHeightParm()
+    bldg_height_parm = gmlparmpalette.BldgHeightParm()
     bldg_height_parm.define_int_range(0,height_value,1)
     parameterise.add_parm(bldg_height_parm)
     
 if taper == True:
     parameters.append(1.0)
-    bldg_taper_parm = pyliburo.gmlparmpalette.BldgTaperParm()
+    bldg_taper_parm = gmlparmpalette.BldgTaperParm()
     bldg_taper_parm.define_float_range(0.0,taper_value,0.1)
     bldg_taper_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_taper_parm)
 
 if twist == True:
     parameters.append(1.0)
-    bldg_twist_parm = pyliburo.gmlparmpalette.BldgTwistParm()
+    bldg_twist_parm = gmlparmpalette.BldgTwistParm()
     bldg_twist_parm.define_int_range(0,twist_value,1)
     bldg_twist_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_twist_parm)
 
 if slant == True:
     parameters.append(1.0)
-    bldg_slant_parm = pyliburo.gmlparmpalette.BldgSlantParm()
+    bldg_slant_parm = gmlparmpalette.BldgSlantParm()
     bldg_slant_parm.define_int_range(0,slant_value,1)
     bldg_slant_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_slant_parm)
     
 if bend == True:
     parameters.append(1.0)
-    bldg_bend_parm = pyliburo.gmlparmpalette.BldgBendParm()
+    bldg_bend_parm = gmlparmpalette.BldgBendParm()
     bldg_bend_parm.define_int_range(0,bend_value,1)
     bldg_bend_parm.define_flr2flr_height(layer_height)
     parameterise.add_parm(bldg_bend_parm)
 
 if orientation == True:
     parameters.append(1.0)
-    bldg_orientation_parm = pyliburo.gmlparmpalette.BldgOrientationParm()
+    bldg_orientation_parm = gmlparmpalette.BldgOrientationParm()
     bldg_orientation_parm.define_int_range(0,orientation_value,1)
     bldg_orientation_parm.set_clash_detection(False)
     bldg_orientation_parm.set_boundary_detection(False)
@@ -196,9 +196,9 @@ print "PERFORMANCE RESULTS"
 print "#====================================="
 nshffai2_dae_filepath = os.path.join(dae_dir, design_filename + "dv_nshffai.dae")
 dv_dae_filepath = os.path.join(dae_dir, design_filename + "dv.dae")
-pyliburo.gml3dmodel.citygml2collada(dv_citygml_file, dv_dae_filepath)
+gml3dmodel.citygml2collada(dv_citygml_file, dv_dae_filepath)
 
-evaluations = pyliburo.citygml2eval.Evals(dv_citygml_file)
+evaluations = citygml2eval.Evals(dv_citygml_file)
 
 #evaluate the floor area of the design 
 far_list = evaluations.calculate_far(4)
@@ -208,7 +208,7 @@ print "PLOT RATIO:", far
 occsolids = evaluations.building_occsolids
 total_face_list = []
 for occsolid in occsolids:
-    face_list = pyliburo.py3dmodel.fetch.geom_explorer(occsolid, "face")
+    face_list = py3dmodel.fetch.topo_explorer(occsolid, "face")
     total_face_list.extend(face_list)
 
 nfaces = len(total_face_list)
@@ -224,11 +224,11 @@ upper_irrad_threshold = 364#kw/m2
 roof_irrad_threshold = 1280 #kwh/m2
 facade_irrad_threshold = 512 #kwh/m2
 
-res_dict  = evaluations.nshffai2(lower_irrad_threshold, upper_irrad_threshold, weatherfilepath, xdim, ydim)
+res_dict  = evaluations.usffai(lower_irrad_threshold, upper_irrad_threshold, weatherfilepath, xdim, ydim)
 nshffai = round(res_dict["afi"],2)
 print "NON SOLAR HEATED FACADE TO FLOOR AREA INDEX:", nshffai
 d_str = design_filename + "design variant\n" + "NSHFFAI: " + str(nshffai) + "\n" + "Plot Ratio: " + str(far)
-pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
+py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], 
                                                "kWh/m2", nshffai2_dae_filepath, description_str = d_str, 
                                                minval = 263, maxval = 1273, other_occface_list = luse_face)
 '''
@@ -236,7 +236,7 @@ res_dict = evaluations.pvefai(roof_irrad_threshold, facade_irrad_threshold,weath
 pvefai = round(res_dict["afi"][0],2)
 print "PV ENVELOPE TO FLOOR AREA INDEX :", pvefai
 d_str = design_filename + "design variant\n" + "PVEFAI: " + str(pvefai) + "\n" + "Plot Ratio: " + str(far)
-pyliburo.utility3d.write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
+py3dmodel.export_collada..write_2_collada_falsecolour(res_dict["sensor_surfaces"], res_dict["solar_results"], "kWh/m2", pv_dae_filepath, 
                                                description_str = d_str, minval = 180, maxval = roof_irrad_threshold, 
                                                other_occface_list = luse_face)
 '''

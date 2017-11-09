@@ -1,13 +1,14 @@
 import os
-import pyliburo
-from collada import *
+import collada
+from collada import polylist, triangleset, lineset
+from py4design import py3dmodel
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================
 #specify the citygml file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-dae_file = os.path.join(parent_path, "example_files", "collada2citygml_example",  "dae", "example3.dae")
+dae_file = os.path.join(parent_path, "example_files", "dae", "example1.dae")
 #dae_file = os.path.join(parent_path, "example_files","5x5ptblks", "dae", "5x5ptblks.dae")
 #or just insert a dae and citygml file you would like to analyse here 
 '''dae_file = "C://file2analyse.gml"'''
@@ -19,7 +20,7 @@ display_list = []
 
 shell_list = []
 edge_list = []
-mesh = Collada(dae_file)
+mesh = collada.Collada(dae_file)
 unit = mesh.assetInfo.unitmeter or 1
 geoms = mesh.scene.objects('geometry')
 geoms = list(geoms)
@@ -41,9 +42,9 @@ for geom in geoms:
                         sorted_pyptlist = sorted(pyptlist)
                         if sorted_pyptlist not in spyptlist:
                             spyptlist.append(sorted_pyptlist)
-                            occpolygon = pyliburo.py3dmodel.construct.make_polygon(pyptlist)
-                            if not pyliburo.py3dmodel.fetch.is_face_null(occpolygon):
-                                poly_area = pyliburo.py3dmodel.calculate.face_area(occpolygon)
+                            occpolygon = py3dmodel.construct.make_polygon(pyptlist)
+                            if not py3dmodel.fetch.is_face_null(occpolygon):
+                                poly_area = py3dmodel.calculate.face_area(occpolygon)
                                 if not poly_area < 0.00001:
                                     faces.append(occpolygon)
                             gcnt +=1
@@ -52,17 +53,17 @@ for geom in geoms:
                         pyptlist.sort()
                         if pyptlist not in epyptlist:
                             epyptlist.append(pyptlist)
-                            occedge = pyliburo.py3dmodel.construct.make_edge(pyptlist[0], pyptlist[1])
+                            occedge = py3dmodel.construct.make_edge(pyptlist[0], pyptlist[1])
                             edges.append(occedge)
                         gcnt +=1
                         
                 if faces:
                     n_unique_faces = len(faces)
                     if n_unique_faces == 1:
-                        shell = pyliburo.py3dmodel.construct.make_shell(faces)
+                        shell = py3dmodel.construct.make_shell(faces)
                         shell_list.append(shell)
                     if n_unique_faces >1:
-                        shell = pyliburo.py3dmodel.construct.make_shell_frm_faces(faces)
+                        shell = py3dmodel.construct.sew_faces(faces)
                         if shell:
                             shell_list.append(shell[0])
                 else:
@@ -71,4 +72,4 @@ for geom in geoms:
                 
 display_2dlist.append(shell_list)
 colour_list = ["WHITE"]
-pyliburo.py3dmodel.construct.visualise(display_2dlist, colour_list)
+py3dmodel.utility.visualise(display_2dlist, colour_list)
