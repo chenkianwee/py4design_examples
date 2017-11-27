@@ -10,9 +10,9 @@ from py4design import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 dae_file = os.path.join(parent_path, "example_files", "dae", "example1.dae")
-#dae_file = os.path.join(parent_path, "example_files","5x5ptblks", "dae", "5x5ptblks.dae")
-#or just insert a dae and citygml file you would like to analyse here 
-'''dae_file = "C://file2analyse.gml"'''
+
+#or just insert a dae and citygml file you would like to analyse here:
+#dae_file = "F:\\kianwee_work\\smart\\nov2017-mar2018\\shp4juan\\dae\\area_c_4_cooling_spore.dae"
 #================================================================================
 #INSTRUCTION: SPECIFY THE CITYGML FILE
 #================================================================================
@@ -44,9 +44,12 @@ for dae_file in dae_list:
                         g_cnt +=1
                     elif type(prim) == lineset.Line:
                         pyptlist = prim.vertices.tolist()
-                        occpolygon = py3dmodel.construct.make_edge(pyptlist[0], pyptlist[1])
-                        #display_list.append(occpolygon)
-                        g_cnt +=1
+                        try:
+                            occpolygon = py3dmodel.construct.make_edge(pyptlist[0], pyptlist[1])
+                            #display_list.append(occpolygon)
+                            g_cnt +=1
+                        except:
+                            pass
     print len(display_list2)
 
 display_2dlist.append(display_list)
