@@ -15,9 +15,15 @@ for cnt in range(3):
 face_list = [face1, face2]
 loft = py3dmodel.construct.make_loft(face_list)
 print py3dmodel.fetch.get_topotype(loft)
-print len(py3dmodel.fetch.topo_explorer(loft, "face"))
+print py3dmodel.fetch.get_topotype("shell")
+face_list2 = py3dmodel.fetch.topo_explorer(loft, "face")
+print len(face_list2)
+grids = py3dmodel.construct.grid_face(face_list2[9],10,10)
 display_2dlist = []
 display_2dlist.append([loft])
 colour_list = []
 colour_list.append("WHITE")
+
+display_2dlist.append(face_list2)
+colour_list.append("RED")
 py3dmodel.utility.visualise(display_2dlist, colour_list)
