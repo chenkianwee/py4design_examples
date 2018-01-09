@@ -644,18 +644,41 @@ for cnt in range(28):
     stu_concept_list = []
     for pa in stu_pareto_list:
         stage = pa["stage"]
+        p_far = pa["far"]
+        p_usffai = pa["usffai"]
         if stage == "stage1":
-            stage1_list.append(pa)
+            stage1_list.append([p_far, p_usffai])
         if stage == "stage2":
-            stage2_list.append(pa)
+            stage2_list.append([p_far, p_usffai])
         if stage == "stage3":
-            stage3_list.append(pa)
+            stage3_list.append([p_far, p_usffai])
             
     npa = float(len(stu_pareto_list))
-    #stage1_percent = round((len(stage1_list)/npa)*100,2)
-    #stage2_percent = round((len(stage2_list)/npa)*100,2)
-    #stage3_percent = round((len(stage3_list)/npa)*100,2)
+    print "STUDENT ID", student_id
+    if stage1_list:
+        s1_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage1_list)
+        h1 = pyoptimise.analyse_xml.hyper_volume(stage1_list, (0,0), (1,1))
+        s1_dist_list = s1_dist_list[1:-1]
+        print "STAGE1 H", h1
+        if len(s1_dist_list) !=0:
+            print "STAGE1", sum(s1_dist_list)/float(len(s1_dist_list))
+        
+    if stage2_list:
+        h2 = pyoptimise.analyse_xml.hyper_volume(stage2_list, (0,0), (1,1))
+        s2_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage2_list)
+        s2_dist_list = s2_dist_list[1:-1]
+        print "STAGE2 H",h2
+        if len(s2_dist_list) !=0:
+            print "STAGE2", sum(s2_dist_list)/float(len(s2_dist_list))
     
+    if stage3_list:
+        h3 = pyoptimise.analyse_xml.hyper_volume(stage3_list, (0,0), (1,1))
+        s3_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage3_list)
+        s3_dist_list = s3_dist_list[1:-1]
+        print "STAGE3 H",h3
+        if len(s3_dist_list) !=0:
+            print "STAGE3", sum(s3_dist_list)/float(len(s3_dist_list))
+        
     stage1_percent = len(stage1_list)
     stage2_percent = len(stage2_list)
     stage3_percent = len(stage3_list)
@@ -683,7 +706,6 @@ for cnt in range(28):
                 "n_design_alternatives,feedback_time,far_min,far_max,far_range,usffai_min,usffai_max,usffai_range,ngen,"+\
                 "stage1%,stage2%,stage3%,avg_design_space,npareto,dominate,avg_c_measure,s_measure\n"
                
-    
     student_str = student_str + str(student_id) + "," + str(ndc) + "," + str(n_success) + "," + str(n_unsuccess)\
                 + "," + str(avg_nparms) + "," + str(srf_cnt_min) + "," + str(srf_cnt_max) + "," + str(total_design_alternatives)\
                 + "," + str(feedback_time) + "," + str(far_min) + "," + str(far_max) + "," + str(far_range)\
@@ -805,7 +827,7 @@ for alt_dict in total_alternative_list:
     
 score_2dlist = alternative_dict_list2_score_2d_list(f_alt_list)
 pareto_list, npareto_list = extract_pareto_front_alt_dict(f_alt_list, score_2dlist)
-draw_pareto_scatterplot(pareto_list, npareto_list,"name", res_img_filepath)
+#draw_pareto_scatterplot(pareto_list, npareto_list,"name", res_img_filepath)
 print "TOTAL NO. OF ALTERNATIVES:", len(f_alt_list)
 print "NO. OF PARETO:", len(pareto_list)
 print "NO. OF NON-PARETO:", len(npareto_list)
@@ -816,7 +838,6 @@ npareto = len(pareto_2dlist)
 ref_pt = [0,0]
 pcnt = 0
 for pareto_list in pareto_2dlist:
-    print pcnt
     student_filepath = os.path.join(data_dir, str(pcnt),"student_exploration.csv")
     sf = open(student_filepath, "r")
     lines = sf.readlines()
@@ -839,8 +860,7 @@ for pareto_list in pareto_2dlist:
         if c_measure1 > c_measure2:
             dominate_list.append(pareto_list2)
         #print "CMEASURE:", c_measure1, c_measure2
-
-
+        
     domination = len(dominate_list)
     avg_cmeasure = round(sum(c_measure_list)/len(c_measure_list),2)
     #print "DOMINATION:", domination

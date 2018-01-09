@@ -18,8 +18,8 @@ pvafai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "
 pvefai_filepath = os.path.join(parent_path, "example_files", "dae", "results", "py2radiance_pvefai")
 daysim_filepath = os.path.join(parent_path, "example_files", "dae", "results", "daysim_data")
 
-lower_irrad_threshold = 254#kw/m2
-upper_irrad_threshold = 364#kw/m2
+lower_irrad_threshold = 245#kw/m2
+upper_irrad_threshold = 355#kw/m2
 illum_threshold = 10000#lux ~~254kw/m2
 roof_irrad_threshold = 1280 #kwh/m2
 facade_irrad_threshold = 512 #kwh/m2

@@ -9,14 +9,14 @@ from py4design import py3dmodel
 #specify the pts file
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-pts_file = os.path.join(parent_path, "example_files","pts", "tree9_canopy.pts" )
-#pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree1\\tree1.pts"
-dae_filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_files\\dae\\results\\tree9_canopy.dae"
-
+#pts_file = os.path.join(parent_path, "example_files","pts", "tree9.pts" )
+pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree10\\tree10.pts"
+dae_filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_files\\dae\\results\\tree10.dae"
+#kai=1.59
 v_size = 0.5
 xdim = v_size
 ydim = v_size
-zdim = 1.5
+zdim = 1.0
 
 sampled_res = 0.006
 voxel_area = xdim*ydim
@@ -139,7 +139,8 @@ for i in range(18):
     intervalj = int(math.ceil((ymax-ymin)/ydim))
     intervalk = int(math.ceil((zmax-zmin)/zdim))
     height = zmax - zmin
-    
+    print xmax-xmin
+    print ymax-ymin
     print "HEIGHT:", height
     print "ZMAX:", zmax
     print "ZMIN:", zmin
@@ -160,15 +161,13 @@ for i in range(18):
     grid_cmpd = py3dmodel.construct.make_compound(grid_face_list)
     bp_mid_pt = py3dmodel.calculate.face_midpt(base_plane)
     
-    print "VOXELISING ALL THE POINTS ..."
+    print "INDEXING ALL THE POINTS ..."
     vertex_list_rot = py3dmodel.fetch.topo_explorer(pt_cmpd, "vertex")
     occptlist_rot = py3dmodel.modify.occvertex_list_2_occpt_list(vertex_list_rot)
     pyptlist_rot = py3dmodel.modify.occpt_list_2_pyptlist(occptlist_rot)
     k_voxel_list = xyz2ijk(pyptlist_rot, xdim, ydim, zdim, xmin, ymin, zmin, intervalk)
     
-    #separate the pts into level intervals and move the bounding plane to each level
-    print "VOXELISING ..."
-    #create a list with all the intervals
+    print "VOXELISING & CALCULATING THE LAI ..."
     pypts_interval_dict = {}
     zmin_intheight = zmin + zdim
     hint_min = zmin
@@ -181,7 +180,7 @@ for i in range(18):
         flist = py3dmodel.fetch.topo_explorer(moved_plane, "face")
         full_grid.extend(flist)
         
-        #retrieve the grid for each level
+        #retrieve the ijk of each cell for each level
         grid_lvl = k_voxel_list[cnt]
         grid_list = []
         
@@ -282,7 +281,7 @@ for i in range(18):
                         ptri = py3dmodel.construct.delaunay3d(proj_ptlist, tolerance=1e-08)
                         parea = py3dmodel.calculate.face_area(ptri[0])
             
-            #get the projection ratio for a voxel
+            #append the area and projected area into a list
             parea_2dlist[cnt].append(parea)
             area_2dlist[cnt].append(area)
             
@@ -299,10 +298,8 @@ for i in range(18):
             pdict = xy2ij(pptlist, sampled_res, sampled_res, xminv, yminv)
             nee = nve - len(pdict)
             nee_list.append(nee)
-            #print "PKER", nee/nve, "EMPTY VOXELS", nee, "TOTAL VOXELS", nve
             
         hint_min = zmin + (zdim*(cnt+1))
-        #py3dmodel.utility.visualise_falsecolour_topo(grid_list, ratio_list, other_occtopo_2dlist = [vlist], other_colour_list = ["GREEN"])                                   
         
         #get the number of empty voxels for the whole level k
         nvoxel_total = len(flist)
@@ -359,15 +356,13 @@ time2 = time.clock()
 total_time = time2-time1
 print "TIME TAKEN (mins):", total_time/60.0
 
-# =============================================================================
-# py3dmodel.export_collada.write_2_collada(voxel_list, dae_filepath)
-# 
-# display_2dlist = []
-# colour_list = []
-# 
-# display_2dlist.append(vertex_list)
-# colour_list.append("GREEN")
-# display_2dlist.append(voxel_list)
-# colour_list.append("WHITE")
-# py3dmodel.utility.visualise(display_2dlist, colour_list)
-# =============================================================================
+py3dmodel.export_collada.write_2_collada(voxel_list, dae_filepath)
+
+display_2dlist = []
+colour_list = []
+
+display_2dlist.append(vertex_list)
+colour_list.append("GREEN")
+display_2dlist.append(voxel_list)
+colour_list.append("WHITE")
+py3dmodel.utility.visualise(display_2dlist, colour_list)

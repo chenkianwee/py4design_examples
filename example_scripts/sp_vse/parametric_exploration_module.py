@@ -219,8 +219,8 @@ evaluations.add_shadings_4_solar_analysis(site_citygml_filepath)
 xdim = 9
 ydim = 9
 
-lower_irrad_threshold = 254#kw/m2
-upper_irrad_threshold = 364#kw/m2
+lower_irrad_threshold = 245#kw/m2
+upper_irrad_threshold = 355#kw/m2
 roof_irrad_threshold = 1280 #kwh/m2
 facade_irrad_threshold = 512 #kwh/m2
 
