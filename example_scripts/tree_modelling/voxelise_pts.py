@@ -10,8 +10,8 @@ from py4design import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 #pts_file = os.path.join(parent_path, "example_files","pts", "tree9.pts" )
-pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree10\\tree10.pts"
-dae_filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_files\\dae\\results\\tree10.dae"
+pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\Tree_29.pts"
+dae_filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_files\\dae\\results\\tree66.dae"
 #kai=1.59
 v_size = 0.5
 xdim = v_size
@@ -81,7 +81,7 @@ print "ANALYSING POINTS & CONVERTING POINTS TO OCC VERTICES..."
 
 for l in lines:
     l = l.replace("\n","")
-    l_list = l.split(",")
+    l_list = l.split(" ")
     
     x = float(l_list[0])
     y = float(l_list[1])
@@ -270,15 +270,15 @@ for i in range(18):
                         parea = py3dmodel.calculate.distance_between_2_pts(ppt3, ppt4)
                             
                     elif is_coplanar:
-                        #print "COPLANAR", "NPTS", npts
-                        tri = py3dmodel.construct.delaunay3d(ptlist)
+                        print "COPLANAR", "NPTS", npts
+                        tri = py3dmodel.construct.delaunay3d(ptlist, tolerance = 1e-08)
                         area = py3dmodel.calculate.face_area(tri[0])
                         proj_ptlist = []
                         for pt in ptlist:
                             ppt = (pt[0],pt[1],hint_min)
                             proj_ptlist.append(ppt)
                         pptlist.extend(proj_ptlist)
-                        ptri = py3dmodel.construct.delaunay3d(proj_ptlist, tolerance=1e-08)
+                        ptri = py3dmodel.construct.delaunay3d(proj_ptlist, tolerance=1e-10)
                         parea = py3dmodel.calculate.face_area(ptri[0])
             
             #append the area and projected area into a list
@@ -361,7 +361,7 @@ py3dmodel.export_collada.write_2_collada(voxel_list, dae_filepath)
 display_2dlist = []
 colour_list = []
 
-display_2dlist.append(vertex_list)
+display_2dlist.append([pt_cmpd])
 colour_list.append("GREEN")
 display_2dlist.append(voxel_list)
 colour_list.append("WHITE")

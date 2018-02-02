@@ -394,6 +394,8 @@ def draw_pareto_scatterplot(pareto_list, npareto_list, label, res_img_filepath):
 #=================================================================  
 data_dir = "F:\\kianwee_work\\smart\\journal\\enabling_opt_design\\data"
 total_alternative_list = []
+total_alternative_list2 = []
+total_time_list2 = []
 pareto_2dlist = []
 far_max_limit = 15
 far_min_limit = 2
@@ -492,10 +494,15 @@ for cnt in range(28):
         
         concept_alternative_list = overall_dict["alternative_list"]
         total_alternative_list.extend(concept_alternative_list)
+        
+        concept_alternative_list2 = overall_dict["nalternatives_feedback"]
+        total_alternative_list2.append(concept_alternative_list2)
+        
         student_alt_list.extend(concept_alternative_list)
         
         time = overall_dict["total_time"]
         total_time_list.append(time)
+        total_time_list2.append(time)
         nalternatives = overall_dict["nalternatives"]
         total_nalternatives_list.append(nalternatives)
         ntime_alternatives = overall_dict["nalternatives_feedback"]
@@ -834,6 +841,10 @@ print "NO. OF NON-PARETO:", len(npareto_list)
 #=====================================================================
 #MEASURE THE PARETO FRONT OF ALL STUDENTS WITH S MEASURE AND C MEASURE
 #=====================================================================
+avg_feedback_time = sum(total_time_list2)/len(total_alternative_list)
+
+print "AVG FEEDBACK TIME", avg_feedback_time, sum(total_time_list2), len(total_alternative_list)/28
+
 npareto = len(pareto_2dlist)
 ref_pt = [0,0]
 pcnt = 0

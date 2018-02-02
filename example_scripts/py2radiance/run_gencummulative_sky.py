@@ -20,7 +20,7 @@ def avg_daysim_res(res):
 #create all the relevant folders 
 current_path = os.path.dirname(__file__)
 base_filepath = os.path.join(current_path, 'base.rad')
-data_folderpath = os.path.join(current_path, 'py2radiance_data')
+data_folderpath = os.path.join(current_path, 'py2radiance_data_cummulativesky')
 display2dlist = []
 #initialise py2radiance 
 rad = py2radiance.Rad(base_filepath, data_folderpath)
@@ -58,27 +58,19 @@ for occface in occfaces:
             sensor_dirs.append(normal)
     face_cnt+=1
 
-rad.create_rad_input_file()
 
 #once the geometries are created initialise daysim
-daysim_dir = os.path.join(current_path, 'daysim_data')
-rad.initialise_daysim(daysim_dir)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
 #a 60min weatherfile is generated
 weatherfilepath = os.path.join(parent_path, "py2radiance", "SGP_Singapore.486980_IWEC.epw")
-rad.execute_epw2wea(weatherfilepath)
-rad.execute_radfiles2daysim()
+rad.create_rad_input_file()
 
 #create sensor points
 rad.set_sensor_points(sensor_pts,sensor_dirs)
-rad.create_sensor_input_file()
-rad.write_default_radiance_parameters()#the default settings are the complex scene 1 settings of daysimPS
-rad.execute_gen_dc("lux") #lux
-rad.execute_ds_illum()
-res = rad.eval_ill_per_sensor()
-print len(res[0])
-lx_ress = avg_daysim_res(res)
-print lx_ress
+rad.execute_cumulative_oconv("7 19", "1 1 12 31", weatherfilepath, output = "irradiance")
+rad.execute_cumulative_rtrace("2")
+res = rad.eval_cumulative_rad(output = "irradiance")
+print res
 
 print "DONE"
 #py3dmodel.utility.visualise_falsecolour_topo(display2dlist, watt_ress, other_occtopo_2dlist = [edges], 
