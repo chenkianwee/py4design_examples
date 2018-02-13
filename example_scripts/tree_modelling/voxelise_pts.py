@@ -10,7 +10,7 @@ from py4design import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 #pts_file = os.path.join(parent_path, "example_files","pts", "tree9.pts" )
-pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\Tree_29.pts"
+pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\tree9.pts"
 dae_filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_files\\dae\\results\\tree66.dae"
 #kai=1.59
 v_size = 0.5
@@ -81,7 +81,7 @@ print "ANALYSING POINTS & CONVERTING POINTS TO OCC VERTICES..."
 
 for l in lines:
     l = l.replace("\n","")
-    l_list = l.split(" ")
+    l_list = l.split(",")
     
     x = float(l_list[0])
     y = float(l_list[1])

@@ -10,10 +10,10 @@ from py4design import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
-mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\tree8.txt"
+mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\tree9.txt"
 #pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree29\\tree29.pts"
 #dae_pts = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\tree9_trunk.dae"
-#ext_dae = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\tree9_volume.dae"
+ext_dae = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\tree9_volume.dae"
 '''mtg_file = "C://file2analyse.txt"'''
 d_height = 1
 time1 = time.time()
@@ -197,7 +197,7 @@ display_2dlist.append(ext_edge)
 colour_list.append("BLACK")
 
 #py3dmodel.export_collada.write_2_collada(ext_list[0:1], dae_pts, occedge_list = pt_edge_list )
-#py3dmodel.export_collada.write_2_collada(ext_list, ext_dae )
+py3dmodel.export_collada.write_2_collada(ext_list, ext_dae )
 time2 = time.time()
 total_time = (time2-time1)/60.0
 print "TIME TAKEN:", total_time
