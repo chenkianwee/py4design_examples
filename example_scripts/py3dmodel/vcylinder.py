@@ -81,7 +81,7 @@ for tf in text_face:
 txt_cmpd = py3dmodel.construct.make_compound(txt_list)
 diff_shape3 = py3dmodel.construct.boolean_difference(diff_shape2, txt_cmpd)
 diff_shape3 = py3dmodel.construct.simple_mesh(diff_shape3)
-#py3dmodel.export_collada.write_2_collada(diff_shape3, "C:\\Users\\chenkianwee\\Desktop\\for_vicky\\vcylinder.dae")
+py3dmodel.export_collada.write_2_collada("C:\\Users\\smrckwe\\Desktop\\vcylinder.dae", occface_list = diff_shape3)
 display_2dlist = []
 display_2dlist.append(diff_shape3)
 #display_2dlist.append(txt_list)

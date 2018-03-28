@@ -4,7 +4,7 @@ points1 = [(50,100,0), (75,75,0), (75,60,0),(100,60,0),(100,50,0), (50,0,0),(0,5
 points2 = [(60,50,10), (50,75,10),(40,50,10),(50,40,10)]#counterclockwise
 points3 = [(75,100,0), (100,100,0),(100,150,0),(75,150,0)]
 face1 = py3dmodel.construct.make_polygon(points1)
-face2 = py3dmodel.construct.make_polygon(points2)
+face2 = py3dmodel.construct.make_polygon(points3)
 
 pypt1 = (0,0,0)
 pypt2 = (100,100,0)
