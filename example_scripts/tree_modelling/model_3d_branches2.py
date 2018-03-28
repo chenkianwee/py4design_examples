@@ -17,7 +17,7 @@ mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\" + t
 result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\result"
 '''mtg_file = "C://file2analyse.txt"'''
 
-vol_percent = 0.0000005
+vol_percent = 0.0000000005
 max_branch_order = 3
 
 #================================================================================
@@ -130,7 +130,7 @@ def extrude_branch(start_pt, end_pt, radius, cap = False):
             l_face_list = [bottom_pipe,top_pipe]
 
         extrude = py3dmodel.construct.make_loft(l_face_list)
-        loft_face_list = py3dmodel.fetch.topo_explorer(extrude, "face")
+        loft_face_list = py3dmodel.construct.simple_mesh(extrude, linear_deflection = linr_dfl, angle_deflection=angle_dfl)
         loft_face_list.append(top_pipe)
         if cap == True:
             loft_face_list.append(bottom_pipe)
@@ -175,8 +175,7 @@ def loft_with_consc_branches(start_pt, end_pt, end_pt2, radius, radius2, cap = F
             l_face_list = [bottom_pipe, top_pipe]
         
         loft = py3dmodel.construct.make_loft(l_face_list, rule_face=True)
-        
-        face_list = py3dmodel.fetch.topo_explorer(loft, "face")
+        face_list = py3dmodel.construct.simple_mesh(loft, linear_deflection = linr_dfl, angle_deflection = angle_dfl)
         if cap == True:
             face_list.append(bottom_pipe)
             face_list.append(top_pipe)
@@ -374,10 +373,13 @@ def multiple_bool_fuse(solid_list, progress_dir = None):
             
         if progress_dir!=None:
             if s2cnt%interim_cnt == 0 or s2cnt == nsolids-1:                 
-                # Export to STL
-                min_l, max_l = calc_solid_edge_min_max_length(fused)
+                # Export to brep
                 interim_file = os.path.join(progress_dir, "tree_interim" + str(s2cnt) + ".brep")
                 py3dmodel.utility.write_brep(fused, interim_file)
+                
+                interim_file_non_bool = os.path.join(progress_dir, "tree_interim_non_bool" + str(s2cnt) + ".brep")
+                nb_cmpd = py3dmodel.construct.make_compound(non_bool_list)
+                py3dmodel.utility.write_brep(nb_cmpd, interim_file_non_bool)
                 
         s2cnt+=1
         
@@ -470,8 +472,8 @@ def rmv_degenerate_faces_from_solid(occsolid):
         fixed_solid = make_fix_solid(fixed_shell)
     return fixed_solid
 
-def calc_solid_edge_min_max_length(occsolid):
-    edges = py3dmodel.fetch.topo_explorer(occsolid, "edge")
+def calc_topo_edge_min_max_length(occtopo):
+    edges = py3dmodel.fetch.topo_explorer(occtopo, "edge")
     min_l = float("inf")
     max_l = float("inf")*-1
     for e in edges:
@@ -596,6 +598,9 @@ for o in order_list:
     print "NUMBER OF SOLIDS IN ORDER" + str(o_cnt), ":", len(order_solid_list), ", STRAY SOLIDS:", len(non_bool_list)
     cmpd = py3dmodel.construct.make_compound(order_solid_list)
     py3dmodel.utility.write_brep(cmpd, os.path.join(result_dir, "order"+ str(o_cnt)+".brep"))
+    
+    nb_cmpd = py3dmodel.construct.make_compound(non_bool_list)
+    py3dmodel.utility.write_brep(nb_cmpd, os.path.join(result_dir, "order"+ str(o_cnt)+"_strays.brep"))
     #py3dmodel.utility.visualise([order_solid_list], ["BLUE"])
     o_cnt+=1
     
@@ -622,6 +627,9 @@ for fcnt in range(n_f_order_list):
 cmpd = py3dmodel.construct.make_compound(fused_list)
 py3dmodel.utility.write_brep(cmpd, os.path.join(result_dir, "descending.brep"))
 
+nb_cmpd = py3dmodel.construct.make_compound(non_bool_list)
+py3dmodel.utility.write_brep(nb_cmpd, os.path.join(result_dir, "descending_strays.brep"))
+    
 print "#====================================="
 print "FUSING THE BRANCHES TO THE TRUNK ..." 
 print "#====================================="
@@ -656,23 +664,29 @@ mb_solid_list = []
 mb_solid_list.append(trunk_solid)
 mb_solid_list.extend(vf_fused_list)
 tree_solid, non_bools = multiple_bool_fuse(mb_solid_list, progress_dir = result_dir)
-#tree_solid, non_bools = multiple_bool_fuse(mb_solid_list)
 tree_solid = rmv_degenerate_faces_from_solid(tree_solid)
 non_bool_list.extend(non_bools)
 
 print "#============================================"
-print "WRITING THE GEOMETRY TO STL ..." 
+print "WRITING THE GEOMETRY TO BREP ..." 
 print "#============================================"
-print "WRITING THE TREE TO STL ..." 
-min_l, max_l = calc_solid_edge_min_max_length(tree_solid)
-stl_file = os.path.join(result_dir, "tree_volume.brep")
-py3dmodel.utility.write_brep(tree_solid, stl_file)
+print "WRITING THE TREE TO BREP ..." 
 
-print "WRITING THE STRAY SOLIDS TO STL ..." 
-stl_file_non_bool = os.path.join(result_dir, "tree_volume_stray.brep")
+min_l, max_l = calc_topo_edge_min_max_length(tree_solid)
 nb_cmpd = py3dmodel.construct.make_compound(non_bool_list)
-min_l2, max_l2 = calc_solid_edge_min_max_length(nb_cmpd)
-py3dmodel.utility.write_brep(nb_cmpd, stl_file_non_bool)
+
+brep_file = os.path.join(result_dir, "tree.brep")
+brep_file_non_bool = os.path.join(result_dir, "tree_strays.brep")
+
+py3dmodel.utility.write_brep(tree_solid, brep_file)
+py3dmodel.utility.write_brep(nb_cmpd, brep_file_non_bool)
+
+print "WRITING THE TREE TO STL ..." 
+stl_file = os.path.join(result_dir, "tree.stl")
+stl_file_non_bool = os.path.join(result_dir, "tree_strays.stl")
+
+py3dmodel.utility.write_2_stl_gmsh(tree_solid, stl_file, mesh_dim = 2, min_length = min_l, max_length = max_l)
+py3dmodel.utility.write_2_stl_gmsh(nb_cmpd, stl_file_non_bool, mesh_dim = 2, min_length = min_l, max_length = max_l)
 #========================================================================================================
 #visualise
 #========================================================================================================
