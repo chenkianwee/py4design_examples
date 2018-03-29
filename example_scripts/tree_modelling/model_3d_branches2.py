@@ -18,7 +18,7 @@ result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" +
 '''mtg_file = "C://file2analyse.txt"'''
 
 vol_percent = 0.0000000005
-max_branch_order = 3
+max_branch_order = 10
 
 #================================================================================
 #HARD CODED PARAMETERS
@@ -664,7 +664,7 @@ mb_solid_list = []
 mb_solid_list.append(trunk_solid)
 mb_solid_list.extend(vf_fused_list)
 tree_solid, non_bools = multiple_bool_fuse(mb_solid_list, progress_dir = result_dir)
-tree_solid = rmv_degenerate_faces_from_solid(tree_solid)
+#tree_solid = rmv_degenerate_faces_from_solid(tree_solid)
 non_bool_list.extend(non_bools)
 
 print "#============================================"
