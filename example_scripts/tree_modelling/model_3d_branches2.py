@@ -14,11 +14,11 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 
 tree_name = "tree8"
 mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\" + tree_name + ".txt"
-result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\result"
+result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\result2"
 '''mtg_file = "C://file2analyse.txt"'''
 
-vol_percent = 0.0000000005
-max_branch_order = 3
+vol_percent = 0.05
+max_branch_order = 1
 
 #================================================================================
 #HARD CODED PARAMETERS
@@ -664,7 +664,7 @@ mb_solid_list = []
 mb_solid_list.append(trunk_solid)
 mb_solid_list.extend(vf_fused_list)
 tree_solid, non_bools = multiple_bool_fuse(mb_solid_list, progress_dir = result_dir)
-tree_solid = rmv_degenerate_faces_from_solid(tree_solid)
+#tree_solid = rmv_degenerate_faces_from_solid(tree_solid)
 non_bool_list.extend(non_bools)
 
 print "#============================================"

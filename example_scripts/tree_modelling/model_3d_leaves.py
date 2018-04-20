@@ -15,7 +15,7 @@ parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
 '''mtg_file = "C://file2analyse.txt"'''
 
-tree_name = "tree1"
+tree_name = "tree8"
 mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\" + tree_name + ".txt"
 canopy_pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\" + tree_name + "_canopy.pts"
 trunk_pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\" + tree_name + "_trunk.pts"
@@ -170,7 +170,7 @@ colour_list = []
 #========================================================================================
 #READ THE CANOPY PT CLOUD
 #========================================================================================
-pyptlist, pt_cmpd, centre_pt = read_pts_file(canopy_pts_file)
+pyptlist, pt_cmpd, centre_pt = read_pts_file(canopy_pts_file, delimiter = " ")
 xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(pt_cmpd)
 height = zmax-zmin
 

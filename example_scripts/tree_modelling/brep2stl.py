@@ -12,11 +12,13 @@ def calc_topo_edge_min_max_length(occtopo):
         
     return min_l, max_l
 
-brep_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\result\\tree.brep"
-stl_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\result\\tree.stl"
+brep_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree8\\result\\order3.brep"
+stl_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree8\\result\\order3.stl"
 occtopo = py3dmodel.utility.read_brep(brep_filepath)
+solids = py3dmodel.fetch.topo_explorer(occtopo, "solid")
+print len(solids)
 minl, maxl = calc_topo_edge_min_max_length(occtopo)
-py3dmodel.utility.write_2_stl_gmsh(occtopo, stl_filepath, mesh_dim = 2, min_length = 1, max_length = 5)
+py3dmodel.utility.write_2_stl_gmsh(occtopo, stl_filepath, mesh_dim = 2, min_length = minl, max_length = maxl)
 display_2dlist = []
 colour_list = []
 
