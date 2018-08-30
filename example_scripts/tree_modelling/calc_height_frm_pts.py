@@ -46,9 +46,9 @@ def read_pts_file(pts_file, delimiter = ","):
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 parent_path = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts"
-for i in range(30):
-    folder = "tree" + str(i+31)
-    filename = "tree" + str(i+31) + ".pts"
+for i in range(2):
+    folder = "tree" + str(i+32)
+    filename = "tree" + str(i+32) + ".pts"
     pts_file = os.path.join(parent_path,folder,filename)    
     #================================================================================
     #================================================================================ 

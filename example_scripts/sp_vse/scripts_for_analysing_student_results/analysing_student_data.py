@@ -379,7 +379,7 @@ def draw_pareto_scatterplot(pareto_list, npareto_list, label, res_img_filepath):
     for pa in pareto_list:
         score_list = [pa["far"], pa["usffai"]]
         idx = pa[label]
-        print idx
+        
         pts.append(score_list)
         labellist.append(str(idx))
         #labellist.append("")
@@ -641,9 +641,11 @@ for cnt in range(28):
     student_score_2dlist = alternative_dict_list2_score_2d_list(stu_falt_list)
     stu_pareto_list, stu_npareto_list = extract_pareto_front_alt_dict(stu_falt_list, student_score_2dlist)
     
-    #if student_id == 26:
-    #    res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_evo_design\\img\\png\\ind_pareto.png"
-    #    draw_pareto_scatterplot(stu_pareto_list, stu_npareto_list,"concept_name", res_img_filepath)
+    #0, 6, 14, 19, 23 and 26
+    
+    if student_id == 6 or student_id == 0 or student_id == 14 or student_id == 19 or student_id == 23 or student_id == 26:
+        res_img_filepath = "F:\\kianwee_work\\smart\\journal\\enabling_opt_design\\img\\png\\ind_pareto_" + str(student_id) + ".png"
+        draw_pareto_scatterplot(stu_pareto_list, stu_npareto_list,"stage", res_img_filepath)
     
     stage1_list = []
     stage2_list = []
@@ -663,33 +665,34 @@ for cnt in range(28):
     npa = float(len(stu_pareto_list))
     print "STUDENT ID", student_id
     if stage1_list:
-        s1_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage1_list)
         h1 = pyoptimise.analyse_xml.hyper_volume(stage1_list, (0,0), (1,1))
-        s1_dist_list = s1_dist_list[1:-1]
-        print "STAGE1 H", h1
-        if len(s1_dist_list) !=0:
-            print "STAGE1", sum(s1_dist_list)/float(len(s1_dist_list))
+        print "STAGE1"
+        #s1_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage1_list)
+        #s1_dist_list = s1_dist_list[1:-1]
+        #print "STAGE1 H", h1
+        #if len(s1_dist_list) !=0:
+        #    print "STAGE1", sum(s1_dist_list)/float(len(s1_dist_list))
         
     if stage2_list:
         h2 = pyoptimise.analyse_xml.hyper_volume(stage2_list, (0,0), (1,1))
-        s2_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage2_list)
-        s2_dist_list = s2_dist_list[1:-1]
-        print "STAGE2 H",h2
-        if len(s2_dist_list) !=0:
-            print "STAGE2", sum(s2_dist_list)/float(len(s2_dist_list))
+        #s2_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage2_list)
+        #s2_dist_list = s2_dist_list[1:-1]
+        #print "STAGE2 H",h2
+        #if len(s2_dist_list) !=0:
+        #    print "STAGE2", sum(s2_dist_list)/float(len(s2_dist_list))
     
     if stage3_list:
         h3 = pyoptimise.analyse_xml.hyper_volume(stage3_list, (0,0), (1,1))
-        s3_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage3_list)
-        s3_dist_list = s3_dist_list[1:-1]
-        print "STAGE3 H",h3
-        if len(s3_dist_list) !=0:
-            print "STAGE3", sum(s3_dist_list)/float(len(s3_dist_list))
+        #s3_dist_list = pyoptimise.analyse_xml.crowd_distance_assignment(stage3_list)
+        #s3_dist_list = s3_dist_list[1:-1]
+        #print "STAGE3 H",h3
+        #if len(s3_dist_list) !=0:
+        #    print "STAGE3", sum(s3_dist_list)/float(len(s3_dist_list))
         
     stage1_percent = len(stage1_list)
     stage2_percent = len(stage2_list)
     stage3_percent = len(stage3_list)
-    
+    print "STAGES 1 2 3", stage1_percent, stage2_percent, stage3_percent
     avg_nparms = sum(stu_nparms_list)/len(stu_nparms_list)
     stu_avg_design_space = 0
     if avg_design_space_list:

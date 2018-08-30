@@ -153,10 +153,10 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             time1 = time.clock()
             display_2dlist = []
             #read the tif terrain file and create a tin from it 
+            self.progress = 10
             pyptlist = raster_reader(dtm_tif_file)
             QtGui.QApplication.processEvents()
             self.params.param('Result View').param('Progress').setValue("Constructing the Terrain ... ...")
-            self.progress = 10
             tin_occface_list = py3dmodel.construct.delaunay3d(pyptlist)
             terrain_shell = py3dmodel.construct.sew_faces(tin_occface_list)[0]
             #===========================================================================================
@@ -166,6 +166,8 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             sf = shapefile.Reader(bldg_footprint_shp_file)
             shapeRecs=sf.shapeRecords()
             attrib_name_list = shp2citygml.get_field_name_list(sf)
+            #print attrib_name_list
+            self.progress = 15
             height_index = attrib_name_list.index(height_attrib) - 1
             
             solid_list = []
@@ -250,13 +252,26 @@ class Shp2DTo3DGUI(QtGui.QWidget):
             QtGui.QApplication.processEvents()
             self.params.param('Result View').param('Progress').setValue("Writing the Building Surfaces ... ...")
             self.progress = 100
-            py3dmodel.export_collada.write_2_collada(n_list, north_facade_collada_filepath)
-            py3dmodel.export_collada.write_2_collada(s_list, south_facade_collada_filepath)
-            py3dmodel.export_collada.write_2_collada(e_list, east_facade_collada_filepath)
-            py3dmodel.export_collada.write_2_collada(w_list, west_facade_collada_filepath)
-            py3dmodel.export_collada.write_2_collada(total_roof_list, roof_collada_filepath)
-            py3dmodel.export_collada.write_2_collada(total_footprint_list, footprint_collada_filepath)
-            py3dmodel.export_collada.write_2_collada([terrain_shell], terrain_collada_filepath)
+            py3dmodel.export_collada.write_2_collada(north_facade_collada_filepath, 
+                                                     occface_list = n_list)
+                    
+            py3dmodel.export_collada.write_2_collada(south_facade_collada_filepath,
+                                                     occface_list = s_list)
+            
+            py3dmodel.export_collada.write_2_collada(east_facade_collada_filepath, 
+                                                     occface_list = e_list)
+            
+            py3dmodel.export_collada.write_2_collada(west_facade_collada_filepath, 
+                                                     occface_list = w_list)
+            
+            py3dmodel.export_collada.write_2_collada(roof_collada_filepath, 
+                                                     occface_list = total_roof_list)
+            
+            py3dmodel.export_collada.write_2_collada(footprint_collada_filepath, 
+                                                     occface_list = total_footprint_list)
+            
+            py3dmodel.export_collada.write_2_collada( terrain_collada_filepath, 
+                                                     occface_list = [terrain_shell])
             
             time2 = time.clock()
             time = (time2-time1)/60.0
@@ -275,6 +290,8 @@ class Shp2DTo3DGUI(QtGui.QWidget):
         except:
             if self.progress == 10:
                 self.params.param('Result View').param('Progress').setValue(str("there is an error at terrain construction !!!"))
+            if self.progress == 15:
+                self.params.param('Result View').param('Progress').setValue(str("15 !!!"))
             if self.progress == 20:
                 self.params.param('Result View').param('Progress').setValue(str("there is an error at building extrusion !!!"))
             if self.progress == 50:

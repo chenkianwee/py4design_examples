@@ -7,14 +7,19 @@ from py4design import py3dmodel
 #INSTRUCTION: SPECIFY THE NODE LIST FILE
 #================================================================================
 #specify the citygml file
-current_path = os.path.dirname(__file__)
-parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
-mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\tree31.txt"
+#current_path = os.path.dirname(__file__)
+#parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
+#mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
+
+tree_name = "tree66.txt"
+parent_path = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg_new"
+mtg_file = os.path.join(parent_path, tree_name )
+
 '''mtg_file = "C://file2analyse.txt"'''
-d_height = 1.5
+d_height = 1
 wood_density = 690 #kg/m3
 
+print "CALCULATING VOL & MASS OF ...", tree_name
 #================================================================================
 #================================================================================ 
 circle_division = 10
@@ -145,4 +150,4 @@ colour_list.append("WHITE")
 time2 = time.time()
 total_time = (time2-time1)/60.0
 print "TIME TAKEN:", total_time
-py3dmodel.utility.visualise(display_2dlist, colour_list)
+#py3dmodel.utility.visualise(display_2dlist, colour_list)

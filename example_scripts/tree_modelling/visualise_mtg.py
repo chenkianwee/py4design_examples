@@ -10,12 +10,14 @@ current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 #mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
 
-tree_name = "tree8"
-mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\" + tree_name + ".txt"
+tree_name = "tree1"
+mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\mtg\\" + tree_name + ".txt"
+trunk_pts_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\" + tree_name+"_trunk.pts"
 result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\visualise_mtg"
 '''mtg_file = "C://file2analyse.txt"'''
+print "PROCESSING ...", tree_name
 
-max_branch_order = 0
+max_branch_order = 10
 radius_thres = 0.00001
 
 #================================================================================
@@ -72,6 +74,8 @@ def extrude_branch(start_pt, end_pt, radius, cap = False):
         pyvec1 = py3dmodel.modify.normalise_vec(vec1)
         
         bottom_pipe = py3dmodel.construct.make_polygon_circle(start_pt, pyvec1, radius, division = circle_division)
+        #return bottom_pipe
+
         top_pipe = py3dmodel.construct.make_polygon_circle(end_pt, pyvec1, radius, division = circle_division)
         extrude = py3dmodel.construct.make_loft([bottom_pipe,top_pipe])
         loft_face_list = py3dmodel.fetch.topo_explorer(extrude, "face")
@@ -89,6 +93,7 @@ def extrude_branch(start_pt, end_pt, radius, cap = False):
             if len(extrude) >1:
                 print "something went wrong at the construction of branches"
             return extrude[0]
+
     else:
         return None
     
@@ -140,6 +145,37 @@ def rmv_degenerate_faces(occcmpd):
             
     return new_face_list
 
+def read_pts_file(pts_file, delimiter = ","):
+    pf = open(pts_file, "r")
+    lines = pf.readlines()
+    vertex_list = []
+    pyptlist = []
+    x_list = []
+    y_list = []
+    z_list = []
+    for l in lines:
+        l = l.replace("\n","")
+        l_list = l.split(delimiter)
+        x = float(l_list[0])
+        x_list.append(x)
+        y = float(l_list[1])
+        y_list.append(y)
+        z = float(l_list[2])
+        z_list.append(z)
+        pypt = (x,y,z)
+        occ_vertex = py3dmodel.construct.make_vertex(pypt)
+        vertex_list.append(occ_vertex)
+        pyptlist.append(pypt)
+    
+    npts = len(x_list)
+    x_mean = sum(x_list)/npts
+    y_mean = sum(y_list)/npts
+    z_mean = sum(z_list)/npts
+    
+    centre_pt = (x_mean, y_mean, z_mean)
+    pt_cmpd = py3dmodel.construct.make_compound(vertex_list)
+    return pyptlist, pt_cmpd, centre_pt
+
 #========================================================================================
 #FUNCTIONS 
 #========================================================================================
@@ -171,14 +207,17 @@ for ell in edge_lines_list:
     #check if it is an edge
     if ell[1] !="":
         branch_dict = construct_cylinder_frm_mtg_row(ell, edge_lines_list, max_branch_order)
-        branch_dict_list.append(branch_dict)
+        if branch_dict:
+            branch_dict_list.append(branch_dict)
 
 print "#==================================="
 print "CONSTRUCTING THE BRANCH SOLIDS ..." 
 print "#==================================="
     
 geom_list = []
+text_list = []
 edge_list = []
+
 for branch_dict in branch_dict_list:
     order = branch_dict["order"]
     radius = branch_dict["radius"]
@@ -193,15 +232,31 @@ for branch_dict in branch_dict_list:
         m_text_3d = py3dmodel.modify.move((0,0,0), centre_pt, text_3d)
         m_text_edges = py3dmodel.fetch.topo_explorer(m_text_3d, "edge")
         geom_list.append(geom)
-        geom_list.append(m_text_3d)
+        text_list.append(m_text_3d)
         edge_list.extend(m_text_edges)
         
+print "#========================="
+print "READING THE PTS FILE ..." 
+print "#========================="
+pyptlist2, pt_cmpd2, centre_pt2 = read_pts_file(trunk_pts_file, delimiter = ",")
+
 print "#==================================="
 print "WRITE TO FILE ..." 
 print "#==================================="
 geom_cmpd = py3dmodel.construct.make_compound(geom_list)
+geom_cmpd = py3dmodel.modify.move((0,0,0), centre_pt2, geom_cmpd)
+
+txt_cmpd = py3dmodel.construct.make_compound(text_list)
+txt_cmpd = py3dmodel.modify.move((0,0,0), centre_pt2, txt_cmpd)
+
 stl_file = os.path.join(result_dir, "visualise_tree.stl")
 py3dmodel.utility.write_2_stl(geom_cmpd, stl_file)
+
+dae_filepath = os.path.join(result_dir, "edge_with_rad.dae")
+py3dmodel.export_collada.write_2_collada(dae_filepath, occface_list = geom_list)
+
+stl_file2 = os.path.join(result_dir, "visualise_tree_txt.stl")
+py3dmodel.utility.write_2_stl(txt_cmpd, stl_file2)
        
 #========================================================================================================
 #visualise
@@ -215,4 +270,4 @@ colour_list.append("BLACK")
 time2 = time.time()
 total_time = (time2-time1)/60.0
 print "TIME TAKEN:", total_time
-py3dmodel.utility.visualise(display_2dlist, colour_list)
+#py3dmodel.utility.visualise(display_2dlist, colour_list)

@@ -11,8 +11,8 @@ current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 #mtg_file = os.path.join(parent_path, "example_files","mtg", "tree9.txt" )
 
-tree_name = "tree8"
-mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\" + tree_name + ".txt"
+tree_name = "tree4"
+mtg_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\mtg\\mtg\\" + tree_name + ".txt"
 result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" + tree_name + "\\edge"
 '''mtg_file = "C://file2analyse.txt"'''
 

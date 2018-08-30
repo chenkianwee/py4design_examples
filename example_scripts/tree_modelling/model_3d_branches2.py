@@ -18,7 +18,7 @@ result_dir = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\" +
 '''mtg_file = "C://file2analyse.txt"'''
 
 vol_percent = 0.05
-max_branch_order = 1
+max_branch_order = 2
 
 #================================================================================
 #HARD CODED PARAMETERS
