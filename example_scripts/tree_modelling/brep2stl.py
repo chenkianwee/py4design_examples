@@ -12,11 +12,20 @@ def calc_topo_edge_min_max_length(occtopo):
         
     return min_l, max_l
 
+<<<<<<< HEAD
 brep_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree8\\result\\order3.brep"
 stl_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree8\\result\\order3.stl"
 occtopo = py3dmodel.utility.read_brep(brep_filepath)
 solids = py3dmodel.fetch.topo_explorer(occtopo, "solid")
 print len(solids)
+=======
+brep_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree8\\result\\tree_interim40.brep"
+stl_filepath = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\result\\tree_interim40.stl"
+occtopo = py3dmodel.utility.read_brep(brep_filepath)
+solids = py3dmodel.fetch.topo_explorer(occtopo, "solid")
+print len(solids)
+'''
+>>>>>>> f36d4e7c944e2d254e94685f32746a07988e1f58
 minl, maxl = calc_topo_edge_min_max_length(occtopo)
 py3dmodel.utility.write_2_stl_gmsh(occtopo, stl_filepath, mesh_dim = 2, min_length = minl, max_length = maxl)
 display_2dlist = []
@@ -26,3 +35,4 @@ display_2dlist.append([occtopo])
 colour_list.append("BLUE")
 #py3dmodel.utility.visualise(display_2dlist, colour_list)
 print "DONE"
+'''
