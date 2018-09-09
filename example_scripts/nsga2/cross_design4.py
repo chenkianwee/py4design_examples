@@ -6,23 +6,25 @@ from collada import polylist, triangleset
 #=================================================================================
 #IO
 #=================================================================================
-result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_1"
+result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_2"
 core_dae = os.path.join(result_directory, "3dmodel", "dae", "core.dae")
 site_dae = os.path.join(result_directory, "3dmodel", "dae", "site.dae")
 ward_dae = os.path.join(result_directory, "3dmodel", "dae", "ward.dae")
 green_dae = os.path.join(result_directory, "3dmodel", "dae", "green.dae")
-
+ward_dae2 = os.path.join(result_directory, "3dmodel", "dae", "ward_corridor.dae")
+green_dae2 = os.path.join(result_directory, "3dmodel", "dae", "green_corridor.dae")
+core_dae2 = os.path.join(result_directory, "3dmodel", "dae", "core_corridor.dae")
 #=================================================================================
 #PARMAETERS
 #=================================================================================
-parms = [5,6,7,8]
+#parms = [5,6,7,8]
 
 #=================================================================================
 #OPTIMSATION PARAMETERS
 #=================================================================================
 resume = False
-ngeneration = 1
-init_population = 1
+ngeneration = 50
+init_population = 50
 mutation_rate = 0.01
 crossover_rate  = 0.8 
 
@@ -140,16 +142,35 @@ def is_face_blocked(occface, pydir, other_faces):
 
 def eval_built_score(shpatt_list):
     builts = []
+    greens = []
     for shpatt in shpatt_list:
         if shpatt.dictionary["type"] == "ward":
             face = shpatt.shape
             builts.append(face)
+        
+        if shpatt.dictionary["type"] == "green":
+            face = shpatt.shape
+            greens.append(face)
             
-    total = len(builts)
-    return total
+    totalb = len(builts)
+    totalg = len(greens)
+    return totalb, totalg
 
+def eval_corridor_length(shpatt_list):
+    lengths = []
+    recreates = []
+    for shpatt in shpatt_list:
+        if shpatt.dictionary["type"] == "corridor":
+            length = shpatt.get_value("corridor_length")
+            recreate = shpatt.get_value("recreate_length")
+            lengths.append(length)
+            recreates.append(recreate)
+            
+    total_length = sum(lengths)
+    total_recreate = sum(recreates)
+    return total_length, total_recreate
+    
 def find_four_pts(core_poly):
-    vert_dist = 7.2
     hor_dist = 1.2
     xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(core_poly)
     vert_dist = ymax-ymin
@@ -165,13 +186,25 @@ def find_four_pts(core_poly):
     mve_midpt4 = py3dmodel.modify.move_pt(mve_midpt_t, (1,0,0), hor_dist)
     
     return [mve_midpt1, mve_midpt2, mve_midpt3, mve_midpt4]
+
+def find_2_midpts(core_poly):
+    xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(core_poly)
+    vert_dist = ymax-ymin
+    vert_dist_half = vert_dist/2.0
+    
+    midpt = py3dmodel.calculate.face_midpt(core_poly)
+    mve_midpt_d = py3dmodel.modify.move_pt(midpt, (0,-1,0), vert_dist_half)
+    
+    mve_midpt_t = py3dmodel.modify.move_pt(midpt, (0,1,0), vert_dist_half)
+    
+    return [mve_midpt_d, mve_midpt_t]
     
 def load_options():
-    gface_index = [None,None,[1],[0],[1],[0],[1],[0],[0],[2],[1],
-                   None,[0],None,[0],[2],[0],[0],[0,3],[0,2]]
+    gface_index = [None,None,[0],[1],None,[0],[1],[2],[0],[2],None,
+                   [0],None,[0],[2],[1],[1],[2,3],[0,1,2,3]]
     
     shapeatt_list = []
-    for option in range(20):
+    for option in range(19):
         shpatt = shapeattributes.ShapeAttributes()
         filename = "option" + str(option) + ".dae"
         filepath = os.path.join(result_directory, "3dmodel", "dae","options", filename)
@@ -181,6 +214,7 @@ def load_options():
         shpatt.set_key_value("mpt", mpt)
         shpatt.set_key_value("gface_index", gface_index[option])
         shapeatt_list.append(shpatt)
+        
 #        faces = py3dmodel.fetch.topo_explorer(cmpd, "face")
 #        txts = []
 #        fcnt =0
@@ -193,35 +227,107 @@ def load_options():
 #        py3dmodel.utility.visualise([faces, txts],["WHITE", "BLACK"])
     return shapeatt_list
     
-def gen_design_variant(parms, core_poly):
-    pos_pts = find_four_pts(core_poly)
-    green_cmpd = read_collada(green_dae)
-    green_poly = py3dmodel.fetch.topo_explorer(green_cmpd, "face")[0]
-    green_shp = shapeattributes.ShapeAttributes()
-    green_shp.set_shape(green_poly)
-    green_shp.set_key_value("type", "green")
+def load_options_corridor():
+    corridor_length = [12.5, 18.5, 18.5, 12.5, 12.5, 18.5, 25, 12.5, 18.5,
+                       36.3, 6, 18.5, 6, 6, 18.5, 6, 6, 18.5, 0]
     
-    ward_cmpd = read_collada(ward_dae)
-    ward_poly = py3dmodel.fetch.topo_explorer(ward_cmpd, "face")[0]
-    ward_shp = shapeattributes.ShapeAttributes()
-    ward_shp.set_shape(ward_poly)
-    ward_shp.set_key_value("type", "ward")
+    recreate_length = [31.37, 48.97, 20.57, 16.7, 37.05, 35.5, 46.3, 32.3, 41.37,
+                       50.15, 22.7, 15.5, 43.55, 13.7, 29.12, 35.7, 35.7, 36.35,
+                       10.2, 10.2]
+    
+    shapeatt_list = []
+    for option in range(19):
+        shpatt = shapeattributes.ShapeAttributes()
+        filename = "option" + str(option) + ".dae"
+        filepath = os.path.join(result_directory, "3dmodel", "dae","corridors", filename)
+        cmpd = read_collada(filepath)
+        mpt = py3dmodel.calculate.get_centre_bbox(cmpd)
+        shpatt.set_shape(cmpd)
+        shpatt.set_key_value("mpt", mpt)
+        shpatt.set_key_value("corridor_length", corridor_length[option])
+        shpatt.set_key_value("recreate_length", recreate_length[option])
+        
+        shapeatt_list.append(shpatt)
+        
+    return shapeatt_list
+
+def gen_design_variant(parms, core_poly):
+    parms1 = parms[0:2]
+    parms2 = parms[2:]
+    
+    pos_pts = find_four_pts(core_poly)
+    corr_pts = find_2_midpts(core_poly)
+    
+    #the space on the sides
+    cmpd1 = read_collada(green_dae)
+    poly1 = py3dmodel.fetch.topo_explorer(cmpd1, "face")[0]
+    shp1 = shapeattributes.ShapeAttributes()
+    shp1.set_shape(poly1)
+    if parms1[0] == 0:
+        shp1.set_key_value("type", "ward")
+    else:
+        shp1.set_key_value("type", "green")
+    
+    
+    
+    cmpd2 = read_collada(ward_dae)
+    poly2 = py3dmodel.fetch.topo_explorer(cmpd2, "face")[0]
+    shp2 = shapeattributes.ShapeAttributes()
+    shp2.set_shape(poly2)
+    if parms1[1] == 0:
+        shp2.set_key_value("type", "ward")
+    else:
+        shp2.set_key_value("type", "green")
+    
+    cmpd_corr1 = read_collada(green_dae2)
+    shp3 = shapeattributes.ShapeAttributes()
+    shp3.set_key_value("type", "corridor")
+    shp3.set_key_value("corridor_length", 0)
+    shp3.set_key_value("recreate_length", 14.4)
+    corr_face1 = py3dmodel.fetch.topo_explorer(cmpd_corr1, "face")[0]
+    shp3.set_shape(corr_face1)
+    
+    cmpd_corr2 = read_collada(ward_dae2)
+    shp4 = shapeattributes.ShapeAttributes()
+    shp4.set_key_value("type", "corridor")
+    shp4.set_key_value("corridor_length", 0)
+    shp4.set_key_value("recreate_length", 14.4)
+    corr_face2 = py3dmodel.fetch.topo_explorer(cmpd_corr2, "face")[0]
+    shp4.set_shape(corr_face2)
+    
+    cmpd_corr3 = read_collada(core_dae2)
+    shp5 = shapeattributes.ShapeAttributes()
+    shp5.set_key_value("type", "corridor")
+    shp5.set_key_value("corridor_length", 56.94)
+    shp5.set_key_value("recreate_length", 0)
+    shp5.set_shape(cmpd_corr3)
     
     shapeatt_list = load_options()
-    variant_att = [green_shp, ward_shp]
+    corr_shape_list = load_options_corridor()
+    variant_att = [shp1, shp2, shp3, shp4, shp5]
     #py3dmodel.utility.visualise([[core_poly, green_poly, ward_poly]])
+    corr_exception = [4,7,12,15,16]
+    
     pcnt =0
-    for parm in parms:
+    for parm in parms2:
         #choose the combi
         shapeatt_list_left = shapeatt_list[0:19]
         shapeatt_list_right = shapeatt_list_left[:]
-        shapeatt_list_right[10] = shapeatt_list[19]
         if pcnt == 0:
             shapeatt = shapeatt_list_left[parm]
             opt_cmpd = shapeatt.shape
             xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(opt_cmpd)
             orig_pt = (xmax,ymax,zmin)
             opt_cmpd = py3dmodel.modify.move(orig_pt, pos_pts[pcnt], opt_cmpd)
+            
+            corr = corr_shape_list[parm]
+            corr_cmpd = corr.shape
+            xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(corr_cmpd)
+            orig_pt = (xmax,ymax,zmin)
+            if parm in corr_exception:
+                orig_pt = (xmax, ymax-3, zmin)
+            corr_cmpd = py3dmodel.modify.move(orig_pt, corr_pts[0], corr_cmpd)
+            
 
         if pcnt == 1:
             shapeatt = shapeatt_list_right[parm]
@@ -231,6 +337,16 @@ def gen_design_variant(parms, core_poly):
             xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(opt_cmpd)
             orig_pt = (xmin,ymax,zmin)
             opt_cmpd = py3dmodel.modify.move(orig_pt, pos_pts[pcnt], opt_cmpd)
+            
+            corr = corr_shape_list[parm]
+            corr_cmpd = corr.shape
+            cmpt = corr.get_value("mpt")
+            corr_cmpd = py3dmodel.modify.rotate(corr_cmpd,cmpt, (0,1,0),180)
+            xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(corr_cmpd)
+            orig_pt = (xmin,ymax,zmin)
+            if parm in corr_exception:
+                orig_pt = (xmin,ymax-3,zmin)
+            corr_cmpd = py3dmodel.modify.move(orig_pt, corr_pts[0], corr_cmpd)
 
         if pcnt == 2:
             shapeatt = shapeatt_list_left[parm]
@@ -241,6 +357,16 @@ def gen_design_variant(parms, core_poly):
             orig_pt = (xmax,ymin,zmin)
             opt_cmpd = py3dmodel.modify.move(orig_pt, pos_pts[pcnt], opt_cmpd)
             #py3dmodel.utility.visualise([[opt_cmpd], [core_poly]])
+            
+            corr = corr_shape_list[parm]
+            corr_cmpd = corr.shape
+            cmpt = corr.get_value("mpt")
+            corr_cmpd = py3dmodel.modify.rotate(corr_cmpd,cmpt, (1,0,0),180)
+            xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(corr_cmpd)
+            orig_pt = (xmax,ymin,zmin)
+            if parm in corr_exception:
+                orig_pt = (xmax,ymin+3,zmin)
+            corr_cmpd = py3dmodel.modify.move(orig_pt, corr_pts[1], corr_cmpd)
 
         if pcnt == 3:
             shapeatt = shapeatt_list_right[parm]
@@ -254,6 +380,18 @@ def gen_design_variant(parms, core_poly):
             orig_pt = (xmin,ymin,zmin)
             opt_cmpd = py3dmodel.modify.move(orig_pt, pos_pts[pcnt], opt_cmpd)
             
+            corr = corr_shape_list[parm]
+            corr_cmpd = corr.shape
+            cmpt = corr.get_value("mpt")
+            corr_cmpd = py3dmodel.modify.rotate(corr_cmpd,cmpt, (0,1,0),180)
+            cmpt = py3dmodel.calculate.get_centre_bbox(corr_cmpd)
+            corr_cmpd = py3dmodel.modify.rotate(corr_cmpd,cmpt, (1,0,0),180)
+            
+            xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(corr_cmpd)
+            orig_pt = (xmin,ymin,zmin)
+            if parm in corr_exception:
+                orig_pt = (xmin,ymin+3,zmin)
+            corr_cmpd = py3dmodel.modify.move(orig_pt, corr_pts[1], corr_cmpd)
             
         gface_index = shapeatt.get_value("gface_index")
         faces = py3dmodel.fetch.topo_explorer(opt_cmpd, "face")
@@ -281,6 +419,16 @@ def gen_design_variant(parms, core_poly):
             g_att.set_key_value("type", "green")
             variant_att.append(g_att)
             
+        corr_length = corr.get_value("corridor_length")
+        rec_length = corr.get_value("recreate_length")
+
+        corr_att = shapeattributes.ShapeAttributes()
+        corr_att.set_shape(corr_cmpd)
+        corr_att.set_key_value("type", "corridor")
+        corr_att.set_key_value("corridor_length", corr_length)
+        corr_att.set_key_value("recreate_length", rec_length)
+        variant_att.append(corr_att)
+            
         pcnt+=1
     
     return variant_att
@@ -297,11 +445,16 @@ def generate_gene_dict_list():
     int_choice
     '''
     dict_list = []
-    
+    for hcnt in range(2):
+        gene_dict = {}
+        gene_dict["type"] = "int_range"
+        gene_dict["range"] = [0,2,1]
+        dict_list.append(gene_dict)
+        
     for gcnt in range(4):
         gene_dict = {}
         gene_dict["type"] = "int_range"
-        gene_dict["range"] = [0,18,1]
+        gene_dict["range"] = [0,19,1]
             
         dict_list.append(gene_dict)
         
@@ -322,7 +475,7 @@ time1 = time.clock()
 core_cmpd = read_collada(core_dae)
 core_poly = py3dmodel.fetch.topo_explorer(core_cmpd, "face")[0]
 core_solid = py3dmodel.construct.extrude(core_poly, (0,0,1), 3)
-
+facades, roofs, floors = urbangeom.identify_building_surfaces(core_solid)
 site_cmpd = read_collada(site_dae)
 site_poly = py3dmodel.fetch.topo_explorer(site_cmpd, "face")[0]
 
@@ -352,11 +505,14 @@ for gencnt in range(ngeneration):
         #EVAL DESIGN VARIANT
         #==================================================
         view_score, shpatts = eval_view(variant_att, core_poly, site_poly)
-        built_score = eval_built_score(variant_att)
-        
+        built_score, green_score = eval_built_score(variant_att)
+        corr_length, recreate_len = eval_corridor_length(variant_att)
         description_string = "design variant" + str(ind_id) + "\n"+ \
                             "view_score:" + str(round(view_score,3)) + "\n"+ \
-                            "built_score:" + str(built_score) + "\n"
+                            "built_score:" + str(built_score) + "\n" + \
+                            "num_green:" + str(green_score) + "\n" + \
+                            "corr_length:" + str(corr_length) + "\n" +\
+                            "recreate_length:" + str(recreate_len) + "\n"
         
         face_list = []
         other_face_list = []
@@ -380,17 +536,21 @@ for gencnt in range(ngeneration):
             else:
                 other_face_list.append(face)
         
-        other_face_list.append(core_solid)
+        other_face_list.extend(facades)
+        other_face_list.extend(floors)
         py3dmodel.export_collada.write_2_collada_falsecolour(face_list,vscore_list, "view", dv_dae,
                                                              description_str = description_string, 
                                                              minval = 0.0, maxval = 1.0, 
                                                              other_occface_list = other_face_list + good_face_list+bad_face_list,
-                                                             other_occedge_list = view_edge_list)
+                                                             inverse = True)
         
         print "VIEW:", round(view_score,2), "BUILT:", built_score
         
+        
         ind.set_score(0,view_score)
         ind.set_score(1,built_score)
+        derivedparams = [green_score, corr_length, recreate_len]
+        ind.add_derivedparams(derivedparams)
     
     #==================================================
     #NSGA FEEDBACK 
@@ -403,41 +563,3 @@ for gencnt in range(ngeneration):
 print "DONE"
 time3 = time.clock() 
 print "TIME TAKEN", (time3-time1)/60.0
-
-
-##py3dmodel.utility.visualise([[core_poly], circles])
-#
-#shp_list = []
-#
-#
-#
-#avg_view_score, shp_list2 = eval_view(variant_att, core_poly, site_poly)
-#
-#face_list = []
-#other_face_list = []
-#vscore_list = []
-#good_face_list = []
-#bad_face_list = []
-#view_edge_list = []
-#w_cnt = 0
-#for shp in shp_list2:
-#    face = shp.shape
-#    if shp.dictionary["type"] == "ward":
-#        vscore = shp.dictionary["view_score"]
-#        vscore_list.append(vscore)
-#        face_list.append(face)
-#        good_faces = shp.get_value("good_faces")
-#        good_face_list.extend(good_faces)
-#        bad_faces = shp.get_value("bad_faces")
-#        bad_face_list.extend(bad_faces)
-#        view_edges = shp.get_value("view_edges")
-#        view_edge_list.extend(view_edges)
-#        w_cnt+=1
-#    else:
-#        other_face_list.append(face)
-#        
-#
-#print avg_view_score, w_cnt
-#
-#py3dmodel.utility.visualise([face_list, other_face_list, view_edge_list, bad_face_list, good_face_list], 
-#                            ["WHITE", "GREEN", "BLACK", "RED", "BLUE"])

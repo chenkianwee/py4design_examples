@@ -35,8 +35,8 @@ for ind in inds2:
     area_list.append(10)
     colour_list.append("black")
    
-pyoptimise.draw_graph.scatter_plot3d(pt3d_list, colour_list, area_list, labellist = [], xlabel = "shgfai", ylabel = "dfai", zlabel = "far", title = "", 
-                                              savefile = res_img_filepath, elev=60, azim = 240)
+#pyoptimise.draw_graph.scatter_plot3d(pt3d_list, colour_list, area_list, labellist = [], xlabel = "shgfai", ylabel = "dfai", zlabel = "far", title = "", 
+#                                              savefile = res_img_filepath, elev=60, azim = 240)
 
 pyoptimise.draw_graph.scatter_plot_surface3d(pt3d_list, colour_list, area_list, labellist = [], xlabel = "shgfai", ylabel = "dfai", zlabel = "far", title = "", 
                                               savefile = res_img_filepath, elev=60, azim = 240)

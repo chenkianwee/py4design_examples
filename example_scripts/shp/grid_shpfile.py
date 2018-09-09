@@ -1,7 +1,8 @@
 from py4design import py3dmodel, shp2citygml, urbangeom, shapeattributes
 import shapefile
 shpfile = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\brief\\shp\\site_bdry\\site_bdry.shp"
-shpfile_res = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\brief\\shp\\site_bdry_grid\\site_bdry10_10.shp"
+shpfile_res = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\brief\\shp\\site_bdry_grid\\site_bdry5_5.shp"
+shpfile_res2 = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\brief\\shp\\site_bdry_offset\\site_bdry_10.shp"
 xdim = 5 #metres
 ydim = 5 #metres
 offset = 10 #metres
@@ -72,7 +73,7 @@ def write_poly_shpfile(occface_list, shp_filepath):
 poly_list = read_shpfile(shpfile)
 site_boundary_face = poly_list[0].dictionary["shape"]
 site_boundary_face =py3dmodel.construct.make_offset(site_boundary_face, offset*-1)
-print site_boundary_face
+write_poly_shpfile([site_boundary_face], shpfile_res2)
 grid_pts, grid_faces = urbangeom.landuse_2_grid(site_boundary_face, xdim, ydim)
 py3dmodel.utility.visualise([grid_faces])
 write_poly_shpfile(grid_faces, shpfile_res)

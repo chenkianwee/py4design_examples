@@ -8,10 +8,10 @@ livexmlfile =  os.path.join(parent_path, "example_files", "xml", "live.xml")
 deadxmlfile =  os.path.join(parent_path, "example_files", "xml", "dead.xml")
 overallxmlfile = os.path.join(parent_path, "example_files", "xml", "results", "overall.xml")
 
-result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_1"
-livexmlfile =  os.path.join(result_directory, "xml", "live.xml")
-deadxmlfile =  os.path.join(result_directory, "xml", "dead.xml")
-overallxmlfile = os.path.join(result_directory,"xml", "overall.xml")
+result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_2"
+livexmlfile =  os.path.join(result_directory, "xml","archive", "1", "live.xml")
+deadxmlfile =  os.path.join(result_directory, "xml", "archive", "1", "dead.xml")
+overallxmlfile = os.path.join(result_directory,"xml", "archive", "1", "overall.xml")
 
 pyoptimise.analyse_xml.combine_xml_files(livexmlfile, deadxmlfile,overallxmlfile)
 pyoptimise.analyse_xml.rmv_unevaluated_inds(overallxmlfile)

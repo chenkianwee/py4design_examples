@@ -10,10 +10,10 @@ overallxmlfile = os.path.join(parent_path, "example_files", "xml", "dead.xml")
 pareto_file =  os.path.join(parent_path, "example_files", "xml", "results", "pareto.xml")
 npareto_file = os.path.join(parent_path, "example_files", "xml", "results", "npareto.xml")
 
-result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_1"
-overallxmlfile = os.path.join(result_directory,"xml", "overall.xml")
-pareto_file =  os.path.join(result_directory, "xml", "pareto.xml")
-npareto_file = os.path.join(result_directory, "xml", "npareto.xml")
+result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_2"
+overallxmlfile = os.path.join(result_directory,"xml","archive", "1", "overall.xml")
+pareto_file =  os.path.join(result_directory, "xml", "archive", "1", "pareto.xml")
+npareto_file = os.path.join(result_directory, "xml", "archive", "1", "npareto.xml")
 
 inds = pyoptimise.analyse_xml.get_inds_frm_xml(overallxmlfile)
 
