@@ -499,6 +499,7 @@ for gencnt in range(ngeneration):
         ind_id = ind.id
         dv_dae = os.path.join(result_directory, "variant", "dae", str(ind_id) + ".dae")
         parms = ind.genotype.values
+        parms = [0,0,0,0,0,0]
         variant_att = gen_design_variant(parms, core_poly)
 
         #==================================================

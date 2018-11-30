@@ -1,8 +1,8 @@
 from py4design import py3dmodel, shp2citygml
 import shapefile
 
-bdry_shp_file = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\shp\\site_bdry\\site_bdry.shp"
-bdry_dae_file = "F:\\kianwee_work\\nus\\201804-201810\\hdb\\result\\dae\\site_bdry.dae"
+bdry_shp_file = "F:\\kianwee_work\\princeton\\2018_06_to_2018_12\\cloud_evo_project\\3dmodel\\shp\\archetypes.shp"
+bdry_dae_file = "F:\\kianwee_work\\princeton\\2018_06_to_2018_12\\cloud_evo_project\\3dmodel\\dae\\archetypes.dae"
 #===========================================================================================
 #GET THE SHAPEFILE BOUNDARY
 #===========================================================================================

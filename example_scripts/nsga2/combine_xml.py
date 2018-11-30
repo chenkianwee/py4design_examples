@@ -8,7 +8,7 @@ livexmlfile =  os.path.join(parent_path, "example_files", "xml", "live.xml")
 deadxmlfile =  os.path.join(parent_path, "example_files", "xml", "dead.xml")
 overallxmlfile = os.path.join(parent_path, "example_files", "xml", "results", "overall.xml")
 
-result_directory = "F:\\kianwee_work\\nus\\201804-201810\\farm\\result_2"
+result_directory = "F:\\kianwee_work\\princeton\\2018_06_to_2018_12\\hdb\\result3"
 livexmlfile =  os.path.join(result_directory, "xml","archive", "1", "live.xml")
 deadxmlfile =  os.path.join(result_directory, "xml", "archive", "1", "dead.xml")
 overallxmlfile = os.path.join(result_directory,"xml", "archive", "1", "overall.xml")
