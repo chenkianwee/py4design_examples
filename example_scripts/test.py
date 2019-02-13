@@ -1,4 +1,4 @@
-from modulefinder import ModuleFinder
-filepath = "F:\\kianwee_work\\spyder_workspace\\py4design_examples\\example_scripts\\citygml\\analyse_citygml_density.py"
-finder = ModuleFinder()
-finder.run_script(filepath)
+from dateutil.parser import parse
+
+date = parse("2018-06-29-08:15:27.243860+08:00")
+print date

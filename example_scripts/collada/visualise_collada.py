@@ -10,7 +10,7 @@ from py4design import py3dmodel
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
 dae_file = os.path.join(parent_path, "example_files", "dae", "example1.dae")
-dae_file = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree2\\result\\order1branches.dae"
+dae_file = "F:\\kianwee_work\\princeton\\2018_06_to_2018_12\\coldtube\\model3d\\dae\\coldtube_viz.dae"
 
 #or just insert a dae and citygml file you would like to analyse here:
 #dae_file = "F:\\kianwee_work\\smart\\nov2017-mar2018\\shp4juan\\dae\\area_c_4_cooling_spore.dae"

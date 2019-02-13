@@ -4,6 +4,7 @@ import datetime
 
 import numpy as np
 
+import PyQt5
 import pyqtgraph as pg
 from pyqtgraph.parametertree import Parameter, ParameterTree
 from pyqtgraph.parametertree import types as pTypes

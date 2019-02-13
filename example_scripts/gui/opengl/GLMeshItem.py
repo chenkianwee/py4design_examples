@@ -5,7 +5,7 @@ Simple examples demonstrating the use of GLMeshItem.
 """
 
 ## Add path to library (just for examples; you do not need this)
-import initExample
+#import initExample
 
 import PyQt5
 from pyqtgraph.Qt import QtCore, QtGui
@@ -31,7 +31,7 @@ import numpy as np
 
 verts = np.array([
     [0, 0, 0],
-    [2, 0, 0],
+    [20, 0, 0],
     [1, 2, 0],
     [1, 1, 1],
 ])
@@ -42,22 +42,18 @@ faces = np.array([
     [1, 2, 3]
 ])
 colors = np.array([
-    [11, 255, 255, 1],
-    [255, 1, 0, 1],
+    [0, 1, 1, 1],
+    [1, 1, 0, 1],
     [0, 0, 1, 1],
-    [1, 1, 0, 1]
+    [0, 0, 0, 1]
 ])
 
 ## Mesh item will automatically compute face normals.
-m1 = gl.GLMeshItem(vertexes=verts, colors=colors, faces=faces, smooth=False)
+m1 = gl.GLMeshItem(vertexes=verts, faceColors=colors, faces=faces, smooth=False,
+                   drawFaces=False, drawEdges=True, edgeColor=(1, 1, 1, 1))
 m1.translate(5, 5, 0)
-m1.setGLOptions('additive')
+#m1.setGLOptions('additive')
 w.addItem(m1)
-
-
-
-    
-
 
 ## Start Qt event loop unless running in interactive mode.
 if __name__ == '__main__':

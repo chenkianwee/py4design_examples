@@ -2,11 +2,11 @@ import sys
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.exporters
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QApplication, QDialog
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import PyQt4.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtGui import QApplication, QDialog
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+import PyQt5.Qwt5 as Qwt
 from main_windows_resizable_GG import Ui_MainWindow
 from pyqtgraph.parametertree import Parameter, ParameterTree
 import shutil
