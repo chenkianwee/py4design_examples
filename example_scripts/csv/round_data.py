@@ -5,14 +5,14 @@ from datetime import timedelta
 #============================================================================================================================================
 #INPUTS
 #============================================================================================================================================
-csv_path = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\coldtube_data\\coldtube_mrt_ct_ph26_mrt_avg.csv"
-csv_path2 = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\coldtube_data\\coldtube_mrt_ct_ph26_mrt_avg_1min.csv"
+csv_path = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\coldtube_data\\coldtube_mrt_ct_ph26_mrt1090.csv"
+csv_path2 = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\coldtube_data_15mins\\coldtube_mrt_ct_ph26_mrt1090_15mins.csv"
 
-str_start_date = "2019-01-16T10:18:57.000"
+str_start_date = "2018-10-25T17:30:00.000"
 start_date = parse(str_start_date)
-str_end_date = "2019-01-29T08:38:22.000"
+str_end_date = "2019-01-29T08:45:00.000"
 end_date = parse(str_end_date)
-tdelta = timedelta(minutes=1)
+tdelta = timedelta(minutes=15)
 #============================================================================================================================================
 #FUNCTIONS
 #============================================================================================================================================
@@ -59,20 +59,25 @@ def csv2dict(csv_path):
 date_list = gen_dates(start_date, end_date, tdelta)
 ndates = len(date_list)
 csv_dict, titles = csv2dict(csv_path)
-
+key_list = csv_dict.keys()
 print "NUMBER OF DATES", ndates
 avg_data_list = []
-for cnt in range(ndates-1):
+for cnt in range(ndates):
     avg_datas = []
     first_date = date_list[cnt]
-    second_date = date_list[cnt+1]
-    key_list = csv_dict.keys()
+    drange = tdelta/2
+    first_date_min = first_date - drange
+    first_date_max = first_date + drange        
+    print "... progress ...", cnt+1, "/", ndates
     data_list_list = []
+    rmv_key_list = []
     for key in key_list:
-        if first_date <= key < second_date:
+        if first_date_min <= key < first_date_max:
             data_list = csv_dict[key]
             data_list_list.append(data_list)
+            rmv_key_list.append(key)
     
+    key_list = [elem for elem in key_list if elem not in rmv_key_list]
     first_date_str = first_date.strftime("%Y-%m-%dT%H:%M:%S.000")
     avg_datas.append(first_date_str)
     if data_list_list:
@@ -110,7 +115,8 @@ for ad in avg_data_list:
         else:
             strx = strx + d + ","
         ad_cnt+=1
-    
+        
 r_f = open(csv_path2, "w+")
 r_f.write(strx)
 r_f.close()
+print "*** Exported ...", csv_path2
