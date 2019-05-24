@@ -1,4 +1,2 @@
-x = "'TesT'"
-y = x.replace("'", "")
-print y.lower()
-print y
+x = {"hello": 1, "world":2}
+print x.keys()
