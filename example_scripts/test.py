@@ -1,2 +1,4 @@
-x = {"hello": 1, "world":2}
-print x.keys()
+for i in range(20):
+    i = i%10
+    j = i/10
+    print i,j
