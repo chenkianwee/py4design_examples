@@ -273,17 +273,21 @@ def extrude_bldg(ftprint, terrain, lasfile_list, tzmin, tzmax):
             
 def remove_hole(occface):
     wire_list = py3dmodel.fetch.topo_explorer(occface, "wire")
-    face_nrml = py3dmodel.calculate.face_normal(occface)
-    wire_face = None
-    for wire in wire_list:
-        #first check if there are holes and which wire are holes
-        pyptlist = py3dmodel.fetch.points_frm_wire(wire)
-        is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, face_nrml)
-        #create face from the wires
-        if is_anticlockwise:
-            wire_face = py3dmodel.construct.make_face_frm_wire(wire)
-
-    return wire_face
+    nwires = len(wire_list)
+    if nwires > 1:
+        face_nrml = py3dmodel.calculate.face_normal(occface)
+        wire_face = None
+        for wire in wire_list:
+            #first check if there are holes and which wire are holes
+            pyptlist = py3dmodel.fetch.points_frm_wire(wire)
+            is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, face_nrml)
+            #create face from the wires
+            if is_anticlockwise:
+                wire_face = py3dmodel.construct.make_face_frm_wire(wire)
+    
+        return wire_face
+    else:
+        return occface
             
 def process_complex_face(complex_face, pyptlist, tzmin, tzmax):
     #first divide up the complex face

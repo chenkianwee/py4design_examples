@@ -3,18 +3,17 @@ import time
 
 from py4design import py3dmodel, shp2citygml, shapeattributes
 import shapefile
-
 #==============================================================
 #SPECIFY THE RESULT DIRECTORY
 #==============================================================
-result_directory = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\brep\\main_campus"
-filename = "impervious_surface.brep"
+result_directory = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\brep\\context"
+filename = "impervious_surface_xx.brep"
 #===========================================================================================
 #SPECIFY THE GRID AND SURFACE SHP FILE
 #===========================================================================================
-grid_shpfile = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\main_campus_grid\\main_campus_grid.shp"
-#srf_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\roads_2015_princeton\\roads_2015_princeton.shp"
-srf_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\others_2015_princeton\\others_2015_princeton.shp"
+grid_shpfile = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\princeton_context_grid\\princeton_context_grid_10by10km.shp"
+srf_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\roads_2015_princeton\\roads_2015_princeton.shp"
+#srf_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\others_2015_princeton\\others_2015_princeton.shp"
 #==============================================================
 #SPECIFY THE TERRAIN DIRECTORY
 #==============================================================
@@ -158,10 +157,13 @@ def boolean_x_w_ylist(xface, y_occtopos, mv_down = -10, extrude = 20, common = T
 def project_road2terrain(road_faces, road_holes, terrain_shell, tzmin, tzmax):
     face_list = []
     for r in road_faces:
+        #extrude_r = py3dmodel.construct.extrude(r, [0,0,1], 30)
+        #py3dmodel.utility.visualise([[extrude_r],[terrain_shell]])
         faces = boolean_x_w_ylist(r, [terrain_shell], mv_down = tzmin-10, extrude = tzmax+10)
         face_list.extend(faces)
     
     face_cmpd = py3dmodel.construct.make_compound(face_list)
+    #py3dmodel.utility.visualise([[face_cmpd],[terrain_shell]])
     
     for h in road_holes:
         hole_faces = boolean_x_w_ylist(h, [face_cmpd], mv_down = tzmin-10, extrude = tzmax+10, common = False)
@@ -203,6 +205,8 @@ for r in srf_list:
 #    if rid == 26123:    
 #        py3dmodel.utility.visualise([[rshp]])
     rshp_list.append(rshp)
+    
+print len(rshp_list)
 
 uid_list = []
 display_list = []
@@ -212,7 +216,7 @@ for g in grid_shpatt_list:
     uid = g.get_value("id")
     uid_list.append(uid)
     print uid_list
-    uid_list2 = [163,162]
+    uid_list2 = [27, 26, 25, 24, 31, 30, 29, 28, 3, 2, 7, 6, 5, 4, 11, 10, 9]
     if uid in uid_list2:
         pass
     else:
@@ -229,7 +233,7 @@ for g in grid_shpatt_list:
         rcnt = 0
         for r in id_rs:
             print "*******Generating Folder", uid, "Surface", rcnt+1, "/", nr, "***************"
-            #if uid == 96 and rcnt+1 == 4:
+            #if uid == 10 and rcnt+1 != 65:
             faces, holes = separate_face_holes(r)
             faces = redraw_faces(faces)
             holes = redraw_faces(holes)
@@ -240,6 +244,7 @@ for g in grid_shpatt_list:
                 road_face_cmpd = project_road2terrain(faces, holes, terrain_shell, tzmin, tzmax)
                 r_list.append(road_face_cmpd)
                 #py3dmodel.utility.visualise([[road_face_cmpd], [terrain_shell]], ["RED", "GREEN"])
+                
             rcnt+=1
         
         if r_list:

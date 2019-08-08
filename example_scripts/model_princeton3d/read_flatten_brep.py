@@ -5,9 +5,9 @@ from py4design import py3dmodel
 from py4design import urbangeom
 
 #specify the pt cloud directory
-file_dir = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\brep\\main_campus"
+file_dir = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\brep\\context"
 filename = "impervious_surface.brep"
-result_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\flatten\\flatten_srf_main_campus.shp"
+result_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\flatten\\flatten_srf_context.shp"
 #============================================================================================================
 #FUNCTION
 #============================================================================================================
