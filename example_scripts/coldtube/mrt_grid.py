@@ -38,5 +38,5 @@ face = py3dmodel.modify.move(midpt, (midpt[0],midpt[1],zmin),face)
 face = py3dmodel.fetch.topo_explorer(face, "face")[0]
 face = py3dmodel.construct.make_offset(face, -0.2)
 grids = py3dmodel.construct.grid_face(face, 0.3,0.3)
-py3dmodel.export_collada.write_2_collada(dae_filepath, occface_list = grids)
-#py3dmodel.utility.visualise([grids, vertex_list], ["RED", "BLACK"])
+#py3dmodel.export_collada.write_2_collada(dae_filepath, occface_list = grids)
+py3dmodel.utility.visualise([grids, vertex_list], ["RED", "BLACK"])

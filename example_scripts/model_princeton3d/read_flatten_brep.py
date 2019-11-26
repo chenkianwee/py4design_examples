@@ -16,19 +16,50 @@ def write_poly_shpfile(occface_list, shp_filepath):
     w.field('index','N',10)
     cnt=0
     for occface in occface_list:
-        pyptlist = py3dmodel.fetch.points_frm_occface(occface)
-        is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
-        if is_anticlockwise:
-            pyptlist.reverse()
-        pyptlist2d = []
-        for pypt in pyptlist:
-            x = pypt[0]
-            y = pypt[1]
-            pypt2d = [x,y]
-            pyptlist2d.append(pypt2d)
-        w.poly([pyptlist2d])
-        w.record(cnt)
+        wires = py3dmodel.fetch.topo_explorer(occface, "wire")
+        nwires = len(wires)
+        
+        if nwires > 1:
+            nrml = py3dmodel.calculate.face_normal(occface)
+            poly_shp_list = []
+            for wire in wires:
+                pyptlist = py3dmodel.fetch.points_frm_wire(wire)
+                is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, nrml)
+                is_anticlockwise2 = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
+                if is_anticlockwise: #means its a face not a hole
+                    if is_anticlockwise2:
+                        pyptlist.reverse()
+                else: #means its a hole not a face
+                    if not is_anticlockwise2:
+                        pyptlist.reverse()
+                
+                pyptlist2d = []
+                for pypt in pyptlist:
+                    x = pypt[0]
+                    y = pypt[1]
+                    pypt2d = [x,y]
+                    pyptlist2d.append(pypt2d)
+                poly_shp_list.append(pyptlist2d)
+                
+            w.poly(poly_shp_list)
+            w.record(cnt)
+                    
+        else:
+            pyptlist = py3dmodel.fetch.points_frm_occface(occface)
+            is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
+            if is_anticlockwise:
+                pyptlist.reverse()
+            pyptlist2d = []
+            for pypt in pyptlist:
+                x = pypt[0]
+                y = pypt[1]
+                pypt2d = [x,y]
+                pyptlist2d.append(pypt2d)
+        
+            w.poly([pyptlist2d])
+            w.record(cnt)
         cnt+=1
+    w.close()
 
 #============================================================================================================
 #FUNCTION

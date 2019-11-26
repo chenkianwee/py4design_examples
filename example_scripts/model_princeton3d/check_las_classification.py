@@ -1,11 +1,12 @@
 import os
 
 import shapefile
+import numpy as np
 from py4design import py3dmodel
 from laspy.file import File
 
 #specify the pt cloud directory
-pt_cloud_dir = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\las2"
+pt_cloud_dir = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\las"
 bdry_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\las_bdry\\las_bdry.shp"
 #============================================================================================================
 #FUNCTION
@@ -78,6 +79,19 @@ def get_las_file_bdry(las_filepath):
     mn.extend(mx)
     return mn, lasfile
 
+def extract_trees(las_filepath):
+    lasfile = File(las_filepath, mode='r')
+    #filter all single return points of classes 3, 4, or 5 (vegetation)
+    try:
+        #tree_pts = np.logical_or(lasfile.raw_classification == 3, lasfile.raw_classification == 4, lasfile.raw_classification == 5)
+        veg = np.where(lasfile.raw_classification == 6)
+        coords = np.vstack((lasfile.x, lasfile.y, lasfile.z)).transpose()
+        valid_pts = np.take(coords, veg, axis = 0)[0]
+        print len(valid_pts)
+        lasfile.close()
+    except:
+        print "not classified"
+
 def make_bdry_face2d(mn_mx_list):
     xmin = mn_mx_list[0]
     ymin = mn_mx_list[1]
@@ -97,8 +111,6 @@ for dirx in list_dir:
     folder_dirs = os.listdir(las_folder)
     lasfilename = find_las_file(folder_dirs)
     las_filepath = os.path.join(pt_cloud_dir, dirx, lasfilename)
-    las_bdry, lasfile = get_las_file_bdry(las_filepath)
-    bdry_face = make_bdry_face2d(las_bdry)
-    bdry_face_list.append(bdry_face)
+    extract_trees(las_filepath)
     
-write_poly_shpfile(bdry_face_list, bdry_shp_file)
+#write_poly_shpfile(bdry_face_list, bdry_shp_file)

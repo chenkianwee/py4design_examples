@@ -18,9 +18,13 @@ def avg_daysim_res(res):
     return illum_ress
         
 #create all the relevant folders 
-current_path = os.path.dirname(__file__)
+current_path = "C:\\test_solar"
+#os.path.dirname(__file__)
+print current_path
 base_filepath = os.path.join(current_path, 'base.rad')
+print base_filepath
 data_folderpath = os.path.join(current_path, 'py2radiance_data')
+print data_folderpath
 display2dlist = []
 #initialise py2radiance 
 rad = py2radiance.Rad(base_filepath, data_folderpath)
@@ -62,10 +66,12 @@ rad.create_rad_input_file()
 
 #once the geometries are created initialise daysim
 daysim_dir = os.path.join(current_path, 'daysim_data')
+print daysim_dir
 rad.initialise_daysim(daysim_dir)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
 #a 60min weatherfile is generated
-weatherfilepath = os.path.join(parent_path, "py2radiance", "SGP_Singapore.486980_IWEC.epw")
+#weatherfilepath = os.path.join(parent_path, "py2radiance", "SGP_Singapore.486980_IWEC.epw")
+weatherfilepath = "F:\\kianwee_work\\digital_repository\\epw\\USA_NJ_Trenton-Mercer.County.AP.724095_TMY3.epw"
 rad.execute_epw2wea(weatherfilepath)
 rad.execute_radfiles2daysim()
 
@@ -73,7 +79,7 @@ rad.execute_radfiles2daysim()
 rad.set_sensor_points(sensor_pts,sensor_dirs)
 rad.create_sensor_input_file()
 rad.write_default_radiance_parameters()#the default settings are the complex scene 1 settings of daysimPS
-rad.execute_gen_dc("lux") #lux
+rad.execute_gen_dc("w/m2") #w/m2 or lux
 rad.execute_ds_illum()
 res = rad.eval_ill_per_sensor()
 print len(res[0])
@@ -81,5 +87,5 @@ lx_ress = avg_daysim_res(res)
 print lx_ress
 
 print "DONE"
-#py3dmodel.utility.visualise_falsecolour_topo(display2dlist, watt_ress, other_occtopo_2dlist = [edges], 
-#                                             other_colour_list = ['WHITE'] )
+py3dmodel.utility.visualise_falsecolour_topo(display2dlist, lx_ress, other_occtopo_2dlist = [edges], 
+                                             other_colour_list = ['WHITE'] )

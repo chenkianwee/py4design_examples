@@ -189,12 +189,16 @@ tcf_u_80_list = []
 #=================================================================================================================================
 for cnt in range(len(v_list1)):
     #CALC THE NEUTRAL TEMPERATURE AND THE 90% AND 80% SATISFACTION ZONE
+    #oct mean temp
     if 0<=cnt<=600:
         mean_mth_dbt = 27.48
+    #nov mean temp
     if 601<=cnt<=3480:
         mean_mth_dbt = 26.7
+    #dec mean temp
     if 3481<=cnt<=6456:
         mean_mth_dbt = 26.34
+    #jan mean temp
     if 6457<=cnt<=9181:
         mean_mth_dbt = 26.69
     
@@ -217,6 +221,8 @@ for cnt in range(len(v_list1)):
     #CALC THE NEUTRAL ZONE
     if type(vams) != float:
         vams = 0.1
+        
+    vams_list.append(vams)
     tn, tcf_l_90, tcf_u_90, tcf_l_80, tcf_u_80 = calc_neutral_temp(mean_mth_dbt, vams)
     
     #CALC THE OPERATIVE TEMPERATURE 
@@ -239,6 +245,7 @@ for cnt in range(len(v_list1)):
     #MAKE SURE ALL THE INFO IS AVAILABLE
     #=================================================================================================================================
     if type(to) == float and type(avg_tank_temp) == float and type(dpt) == float and dpt > 0:
+        to_list.append(to)
         tcf_l_90_list.append(tcf_l_90)
         tcf_u_90_list.append(tcf_u_90)
         tcf_l_80_list.append(tcf_l_80)
@@ -285,6 +292,8 @@ comfy_percent80 = n80/float(nstates)
 comfy_percent90 = n90/float(nstates)
 uncomfy_percent = nhot/float(nstates)
 
+print "WIND VELOCITY (m/s) percentile:", np.percentile(vams_list, [10,20,30,40,50,60,70,80,90,99])
+
 print "TOTAL STATES", nstates, "S80", n80, "S90", n90, "STATEHOT", nhot
 print "PERCENTAGE OF COMFORTABLE 90% SATISFACTION", comfy_percent90
 print "PERCENTAGE OF COMFORTABLE 80% SATISFACTION", comfy_percent80
@@ -298,12 +307,15 @@ fig, ax1 = plt.subplots()
 
 ax1.fill_between(time_list, tcf_l_80_list, tcf_u_80_list, facecolor='black', alpha=0.8, label = "80% Satisfaction Zone" )
 ax1.fill_between(time_list, tcf_l_90_list, tcf_u_90_list, facecolor='grey', alpha = 0.5, label = "90% Satisfaction Zone")
-ax1.scatter(timehot_list, tohot_list, c = "k", marker="x", alpha = 1, label = "Uncomfortable (Operative Temp)")
-ax1.scatter(time80_list, to80_list, c = "silver", marker="s", alpha = 0.5, label = "80% Satisfied (Operative Temp)")
-ax1.scatter(time90_list, to90_list, c = "k", marker="o", alpha = 0.8, label = "90% Satisfied (Operative Temp)")
-ax1.scatter(con_time_list, con_list, c = "silver", marker="^", alpha = 0.8, label = "Condensation (Operative Temp)")
+
+#ax1.scatter(timehot_list, tohot_list, c = "k", marker="x", alpha = 1, label = "Uncomfortable (Operative Temp)")
+#ax1.scatter(time80_list, to80_list, c = "silver", marker="s", alpha = 0.5, label = "80% Satisfied (Operative Temp)")
+#ax1.scatter(time90_list, to90_list, c = "k", marker="o", alpha = 0.8, label = "90% Satisfied (Operative Temp)")
+#ax1.scatter(con_time_list, con_list, c = "silver", marker="^", alpha = 0.8, label = "Condensation (Operative Temp)")
+#ax1.plot(time_list, tr_list, 'k--', marker="", label = "MRT")
+
 ax1.plot(time_list, ta_list, 'k-', marker="", label = "Air Temp")
-ax1.plot(time_list, tr_list, 'k--', marker="", label = "MRT")
+ax1.plot(time_list, to_list, 'k--', marker="o", label = "Operative Temp")
 ax1.plot(time_list, dpt_list, 'k:', marker="", label = "Dewpoint")
 
 ax1.set_xlabel('Time (Month-Day Hour)', fontsize=10)
@@ -362,4 +374,4 @@ for i in range(1):
     ax1.set_xlim(xmin, xmax)
     ax1.grid(axis = "y", linestyle = ":", alpha = 0.1, color = "k")
     graph_path = os.path.join(graph_dir, "2019jan" + str(day) + ".png")
-    plt.savefig(graph_path, bbox_inches = "tight", dpi = 300, transparent=False, papertype="a3")
+    #plt.savefig(graph_path, bbox_inches = "tight", dpi = 300, transparent=False, papertype="a3")

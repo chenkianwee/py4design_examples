@@ -287,6 +287,7 @@ def clear_3dview(view_3d):
 def gen_falsecolour_bar(min_val, max_val):
         flist, bcolour, txt_geom, str_col, float_list = py3dmodel.utility.generate_falsecolour_bar(min_val,max_val,"C", 
                                                                                               5, bar_pos = (4,0,0))
+        
         new_c_list = []
         for c in bcolour:
             new_c = [c[0]*255, c[1]*255, c[2]*255]
@@ -297,6 +298,7 @@ def gen_falsecolour_bar(min_val, max_val):
         intervals_half = intervals/2.0
         str_list = []
         for f in float_list:
+            f = round(f)
             mi = f - intervals_half
             ma = f + intervals_half
             strx = str(mi) + " - " + str(ma)

@@ -101,16 +101,16 @@ x_list2, y_list2 = rmv_non_numeric(x_list2, y_list2)
 #plt.scatter(x_list2, y_list2, c = "b", marker="s", label="1086")
 #plt.scatter(x_list9, y_list9, c = "r", marker=".", label="best_globe1_mrt")
 
-plt.plot(x_list1, y_list1, 'k-', marker="", label = "Air Temp")
-plt.plot(x_list2, y_list2, 'k--', marker="", label = "MRT")
+plt.plot([26,17,13], [89.8,131,156.8], 'k-', marker="x", label = "Air Temp")
+#plt.plot(x_list2, y_list2, 'k--', marker="", label = "MRT")
 
 
-plt.title(title, fontsize=10 )
-plt.xlabel('Date (Mth-Day Hour)', fontsize=10)
-plt.ylabel('Temp ($^oC$)', fontsize=10)
-plt.ylim(ymin,ymax)
+#plt.title(title, fontsize=10 )
+#plt.xlabel('Date (Mth-Day Hour)', fontsize=10)
+#plt.ylabel('Temp ($^oC$)', fontsize=10)
+#plt.ylim(ymin,ymax)
 
-#plt.legend(bbox_to_anchor=(1.5, 1))
+plt.legend(bbox_to_anchor=(1.5, 1))
 #str_xmin = "2019-01-" + str(23) + "T09:00:00.000"
 #str_xmax = "2019-01-" + str(23) + "T18:00:00.000"
 #xmin = parse(str_xmin)
@@ -118,25 +118,25 @@ plt.ylim(ymin,ymax)
 #plt.xlim(xmin, xmax) 
 #plt.gcf().autofmt_xdate()
 
-#graph_filepath = os.path.join(graph_dir, title +".png")
+graph_filepath = os.path.join(graph_dir, title +".png")
 #plt.savefig(graph_filepath, bbox_inches = "tight" , dpi = 300, transparent=True,papertype="a3")
-#plt.show()
+plt.show()
 
-for i in range(31):    
-    filename = "air_temp_vs_mrt_" + str(i+1) + ".png"
-    img_filepath = os.path.join(graph_dir, filename)
-    
-    str_xmin = "2019-01-" + str(i+1) + "T09:00:00.000"
-    str_xmax = "2019-01-" + str(i+1) + "T18:00:00.000"
-    xmin = parse(str_xmin)
-    xmax = parse(str_xmax)
-    plt.xlim(xmin, xmax) 
-    
-    #legend
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.3), fancybox=True, ncol=2)
-    
-    # beautify the x-labels
-    plt.gcf().autofmt_xdate()
-    
-    plt.savefig(img_filepath, bbox_inches = "tight" , dpi = 300, transparent=True,papertype="a3")
-    #plt.show()
+#for i in range(31):    
+#    filename = "air_temp_vs_mrt_" + str(i+1) + ".png"
+#    img_filepath = os.path.join(graph_dir, filename)
+#    
+#    str_xmin = "2019-01-" + str(i+1) + "T09:00:00.000"
+#    str_xmax = "2019-01-" + str(i+1) + "T18:00:00.000"
+#    xmin = parse(str_xmin)
+#    xmax = parse(str_xmax)
+#    plt.xlim(xmin, xmax) 
+#    
+#    #legend
+#    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.3), fancybox=True, ncol=2)
+#    
+#    # beautify the x-labels
+#    plt.gcf().autofmt_xdate()
+#    
+#    #plt.savefig(img_filepath, bbox_inches = "tight" , dpi = 300, transparent=True,papertype="a3")
+#    #plt.show()

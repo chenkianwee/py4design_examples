@@ -12,6 +12,7 @@ pyptlist4 = [[0,0,0], [0,1,0], [1,1,0], [1,-1,0]]
 #face1 = py3dmodel.construct.make_polygon(pyptlist)
 #face2 = py3dmodel.construct.make_polygon(pyptlist4)
 #occface = py3dmodel.construct.boolean_difference(face1, face2)
+#pyptlist1.reverse()
 occface = py3dmodel.construct.make_polygon_w_holes(pyptlist, [pyptlist1, pyptlist2])
 
 print py3dmodel.calculate.face_area(occface)

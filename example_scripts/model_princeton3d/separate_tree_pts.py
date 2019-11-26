@@ -8,11 +8,12 @@ import numpy as np
 #===========================================================================================
 #INPUTS
 #===========================================================================================
-grid_shpfile = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\forrestal_campus_grid\\forrestal_campus_grid.shp"
+grid_shpfile = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\main_campus_grid\\main_campus_grid.shp"
 #specify the directory to store the results which includes
-result_directory = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\brep\\forrestal_campus"
+result_directory = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\main_campus_trees"
 res_filename = "tree5by5m.brep"
 res_pt_filename = "tree5by5m_pt.brep"
+res_shp_filename = "trees5by5m.shp"
 
 pervious_filename = "pervious5by5m.shp"
 grid_size = 5*5
@@ -272,13 +273,14 @@ def gen_tree(tree_grid, terrain, lasfile_list, tzmin, tzmax, pts_in_grid, pts_ra
                 ty = ymax1-ymin1
                 tree_cmpd = model_tree(t_height, tree_grid, elev, tx, ty)
                 tree_pts = py3dmodel.construct.make_compound(vlist2)
-                return tree_cmpd, tree_pts
+                tree_att = [t_height, tx, ty]
+                return tree_cmpd, tree_pts, tree_att
             else:
-                return None, None
+                return None, None, None
         else:
-            return None, None
+            return None, None, None
     else:
-        return None, None
+        return None, None, None
     
 def model_tree(tree_height, tree_grid, tree_elev, tree_sizex, tree_sizey):
     #DRAW THE STICK
@@ -329,6 +331,61 @@ def move_footprint2elev(footprint, terrain_pt, tzmin, tzmax):
     m_footprint2 = py3dmodel.fetch.topo2topotype(m_footprint2)
     return m_footprint2, czmin, m_footprint
 
+def write_poly_shpfile(occface_list, shp_filepath, attname_list, att_list):
+    w = shapefile.Writer(shp_filepath, shapeType = 5)
+    w.field('index','N',10)
+    for attname in attname_list:
+        print attname
+        w.field(attname,'N', decimal=2)
+         
+    cnt=0
+    for occface in occface_list:
+        wires = py3dmodel.fetch.topo_explorer(occface, "wire")
+        nwires = len(wires)
+        atts = att_list[cnt]
+        if nwires > 1:
+            nrml = py3dmodel.calculate.face_normal(occface)
+            poly_shp_list = []
+            for wire in wires:
+                pyptlist = py3dmodel.fetch.points_frm_wire(wire)
+                is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, nrml)
+                is_anticlockwise2 = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
+                if is_anticlockwise: #means its a face not a hole
+                    if is_anticlockwise2:
+                        pyptlist.reverse()
+                else: #means its a hole not a face
+                    if not is_anticlockwise2:
+                        pyptlist.reverse()
+                
+                pyptlist2d = []
+                for pypt in pyptlist:
+                    x = pypt[0]
+                    y = pypt[1]
+                    pypt2d = [x,y]
+                    pyptlist2d.append(pypt2d)
+                poly_shp_list.append(pyptlist2d)
+                
+            w.record(cnt, atts[0], atts[1], atts[2])
+            w.poly(poly_shp_list)
+                    
+        else:
+            pyptlist = py3dmodel.fetch.points_frm_occface(occface)
+            is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
+            if is_anticlockwise:
+                pyptlist.reverse()
+            pyptlist2d = []
+            for pypt in pyptlist:
+                x = pypt[0]
+                y = pypt[1]
+                pypt2d = [x,y]
+                pyptlist2d.append(pypt2d)
+                
+            w.record(cnt, atts[0], atts[1], atts[2])
+            w.poly([pyptlist2d])
+            
+        cnt+=1
+    w.close()
+
 #===========================================================================================
 #READ THE SHAPEFILE
 #===========================================================================================
@@ -352,6 +409,10 @@ uid_list2 = []
 ngrids = len(shpatt_list)
 
 tree_cmpd_list = []
+tree_att_list = []
+attrib_name_list = ["tree_height", "tree_x", "tree_y"]
+grid_list = []
+shp_filepath = os.path.join(result_directory, res_shp_filename)
 
 gcnt = 0
 for gatt in shpatt_list:
@@ -361,7 +422,7 @@ for gatt in shpatt_list:
     print "********Folders Processed*************"
     print uid_list2
     
-    uid_list = [272, 339, 295]
+    uid_list = [207,164,143,142,141,140]
     
     if uid in uid_list:
         pass
@@ -377,16 +438,21 @@ for gatt in shpatt_list:
         filepath = os.path.join(pervious_dir, str(uid), pervious_filename)
         patt_list = read_sf_poly(filepath)
         grids = extract_shape_from_shapatt(patt_list)
+        #grids = grids[0:30]
+        grid_list.extend(grids)
         ntrees = len(grids)
         
         tree_list = []
         tree_pt_list = []
 
         print "*******Estimate Trees***************"
+        
         tcnt = 0
         for t in grids:
             print uid_list2
             print "*******Estimating Folder", uid, "Tree", tcnt+1, "/", ntrees, "***************"
+            tree_shpatt = shapeattributes.ShapeAttributes()
+            tree_shpatt.set_shape(t)
             #if uid == 341 and tcnt+1 == 1:
             if nt > 1:
                 id_ts2 = identify_terrain(t, id_ts1)
@@ -394,33 +460,38 @@ for gatt in shpatt_list:
             else:
                 id_t = id_ts1[0]
                 
-            tree_cmpd, tree_pts = gen_tree(t, id_t, lasfile_list, tzmin, tzmax, pts_in_grid, pts_ratio)
+            tree_cmpd, tree_pts, tree_att = gen_tree(t, id_t, lasfile_list, tzmin, tzmax, pts_in_grid, pts_ratio)
             
             if tree_cmpd:
                 #py3dmodel.utility.visualise([[tree_cmpd], [tree_pts]], ["GREEN", "BLUE"])
                 tree_list.append(tree_cmpd)
                 tree_pt_list.append(tree_pts)
+                tree_att_list.append(tree_att)
+                
             else:
                 print "***********Tree ", tcnt+1, "cannot be extruded"
+                tree_att_list.append([0,0,0])
                 #py3dmodel.utility.visualise([[extruded_bldg],[bldg_pts]], ["WHITE","BLUE"])
                                 
             tcnt +=1
         
-        if tree_list:
-            print "*******Writing to File" + str(uid), "***************"
-            #create folder for each grid and name it after the unique id
-            grid_folderpath = os.path.join(result_directory, str(uid))
-            if not os.path.isdir(grid_folderpath):
-                os.mkdir(grid_folderpath)
-            tree_filepath = os.path.join(grid_folderpath, res_filename)
-            tree_pt_filepath = os.path.join(grid_folderpath, res_pt_filename)
-        
-            cmpd = py3dmodel.construct.make_compound(tree_list)
-            tree_cmpd_list.append(cmpd)
-            py3dmodel.utility.write_brep(cmpd, tree_filepath)
-            
-            pt_cmpd = py3dmodel.construct.make_compound(tree_pt_list)
-            py3dmodel.utility.write_brep(pt_cmpd, tree_pt_filepath)
+        print len(tree_att_list)
+        write_poly_shpfile(grid_list, shp_filepath, attrib_name_list, tree_att_list)
+#        if tree_list:
+#            print "*******Writing to File" + str(uid), "***************"
+#            #create folder for each grid and name it after the unique id
+#            grid_folderpath = os.path.join(result_directory, str(uid))
+#            if not os.path.isdir(grid_folderpath):
+#                os.mkdir(grid_folderpath)
+#            tree_filepath = os.path.join(grid_folderpath, res_filename)
+#            tree_pt_filepath = os.path.join(grid_folderpath, res_pt_filename)
+#        
+#            cmpd = py3dmodel.construct.make_compound(tree_list)
+#            tree_cmpd_list.append(cmpd)
+#            py3dmodel.utility.write_brep(cmpd, tree_filepath)
+#            
+#            pt_cmpd = py3dmodel.construct.make_compound(tree_pt_list)
+#            py3dmodel.utility.write_brep(pt_cmpd, tree_pt_filepath)
     
     time2 = time.clock()
     total_time = time2-time1

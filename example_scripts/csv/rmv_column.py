@@ -6,8 +6,8 @@ from dateutil import tz
 #=======================================================================================================
 #SPECIFY THE DIRECTORY WHERE ALL THE COLDTUBE DATA IS STORED
 #=======================================================================================================
-csv_dir = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\chaosbox"
-csv_dir2 = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\chaosbox2"
+csv_dir = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\membrane_temp\\raw"
+csv_dir2 = "F:\\kianwee_work\\princeton\\2019_01_to_2019_06\\coldtube\\data\\csv\\membrane_temp\\processed"
 
 #=======================================================================================================
 #FUNCTIONS
@@ -38,18 +38,18 @@ for fname in fnames:
     cnt = 0
     for r in csv_reader:
         if cnt == 0:
-            strx += r[1] + "," + r[2] + "," + r[3] + "\n"
+            strx += r[1] + "," + r[8] + "\n"
         
-        is_float = str_is_float(r[2])
+        is_float = str_is_float(r[8])
         if is_float:
             utc = parse(r[1])
             utc = utc.replace(tzinfo=from_zone)
             sporetime = utc.astimezone(to_zone)
             date_str = sporetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
             if cnt == nrows-1:
-                strx += date_str  + "," + r[2] + "," + r[3]
+                strx += date_str  + "," + r[8]
             else:
-                strx += date_str + "," + r[2] + "," + r[3] + "\n"        
+                strx += date_str + "," + r[8] + "\n"        
         cnt+=1
     
     f.close()

@@ -62,6 +62,8 @@ tree_pt_list = []
 for dirx in list_dir:
     folderpath = os.path.join(campus_dir, dirx)
     bldg, bldg_pt, road, terrain, impr_srf, tree, tree_pt = read_files_from_folder(folderpath)
+    cmpd_list = py3dmodel.fetch.topo_explorer(tree, "edge")
+    print len(cmpd_list)
     #bldg, bldg_pt, road, terrain, impr_srf = read_files_from_folder(folderpath)
     
     bldg_list.append(bldg)
