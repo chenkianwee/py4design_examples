@@ -41,12 +41,12 @@ def xyz2ijk(pyptlist, xdim, ydim, zdim, xmin, ymin, zmin, intervalk):
 vertex_list = []
 pyptlist = []
 
-print "READING POINT CLOUDS OF ..."
+print("READING POINT CLOUDS OF ...")
 pf = open(pts_file, "r")
 lines = pf.readlines()
-print "NUMBER OF POINTS:", len(lines)
+print("NUMBER OF POINTS:", len(lines))
     
-print "ANALYSING POINTS & CONVERTING POINTS TO OCC VERTICES..."
+print("ANALYSING POINTS & CONVERTING POINTS TO OCC VERTICES...")
 for l in lines:
     l = l.replace("\n","")
     l_list = l.split(",")
@@ -61,7 +61,7 @@ for l in lines:
     vertex_list.append(occ_vertex)
     pyptlist.append(pypt)          
     
-print "COMPUTING THE BOUNDING BOX FOR THE POINTS..."
+print("COMPUTING THE BOUNDING BOX FOR THE POINTS...")
 pt_cmpd = py3dmodel.construct.make_compound(vertex_list)
 cpt = py3dmodel.calculate.get_centre_bbox(pt_cmpd)
 xmin,ymin,zmin,xmax,ymax,zmax = py3dmodel.calculate.get_bounding_box(pt_cmpd)
@@ -71,14 +71,14 @@ intervalj = int(math.ceil((ymax-ymin)/ydim))
 intervalk = int(math.ceil((zmax-zmin)/zdim))
 height = zmax - zmin
 
-print "XSIZE:", xmax-xmin
-print "YSIZE:", ymax-ymin
-print "HEIGHT:", height
-print "N XVOXELS:", intervali
-print "N YVOXELS:", intervalj
-print "N KVOXELS:", intervalk
+print("XSIZE:", xmax-xmin)
+print("YSIZE:", ymax-ymin)
+print("HEIGHT:", height)
+print("N XVOXELS:", intervali)
+print("N YVOXELS:", intervalj)
+print("N KVOXELS:", intervalk)
 
-print "USING THE BOUNDING BOX TO CONSTRUCT THE 3D GRID ..."
+print("USING THE BOUNDING BOX TO CONSTRUCT THE 3D GRID ...")
 #create the bounding plane and grid it 
 xmax2 = xmin + (intervali*xdim)
 ymax2 = ymin + (intervalj*ydim)
@@ -91,14 +91,14 @@ grid_face_list = py3dmodel.modify.sort_face_by_xy(grid_face_list)
 grid_cmpd = py3dmodel.construct.make_compound(grid_face_list)
 bp_mid_pt = py3dmodel.calculate.face_midpt(base_plane)
 
-print "INDEXING ALL THE POINTS ..."
+print("INDEXING ALL THE POINTS ...")
 vertex_list = py3dmodel.fetch.topo_explorer(pt_cmpd, "vertex")
 occptlist = py3dmodel.modify.occvertex_list_2_occpt_list(vertex_list)
 pyptlist = py3dmodel.modify.occpt_list_2_pyptlist(occptlist)
         
 k_voxel_list = xyz2ijk(pyptlist, xdim, ydim, zdim, xmin, ymin, zmin, intervalk)
 
-print "VOXELISING..."
+print("VOXELISING...")
 pypts_interval_dict = {}
 zmin_intheight = zmin + zdim
 hint_min = zmin

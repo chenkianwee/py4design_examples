@@ -453,8 +453,8 @@ def convert(shpfile_list, citygml):
         if buildings:
             building_list.extend(buildings)
             
-    print "done with getting buildings"
-    print "TOTAL NUMBER OF BUILDINGS:", len(building_list)
+    print("done with getting buildings")
+    print("TOTAL NUMBER OF BUILDINGS:", len(building_list))
     total_perror_list = []
     total_constr_list = []
     total_trpst_bldg_list = []
@@ -490,15 +490,15 @@ def convert(shpfile_list, citygml):
                 
             total_build_up_area = total_build_up_area + total_flr_area
                 
-    print "NUMBER OF BUILDINGS IN CONSTRUCTION:", len(total_constr_list)
-    print "NUMBER OF MRT/LRT STATIONS:", len(total_trpst_bldg_list)
-    print "NUMBER OF BUILDINGS WITH LEVEL INFORMATION:", len(total_perror_list)
-    print "TOTAL BUILD UP AREA:", total_build_up_area
-    print "MEAN:", (sum(total_perror_list))/(len(total_perror_list))
-    print "MAX:", max(total_perror_list)
-    print "MIN:", min(total_perror_list)
-    print "MEDIAN:", findmedian(total_perror_list)
-    print "NUMBER OF INACCURATE BUILDINGS:", len(total_inacc_buildings)
+    print("NUMBER OF BUILDINGS IN CONSTRUCTION:", len(total_constr_list))
+    print("NUMBER OF MRT/LRT STATIONS:", len(total_trpst_bldg_list))
+    print("NUMBER OF BUILDINGS WITH LEVEL INFORMATION:", len(total_perror_list))
+    print("TOTAL BUILD UP AREA:", total_build_up_area)
+    print("MEAN:", (sum(total_perror_list))/(len(total_perror_list)))
+    print("MAX:", max(total_perror_list))
+    print("MIN:", min(total_perror_list))
+    print("MEDIAN:", findmedian(total_perror_list))
+    print("NUMBER OF INACCURATE BUILDINGS:", len(total_inacc_buildings))
     
 def convert_origlvl(shpfile_list, citygml):
     #get the building footprints
@@ -512,8 +512,8 @@ def convert_origlvl(shpfile_list, citygml):
     total_build_up_area = 0
     total_trpst_bldg_list = []
     total_blevel_list = []
-    print "done with getting buildings"
-    print "TOTAL NUMBER OF BUILDINGS:", len(building_list)
+    print ("done with getting buildings")
+    print ("TOTAL NUMBER OF BUILDINGS:", len(building_list))
     #read the shapefiles
     for shpfile in shpfile_list:
         sf = shapefile.Reader(shpfile)
@@ -541,10 +541,10 @@ def convert_origlvl(shpfile_list, citygml):
                 total_blevel_list.extend(shp_blevel_list)
             total_build_up_area = total_build_up_area + total_flr_area
                 
-    print "NUMBER OF BUILDINGS IN CONSTRUCTION:", len(total_constr_list)
-    print "NUMBER OF MRT/LRT STATIONS:", len(total_trpst_bldg_list)
-    print "NUMBER OF BUILDINGS WITH LEVEL INFORMATION:", len(total_blevel_list)
-    print "TOTAL BUILD UP AREA:", total_build_up_area
+    print("NUMBER OF BUILDINGS IN CONSTRUCTION:", len(total_constr_list))
+    print("NUMBER OF MRT/LRT STATIONS:", len(total_trpst_bldg_list))
+    print("NUMBER OF BUILDINGS WITH LEVEL INFORMATION:", len(total_blevel_list))
+    print("TOTAL BUILD UP AREA:", total_build_up_area)
     
 #=========================================================================================================================================
 #SPECIFY ALL THE NECCESSARY INPUTS
@@ -567,8 +567,8 @@ citygml_filepath = os.path.join(parent_path, "example_files", "citygml", "result
 #=========================================================================================================================================
 #main SCRIPT
 #=========================================================================================================================================
-print "CONVERTING ... ..."
-time1 = time.clock()  
+print("CONVERTING ... ...")
+time1 = time.perf_counter()  
 
 #initialise the citygml writer
 citygml_writer = pycitygml.Writer()
@@ -580,7 +580,7 @@ citygml_writer_origlvl.write(citygml_filepath)
 convert([shpfile1,shpfile2,shpfile3],citygml_writer)
 citygml_writer.write(citygml_filepath)
 
-time2 = time.clock()
+time2 = time.perf_counter()
 time = (time2-time1)/60.0
-print "TIME TAKEN:", time
-print "CityGML GENERATED"
+print("TIME TAKEN:", time)
+print("CityGML GENERATED")

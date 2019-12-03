@@ -40,12 +40,12 @@ def read_files_from_folder(folderpath):
 #===========================================================================================
 list_dir = os.listdir(campus_dir)
 
-print list_dir
+print(list_dir)
 if end_index == -1:
     list_dir = list_dir[start_index:]
 else:
     list_dir = list_dir[start_index:end_index]
-print list_dir
+print(list_dir)
 
 bldg_list = []
 bldg_pt_list = []
@@ -58,7 +58,7 @@ tree_pt_list = []
 ndir = len(list_dir)
 cnt = 0
 for dirx in list_dir:
-    print "*******Converting Folder", dirx, "Folder", cnt, "of", ndir, "***************"
+    print("*******Converting Folder", dirx, "Folder", cnt, "of", ndir, "***************")
     folderpath = os.path.join(campus_dir, dirx)
     bldg, bldg_pt, road, terrain, impr_srf, tree, tree_pt = read_files_from_folder(folderpath)
     #bldg, bldg_pt, road, terrain, impr_srf = read_files_from_folder(folderpath)

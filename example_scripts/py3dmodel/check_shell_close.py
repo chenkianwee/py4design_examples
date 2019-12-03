@@ -8,7 +8,7 @@ ext1_faces = py3dmodel.fetch.faces_frm_solid(extrude1)
 shell = py3dmodel.construct.sew_faces(ext1_faces)[0]
 
 is_closed = py3dmodel.calculate.is_shell_closed(shell)
-print is_closed
+print(is_closed)
 display2dlist = []
 display2dlist.append([shell])
 py3dmodel.utility.visualise(display2dlist, ["WHITE"])

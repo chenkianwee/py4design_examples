@@ -15,7 +15,7 @@ pyptlist2 = [(30,30,0), (20,30,0), (20,40,0),(30,40,0)]#clockwise
 face2project = py3dmodel.construct.make_polygon(pyptlist2)
 projected_facepts = py3dmodel.calculate.project_face_on_faceplane(face_plane, face2project)
 face_circles = []
-print len(projected_facepts)
+print(len(projected_facepts))
 for facept in projected_facepts:    
     projpt_facecircle = py3dmodel.construct.make_circle(facept, (0,0,1),5)
     face_circles.append(projpt_facecircle)

@@ -359,7 +359,7 @@ class Dashboard(QtGui.QWidget):
         self.params.param('Load Result').param('Data Loaded').setValue(str_date)
         hour_index = p4d_func.date2index(date)
         self.current_index = hour_index
-        print hour_index
+        print(hour_index)
         #=============================================
         #retrieve the solar data from the date index
         #=============================================

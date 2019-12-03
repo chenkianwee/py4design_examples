@@ -1,15 +1,15 @@
-from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
-from OCC.gp import gp_Pnt
-from OCC.SMESH import SMESH_Gen, SMESH_MeshVSLink
-from OCC.StdMeshers import StdMeshers_MaxElementVolume, StdMeshers_QuadrangleParams, StdMeshers_MaxElementArea, StdMeshers_LengthFromEdges, StdMeshers_Propagation, StdMeshers_ProjectionSource2D, StdMeshers_AutomaticLength, StdMeshers_Quadrangle_2D, StdMeshers_Projection_2D, StdMeshers_QuadraticMesh, StdMeshers_UseExisting_2D, StdMeshers_Prism_3D, StdMeshers_Arithmetic1D, StdMeshers_TrianglePreference, StdMeshers_Regular_1D, StdMeshers_Projection_3D,StdMeshers_MEFISTO_2D
-from OCC.MeshVS import MeshVS_Mesh, MeshVS_MeshPrsBuilder
-from OCC.SMDSAbs import SMDSAbs_Face
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
+from OCC.Core.gp import gp_Pnt
+from OCC.Core.SMESH import SMESH_Gen, SMESH_MeshVSLink
+from OCC.Core.StdMeshers import StdMeshers_MaxElementVolume, StdMeshers_QuadrangleParams, StdMeshers_MaxElementArea, StdMeshers_LengthFromEdges, StdMeshers_Propagation, StdMeshers_ProjectionSource2D, StdMeshers_AutomaticLength, StdMeshers_Quadrangle_2D, StdMeshers_Projection_2D, StdMeshers_QuadraticMesh, StdMeshers_UseExisting_2D, StdMeshers_Prism_3D, StdMeshers_Arithmetic1D, StdMeshers_TrianglePreference, StdMeshers_Regular_1D, StdMeshers_Projection_3D,StdMeshers_MEFISTO_2D
+from OCC.Core.MeshVS import MeshVS_Mesh, MeshVS_MeshPrsBuilder
+from OCC.Core.SMDSAbs import SMDSAbs_Face
 from py4design import py3dmodel
 from OCC.Display.SimpleGui import init_display
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 # First create a 'complex' shape (actually a boolean op between a box and a cylinder)
-print 'Creating geometry ...'
+print('Creating geometry ...')
 #c1 = py3dmodel.construct.make_polygon_circle((0,0,0),(0,0,1), 0.003)
 #extrude = py3dmodel.construct.extrude(c1, (0,1,1), 0.03)
 #extrude2 = py3dmodel.construct.extrude(c1, (0,-1,1), 0.01)
@@ -21,16 +21,16 @@ print 'Creating geometry ...'
 aShape = py3dmodel.utility.read_stl("F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree2\\result\\order0.stl")
 #aShape = py3dmodel.construct.make_compound([aShape,extrude3])
 #py3dmodel.utility.visualise([[aShape]], ["BLUE"])
-print 'Done.'
+print ('Done.')
 
 # Create the Mesh
-print 'Creating mesh ...'
+print('Creating mesh ...')
 aMeshGen = SMESH_Gen()
 aMesh = aMeshGen.CreateMesh(0, True)
 
-print 'Done.'
+print('Done.')
 
-print 'Adding hypothesis and algorithms ...'
+print('Adding hypothesis and algorithms ...')
 # 1D
 an1DHypothesis = StdMeshers_Arithmetic1D(0, 0, aMeshGen)#discretization of the wire
 an1DHypothesis.SetLength(0.05, False) #the smallest distance between 2 points
@@ -67,16 +67,16 @@ aMesh.ShapeToMesh(aShape)
 #aMesh.AddHypothesis(aShape, 3)
 aMesh.AddHypothesis(aShape, 4)
 aMesh.AddHypothesis(aShape, 5)
-print 'Done.'
+print('Done.')
 
 #Compute the data
-print 'Computing mesh ...'
+print('Computing mesh ...')
 aMeshGen.Compute(aMesh,aMesh.GetShapeToMesh())
-print 'Done.'
+print('Done.')
 
-print aMesh.NbNodes()
-print aMesh.NbEdges()
-print aMesh.NbFaces()
+print(aMesh.NbNodes())
+print(aMesh.NbEdges())
+print(aMesh.NbFaces())
 
 aMesh.ExportSTL("F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\test.stl", True)
 # Display the data

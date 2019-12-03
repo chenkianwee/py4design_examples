@@ -69,7 +69,7 @@ ndir = len(list_dir)
 face_list = []
 cnt = 0
 for dirx in list_dir:    
-    print "**********Processing ... ", cnt+1, "/", ndir, "folder", dirx
+    print("**********Processing ... ", cnt+1, "/", ndir, "folder", dirx)
     folder = os.path.join(file_dir, dirx)
     filepath = os.path.join(file_dir, dirx, filename)
     

@@ -52,10 +52,10 @@ def eval_density(citygml_filepath):
     #site_area = 7.5e+06
     density = total_build_up_area/site_area
 
-    print "TOTAL BUILD UP AREA (m2):", total_build_up_area
-    print "SITE AREA (m2):", site_area
-    print "AVG PLOT AREA (m2):", avg_luse
-    print "NET PLOT RATIO:", density
+    print("TOTAL BUILD UP AREA (m2):", total_build_up_area)
+    print("SITE AREA (m2):", site_area)
+    print("AVG PLOT AREA (m2):", avg_luse)
+    print("NET PLOT RATIO:", density)
     py3dmodel.utility.visualise([flr_plate_list, tri_list],["WHITE", "GREEN"])
     return density
     

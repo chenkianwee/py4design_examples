@@ -7,7 +7,7 @@ def avg_daysim_res(res):
     """     
     cumulative_list = []
     sunuphrs = rad.sunuphrs
-    print sunuphrs
+    print(sunuphrs)
     illum_ress = []
     for sensorpt in res:
         cumulative_sensorpt = sum(sensorpt)
@@ -70,8 +70,8 @@ rad.set_sensor_points(sensor_pts,sensor_dirs)
 rad.execute_cumulative_oconv("7 19", "1 1 12 31", weatherfilepath, output = "irradiance")
 rad.execute_cumulative_rtrace("2")
 res = rad.eval_cumulative_rad(output = "irradiance")
-print res
+print(res)
 
-print "DONE"
-#py3dmodel.utility.visualise_falsecolour_topo(display2dlist, watt_ress, other_occtopo_2dlist = [edges], 
-#                                             other_colour_list = ['WHITE'] )
+print("DONE")
+py3dmodel.utility.visualise_falsecolour_topo(display2dlist, res, other_occtopo_2dlist = [edges], 
+                                             other_colour_list = ['WHITE'] )

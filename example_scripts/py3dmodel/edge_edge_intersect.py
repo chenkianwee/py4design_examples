@@ -13,12 +13,12 @@ for interpt in interptlist:
     vert = py3dmodel.construct.make_vertex((interpt[0], interpt[1], interpt[2]))
     circles.append(vert)
 
-print len(circles)
+print(len(circles))
 #create the 2dlist
 display2dlist = []
 display2dlist.append([edge3])
 display2dlist.append([edge1])
 display2dlist.append(circles)
-colour_list = ["WHITE", "BLUE", "RED"]
+colour_list = ["ORANGE", "BLUE", "RED"]
 
 py3dmodel.utility.visualise(display2dlist, colour_list)

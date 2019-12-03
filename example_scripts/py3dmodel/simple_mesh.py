@@ -6,7 +6,7 @@ face1 = py3dmodel.construct.make_polygon(points2)
 extrude1 = py3dmodel.construct.extrude(face1, (0,0,1), 50)
 
 tri_list = py3dmodel.construct.simple_mesh(extrude1)
-print len(tri_list)
+print(len(tri_list))
 display_2dlist = []
 colour_list = []
 display_2dlist.append(tri_list)

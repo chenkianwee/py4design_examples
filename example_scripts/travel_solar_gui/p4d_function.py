@@ -22,9 +22,14 @@ weekly_hr_list = [168, 336, 504, 672, 840, 1008, 1176, 1344, 1512, 1680, 1848, 2
 #GUI RELATED FUNCTIONS
 #===========================================================================================
 def gen_falsecolour_bar(min_val, max_val):
-    flist, bcolour, txt_geom, str_col, float_list = py3dmodel.utility.generate_falsecolour_bar(min_val,max_val,"W/m2", 
-                                                                                               5, bar_pos = (4,0,0))
-
+#    flist, bcolour, txt_geom, str_col, float_list = py3dmodel.utility.generate_falsecolour_bar(min_val,max_val,"W/m2", 
+#                                                                                         5, bar_pos = (4,0,0))
+    
+    interval = 10.0
+    inc1 = (max_val-min_val)/(interval)
+    inc2 = inc1/2.0    
+    float_list = list(np.arange(min_val+inc2, max_val, inc1))
+    bcolour = py3dmodel.utility.falsecolour(float_list, min_val, max_val)
     new_c_list = []
     for c in bcolour:
         new_c = [c[0]*255, c[1]*255, c[2]*255]
@@ -118,7 +123,7 @@ def topos2meshes_json(topo_list, json_filepath, face_colours2d = None, att_dict_
     if face_colours2d  != None:
         ncolours = len(face_colours2d)
         if ncolours != ntopo:
-            print "SOMETHING IS WRONG THE COLOURS LIST DOES NOT MATCH THE NUMBER OF TOPOS"
+            print("SOMETHING IS WRONG THE COLOURS LIST DOES NOT MATCH THE NUMBER OF TOPOS")
             
     json_list = []
     for cnt in range(ntopo):

@@ -24,11 +24,11 @@ nrml_edges = py3dmodel.calculate.face_normal_as_edges(ext1_faces, normal_magnitu
 display2dlist = []
 display2dlist.append(ext1_faces)
 display2dlist.append(nrml_edges)
-#py3dmodel.utility.visualise(display2dlist, ["WHITE", "BLACK"])
+py3dmodel.utility.visualise(display2dlist, ["WHITE", "BLACK"])
 dae_filepath = "C:\\test\\solid.dae"
 faces = py3dmodel.fetch.topo_explorer(extrude1, "face")
 #colour_list = []
 #for f in faces:
 #    colour_list.append((0,1,0))
     
-py3dmodel.export_collada.write_2_collada(dae_filepath, occface_list=[extrude1, face2], face_rgb_colour_list=[(1,1,1), (0,0,0)])
+#py3dmodel.export_collada.write_2_collada(dae_filepath, occface_list=[extrude1, face2], face_rgb_colour_list=[(1,1,1), (0,0,0)])

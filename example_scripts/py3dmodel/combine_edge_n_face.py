@@ -5,14 +5,12 @@ face1 = py3dmodel.construct.make_polygon(points1)
 points2 = [(50,50,0), (25,100,0), (50,150,0), (75,100,0)]
 face2 = py3dmodel.construct.make_polygon(points2)
 
-#pypt1 = (0,0,0)
-#pypt2 = (75,150,0) 
-#pypt3 = (100,300,0)
 test_pyptlist = [(0.0, 0.0, 0.0), (16.666666666666668, 33.33333333333333, 0.0), (16.66666666666667, 33.333333333333336, 0.0), (0.0, 50.00000000000001, 0.0), (50.00000000000001, 100.00000000000001, 0.0), (50.0, 100.0, 0.0), (75.0, 150.0, 0.0), (75.0, 150.0, 0.0), (100.0, 300.0, 0.0)]
 inputedge = py3dmodel.construct.make_wire(test_pyptlist)
 
 res = py3dmodel.fetch.topo2topotype(py3dmodel.construct.boolean_common(face2,inputedge))
 res2 =py3dmodel.fetch.topo2topotype(py3dmodel.construct.boolean_difference(inputedge,face2))
+
 edgelist = py3dmodel.fetch.topo_explorer(res, "edge")
 edgelist2 = py3dmodel.fetch.topo_explorer(res2, "edge")
 
@@ -27,16 +25,22 @@ interptlist = []
 for edge in edgelist:
     interpts = py3dmodel.calculate.intersect_edge_with_edge(bspline_edge, edge)
     interptlist.extend(interpts)
-
+    
+v = py3dmodel.construct.make_occvertex_list(interptlist)
+py3dmodel.utility.visualise([v, [bspline_edge], edgelist], ["RED", "BLUE", "GREEN"])
 interptlist = py3dmodel.modify.rmv_duplicated_pts(interptlist)
+ 
 eparmlist = []
 
 for interpt in interptlist:
+    #py3dmodel.utility.visualise([[bspline_edge]], ["RED"])
     eparm = py3dmodel.calculate.pt2edgeparameter(interpt, bspline_edge)
     eparmlist.append(eparm)
-    
+
 eparmlist.sort()
+
 edmin,edmax = py3dmodel.fetch.edge_domain(bspline_edge)
+
 eparm_range1 = eparmlist[-1] - eparmlist[0]
 eparm_range21 = eparmlist[0] - edmin
 eparm_range22 = edmax-eparmlist[-1]
@@ -72,8 +76,8 @@ for sorted_edge in sorted_edgelist:
     
 new_bwire = py3dmodel.construct.make_wire(new_pyptlist)    
 wirelength = py3dmodel.calculate.wirelength(new_bwire)
-print wirelength
+print(wirelength)
 display2dlist = []
 display2dlist.append([wire])
 display2dlist.append([new_bwire])
-py3dmodel.utility.visualise(display2dlist, ["WHITE", "RED"])
+py3dmodel.utility.visualise(display2dlist, ["BLUE", "RED"])

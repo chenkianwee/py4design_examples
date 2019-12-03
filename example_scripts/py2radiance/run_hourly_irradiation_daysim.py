@@ -7,7 +7,7 @@ def avg_daysim_res(res):
     """     
     cumulative_list = []
     sunuphrs = rad.sunuphrs
-    print sunuphrs
+    print(sunuphrs)
     illum_ress = []
     for sensorpt in res:
         cumulative_sensorpt = sum(sensorpt)
@@ -20,11 +20,11 @@ def avg_daysim_res(res):
 #create all the relevant folders 
 current_path = "C:\\test_solar"
 #os.path.dirname(__file__)
-print current_path
+print(current_path)
 base_filepath = os.path.join(current_path, 'base.rad')
-print base_filepath
+print(base_filepath)
 data_folderpath = os.path.join(current_path, 'py2radiance_data')
-print data_folderpath
+print(data_folderpath)
 display2dlist = []
 #initialise py2radiance 
 rad = py2radiance.Rad(base_filepath, data_folderpath)
@@ -66,7 +66,7 @@ rad.create_rad_input_file()
 
 #once the geometries are created initialise daysim
 daysim_dir = os.path.join(current_path, 'daysim_data')
-print daysim_dir
+print(daysim_dir)
 rad.initialise_daysim(daysim_dir)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
 #a 60min weatherfile is generated
@@ -82,10 +82,10 @@ rad.write_default_radiance_parameters()#the default settings are the complex sce
 rad.execute_gen_dc("w/m2") #w/m2 or lux
 rad.execute_ds_illum()
 res = rad.eval_ill_per_sensor()
-print len(res[0])
+print(len(res[0]))
 lx_ress = avg_daysim_res(res)
-print lx_ress
+print(lx_ress)
 
-print "DONE"
+print("DONE")
 py3dmodel.utility.visualise_falsecolour_topo(display2dlist, lx_ress, other_occtopo_2dlist = [edges], 
                                              other_colour_list = ['WHITE'] )

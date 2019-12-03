@@ -19,17 +19,17 @@ for cnt in range(1):
     displaylist2 = []
     evaluations = citygml2eval.Evals(citygml_filepath)
     
-    time1 = time.clock()
-    print "#==================================="
-    print "EVALUATING MODEL ... ...", citygml_filepath
-    print "#==================================="
+    time1 = time.perf_counter_ns()
+    print("#===================================")
+    print("EVALUATING MODEL ... ...", citygml_filepath)
+    print("#===================================")
     res_dict = evaluations.rdi(rdi_threshold = 0.6)
     
-    print "AVG_RDI", res_dict["average"]
-    print "RDI PERCENTAGE", res_dict["percent"]
-    print "ROAD LENGTH", res_dict["road_length"]
-    time2 = time.clock()
-    print "TOTAL TIME TAKEN", (time2-time1)/60
+    print ("AVG_RDI", res_dict["average"])
+    print ("RDI PERCENTAGE", res_dict["percent"])
+    print ("ROAD LENGTH", res_dict["road_length"])
+    time2 = time.perf_counter_ns()
+    print ("TOTAL TIME TAKEN", (time2-time1)/60)
     d_str = " AVG_RDI: " + str(res_dict["average"]) + "\n" + "RDI PERCENTAGE: " + str(res_dict["percent"]) + "\n" + "ROAD LENGTH: " + str(res_dict["road_length"])
     
     py3dmodel.export_collada.write_2_collada_falsecolour(res_dict["plots"], res_dict["rdi_list"] , "RDI", dae_filepath, 

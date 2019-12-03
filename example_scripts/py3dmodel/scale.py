@@ -9,7 +9,7 @@ trsfshape = py3dmodel.modify.uniform_scale(extrude1, 1, 2, 2,(0,5,0))
 mpt = py3dmodel.calculate.face_midpt(face1)
 trsfshape2 = py3dmodel.modify.scale(face1, 2,mpt)
 
-print py3dmodel.fetch.topo2topotype(trsfshape)
+print(py3dmodel.fetch.topo2topotype(trsfshape))
 faces = py3dmodel.fetch.topo_explorer(trsfshape, "face")
 
 

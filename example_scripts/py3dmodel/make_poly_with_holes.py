@@ -15,5 +15,5 @@ pyptlist4 = [[0,0,0], [0,1,0], [1,1,0], [1,-1,0]]
 #pyptlist1.reverse()
 occface = py3dmodel.construct.make_polygon_w_holes(pyptlist, [pyptlist1, pyptlist2])
 
-print py3dmodel.calculate.face_area(occface)
+print(occface)
 py3dmodel.utility.visualise([[occface]])

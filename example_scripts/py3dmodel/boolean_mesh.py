@@ -80,16 +80,16 @@ fuse1 = py3dmodel.construct.boolean_fuse(solid_mesh, solid_mesh3)
 diff3 = py3dmodel.construct.boolean_difference(shell_mesh20, solid_mesh)
 diff4 = py3dmodel.construct.boolean_difference(diff3, solid_mesh3)
 diff_faces4 = py3dmodel.fetch.topo_explorer(diff4, "face")
-print len(diff_faces4)
+print(len(diff_faces4))
 
 diff5 = py3dmodel.construct.boolean_difference(shell_mesh30, solid_mesh)
 diff6 = py3dmodel.construct.boolean_difference(diff5, solid_mesh2)
 diff_faces6 = py3dmodel.fetch.topo_explorer(diff6, "face")
-print len(diff_faces6)
+print(len(diff_faces6))
 
 diff_faces_all = diff_faces2 + diff_faces4+diff_faces6
 shell_list_all = py3dmodel.construct.sew_faces(diff_faces_all)
-print len(shell_list_all)
+print(len(shell_list_all))
 #py3dmodel.calculate.sort_edges_into_order()
 py3dmodel.utility.visualise([diff_faces2, diff_faces4, diff_faces6], ["RED", "GREEN", "BLUE"])
 ext_dae2 = "F:\\kianwee_work\\smart\\may2017-oct2017\\tree_modelling\\pts\\tree9\\tree9_volume2.dae"

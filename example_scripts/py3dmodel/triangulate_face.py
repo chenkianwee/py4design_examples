@@ -29,7 +29,7 @@ for f in face_list:
     if fcnt == 21:
         extrude = py3dmodel.construct.extrude(f,(0,0,1), 20)
         py3dmodel.utility.visualise([[extrude]], ["BLUE"])
-    tri_faces = py3dmodel.construct.triangulate_face(f)
+    tri_faces = py3dmodel.construct.simple_mesh(f)
     for tf in tri_faces:
         pyptlist = py3dmodel.fetch.points_frm_occface(tf)
         centre_pt = py3dmodel.calculate.points_mean(pyptlist)
@@ -40,9 +40,9 @@ for f in face_list:
 tri_cmpd = py3dmodel.construct.make_compound(tri_list)
 edges2 = py3dmodel.fetch.topo_explorer(tri_cmpd, "edge")
 shell_list = py3dmodel.construct.sew_faces(tri_list)
-print len(shell_list)
+print(len(shell_list))
 shell = shell_list[0]
-print py3dmodel.calculate.is_shell_closed(shell)
+print(py3dmodel.calculate.is_shell_closed(shell))
 
 display_2dlist = []
 #display_2dlist.append([loft])
