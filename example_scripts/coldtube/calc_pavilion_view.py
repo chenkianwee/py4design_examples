@@ -55,7 +55,7 @@ def calc_view(pypt, occ_shape, dirs, voxel_dicts, xdim, ydim, zdim, xmin, ymin, 
                     edge = py3dmodel.construct.make_edge(pypt, interpt)
                     hit_edges.append(edge)
             else:
-                print "THE POINT DID NOT FIND A VOXEL"
+                print("THE POINT DID NOT FIND A VOXEL")
             
     nhits = len(hits)
     view_factor = nhits/float(ndir)

@@ -266,7 +266,7 @@ class ColdtubeDashboard(QtGui.QWidget):
         forward_date = date_list[forward_index]
         #print "FORWARD DATE:",forward_date
         if self.data == None:
-            print "Please specify the date range in step 1"
+            print("Please specify the date range in step 1")
         try:
             mesh_list = ct_func.map_data23d(forward_date, self.data, self.geometry, 
                                          self.data_keys, self.min_val, self.max_val,

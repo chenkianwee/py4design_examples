@@ -95,10 +95,10 @@ for ext in ext_list:
 
     
 time2 = time.clock()
-print "CONSTRUCTED MODEL", (time2-time1)/60.0, "mins"
+print("CONSTRUCTED MODEL", (time2-time1)/60.0, "mins")
 #py3dmodel.utility.visualise([cut_wall_list, win_list, shade_occface_list, roof_occface_list], ["WHITE", "BLUE", "WHITE", "WHITE"])      
   
-print "CALCULATING LOADS..."
+print("CALCULATING LOADS...")
 
 #calculate ettv 
 current_path = os.path.dirname(__file__)
@@ -167,8 +167,8 @@ sensible_load2 = buildingformeval.calc_sensible_load(0, 0, floor_area, 0, 0,  eq
 loads_2b_rmv = buildingformeval.calc_ach_4_equip(floor_area, 3.5, win_area, 5, 15, solar_gain_nat,
                                                  air_speed_at_win = 0.1, air_temp_increase = 2.5)
 
-print "SOLAR GAIN", solar_gain_nat
-print "WATTS2BREMOVED", loads_2b_rmv
+print("SOLAR GAIN", solar_gain_nat)
+print("WATTS2BREMOVED", loads_2b_rmv)
 sensible_load2 = sensible_load2 + loads_2b_rmv
 
 system_d3 = buildingformeval.con_free_panels_w_fans(sensible_load2, floor_area, air_temp_c = outdoor_temp, dewpt_temp_c = dewpoint, 
@@ -177,17 +177,17 @@ system_d3 = buildingformeval.con_free_panels_w_fans(sensible_load2, floor_area, 
 system_d4 = buildingformeval.con_free_panels_w_fans(sensible_load2, floor_area, air_temp_c = outdoor_temp, dewpt_temp_c = dewpoint, 
                                                     m2_per_fan= 15, fan_power = 75, percent_ceiling = 0.73, chiller_efficiency = 0.4)
 
-print "*******************************************************************"
-print "LATENT LOAD", latent_load1
-print "SENSIBLE LOAD FOR AIR-BASED", sensible_load1, "SENSIBLE LOAD FOR RADIANT-BASED", sensible_load2
-print "*******************************************************************"
-print "DECENTRALISED ALL-AIR-ENERGY", system_d1["energy_consumed_hr"], "COP =",  system_d1["overall_cop"]
-print "*******************************************************************"
-print "CENTRALISED ALL-AIR-ENERGY", system_d2["energy_consumed_hr"], "COP =",  system_d2["overall_cop"]
-print "*******************************************************************"
-print "DECENTRALISED CONDENSATION-FREE-ENERGY=", system_d3["energy_consumed_hr"], "COP =",  system_d3["sensible_cop"] ,"PANEL SUPPLY TEMP=", system_d3["supply_temperature_for_panels"] - 273.15
-print "*******************************************************************"
-print "CENTRALISED CONDENSATION-FREE-ENERGY=", system_d4["energy_consumed_hr"], "COP =",  system_d4["sensible_cop"] ,"PANEL SUPPLY TEMP=", system_d4["supply_temperature_for_panels"] - 273.15
+print("*******************************************************************")
+print("LATENT LOAD", latent_load1)
+print("SENSIBLE LOAD FOR AIR-BASED", sensible_load1, "SENSIBLE LOAD FOR RADIANT-BASED", sensible_load2)
+print("*******************************************************************")
+print("DECENTRALISED ALL-AIR-ENERGY", system_d1["energy_consumed_hr"], "COP =",  system_d1["overall_cop"])
+print("*******************************************************************")
+print("CENTRALISED ALL-AIR-ENERGY", system_d2["energy_consumed_hr"], "COP =",  system_d2["overall_cop"])
+print("*******************************************************************")
+print("DECENTRALISED CONDENSATION-FREE-ENERGY=", system_d3["energy_consumed_hr"], "COP =",  system_d3["sensible_cop"] ,"PANEL SUPPLY TEMP=", system_d3["supply_temperature_for_panels"] - 273.15)
+print("*******************************************************************")
+print("CENTRALISED CONDENSATION-FREE-ENERGY=", system_d4["energy_consumed_hr"], "COP =",  system_d4["sensible_cop"] ,"PANEL SUPPLY TEMP=", system_d4["supply_temperature_for_panels"] - 273.15)
 
 #print "HOW MANY TIMES LOWER", system_d1["energy_consumed_hr"]/ system_d2 ["energy_consumed_hr"]
 #py3dmodel.utility.visualise([cut_wall_list, win_list, shade_occface_list], ["WHITE", "BLUE", "BLACK"])

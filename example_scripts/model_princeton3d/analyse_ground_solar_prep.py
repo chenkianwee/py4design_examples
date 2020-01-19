@@ -149,7 +149,7 @@ def id_terrain(grid, bdry_list):
                 if area/garea > 0.5:        
                     cnt_list.append(cnt)
             else:
-                print "something is weird in id_terrain function"
+                print("something is weird in id_terrain function")
         cnt+=1
     return cnt_list
 
@@ -164,7 +164,7 @@ def id_terrain2(grid, bdry_list):
             if len(face_list)==1:
                 cnt_list.append(cnt)
             else:
-                print "something is weird in id_terrain function"
+                print("something is weird in id_terrain function")
         cnt+=1
     return cnt_list
 
@@ -173,7 +173,7 @@ def proj_pts_2_terrain(terrain, pyptlist):
     pydir = [0,0,1]
     cnt = 0
     for pypt in pyptlist:
-        print cnt
+        print(cnt)
         interpt, interface = py3dmodel.calculate.intersect_shape_with_ptdir(terrain, pypt, pydir)
         if interpt:
             interpt2 = [interpt[0], interpt[1], interpt[2]+1]
@@ -249,7 +249,7 @@ def construct_3d_trees(tree_pts, tree_shpatt):
     ntrees = len(tree_pts)
     tree_vols = []
     for cnt in range(ntrees):
-        print cnt+1, "/", ntrees
+        print(cnt+1, "/", ntrees)
         pt = tree_pts[cnt]
         att = tree_shpatt[cnt].dictionary
         height = att["tree_heigh"]

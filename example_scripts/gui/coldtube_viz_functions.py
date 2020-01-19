@@ -285,36 +285,45 @@ def clear_3dview(view_3d):
         nitems = len(all_items)
         
 def gen_falsecolour_bar(min_val, max_val):
-        flist, bcolour, txt_geom, str_col, float_list = py3dmodel.utility.generate_falsecolour_bar(min_val,max_val,"C", 
-                                                                                              5, bar_pos = (4,0,0))
+    interval = 10.0
+    inc1 = (max_val-min_val)/(interval)
+    inc2 = inc1/2.0    
+    float_list = list(np.arange(min_val+inc2, max_val, inc1))
+    bcolour = py3dmodel.utility.falsecolour(float_list, min_val, max_val)
+    new_c_list = []
+    for c in bcolour:
+        new_c = [c[0]*255, c[1]*255, c[2]*255]
+        new_c_list.append(new_c)
         
-        new_c_list = []
-        for c in bcolour:
-            new_c = [c[0]*255, c[1]*255, c[2]*255]
-            new_c_list.append(new_c)
-            
-        rangex = max_val-min_val
-        intervals = rangex/10.0
-        intervals_half = intervals/2.0
-        str_list = []
-        for f in float_list:
-            f = round(f)
-            mi = f - intervals_half
-            ma = f + intervals_half
+    rangex = max_val-min_val
+    intervals = rangex/10.0
+    intervals_half = intervals/2.0
+    str_list = []
+    fcnt = 0
+    for f in float_list:
+        mi = round(f - intervals_half)
+        ma = round(f + intervals_half)
+        if fcnt == 0:
+            strx = "<" + str(ma)
+        elif fcnt == 9:
+            strx = ">" + str(mi)
+        else:
             strx = str(mi) + " - " + str(ma)
-            str_list.append(strx)
             
-        falsecolour = dict(name='Falsecolour', type='group', expanded = True, title = "Colour Legend (C)",
-                                children =  [dict(name = str_list[0], type = 'color', value = new_c_list[0], readonly = True),
-                                             dict(name = str_list[1], type = 'color', value = new_c_list[1], readonly = True),
-                                             dict(name = str_list[2], type = 'color', value = new_c_list[2], readonly = True),
-                                             dict(name = str_list[3], type = 'color', value = new_c_list[3], readonly = True),
-                                             dict(name = str_list[4], type = 'color', value = new_c_list[4], readonly = True),
-                                             dict(name = str_list[5], type = 'color', value = new_c_list[5], readonly = True),
-                                             dict(name = str_list[6], type = 'color', value = new_c_list[6], readonly = True),
-                                             dict(name = str_list[7], type = 'color', value = new_c_list[7], readonly = True),
-                                             dict(name = str_list[8], type = 'color', value = new_c_list[8], readonly = True),
-                                             dict(name = str_list[9], type = 'color', value = new_c_list[9], readonly = True),
-                                            ]
-                            )
-        return falsecolour
+        str_list.append(strx)
+        
+        fcnt+=1
+        
+    falsecolour = dict(name='Falsecolour', type='group', expanded = True, title = "Colour Legend (W/m2)",
+                            children =  [dict(name = str_list[9], type = 'color', value = new_c_list[9], readonly = True),
+                                         dict(name = str_list[8], type = 'color', value = new_c_list[8], readonly = True),
+                                         dict(name = str_list[7], type = 'color', value = new_c_list[7], readonly = True),
+                                         dict(name = str_list[6], type = 'color', value = new_c_list[6], readonly = True),
+                                         dict(name = str_list[5], type = 'color', value = new_c_list[5], readonly = True),
+                                         dict(name = str_list[4], type = 'color', value = new_c_list[4], readonly = True),
+                                         dict(name = str_list[3], type = 'color', value = new_c_list[3], readonly = True),
+                                         dict(name = str_list[2], type = 'color', value = new_c_list[2], readonly = True),
+                                         dict(name = str_list[1], type = 'color', value = new_c_list[1], readonly = True),
+                                         dict(name = str_list[0], type = 'color', value = new_c_list[0], readonly = True)]
+                        )
+    return falsecolour

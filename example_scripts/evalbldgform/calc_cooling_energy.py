@@ -85,9 +85,9 @@ extrude = py3dmodel.construct.extrude(occface, (0,0,1), 30)
 surround_occface_list = py3dmodel.fetch.topo_explorer(extrude, "face")
 
 time2 = time.clock()
-print "CONSTRUCTED MODEL", (time2-time1)/60.0
+print("CONSTRUCTED MODEL", (time2-time1)/60.0)
 
-print "CALCULATING ETTV..."
+print("CALCULATING ETTV...")
 
 #calculate ettv 
 current_path = os.path.dirname(__file__)
@@ -124,9 +124,9 @@ for footprint in footprint_list:
     
     
 result_dictionary = buildingformeval.calc_ettv(shp_attribs_list,weatherfilepath)
-print result_dictionary
+print(result_dictionary)
 time3 = time.clock()
-print "CALCULATED ETTV", (time3-time2)/60.0
+print("CALCULATED ETTV", (time3-time2)/60.0)
 
 time4 = time.clock()
 #calculate cooling energy 
@@ -137,9 +137,9 @@ ettv = result_dictionary["ettv"]
 rttv = result_dictionary["rttv"]
 system_dict_list = buildingformeval.calc_cooling_energy_consumption(facade_area, roof_area, floor_area, ettv, rttv)
 chosen_system = buildingformeval.choose_efficient_cooling_system(system_dict_list)
-print system_dict_list
+print(system_dict_list)
 time5 = time.clock()
-print "CALCULATED COOLING ENERGY ", (time5-time4)/60.0
+print("CALCULATED COOLING ENERGY ", (time5-time4)/60.0)
 
 display_2dlist = []
 colour_list = []
