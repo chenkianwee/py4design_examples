@@ -335,7 +335,7 @@ def write_poly_shpfile(occface_list, shp_filepath, attname_list, att_list):
     w = shapefile.Writer(shp_filepath, shapeType = 5)
     w.field('index','N',10)
     for attname in attname_list:
-        print attname
+        print(attname)
         w.field(attname,'N', decimal=2)
          
     cnt=0
@@ -390,13 +390,13 @@ def write_poly_shpfile(occface_list, shp_filepath, attname_list, att_list):
 #READ THE SHAPEFILE
 #===========================================================================================
 time1 = time.clock()
-print "*******Reading the shpfile***************"
+print("*******Reading the shpfile***************")
 shpatt_list = read_sf_poly(grid_shpfile)
 #===========================================================================================
 #READ TERRAIN
 #===========================================================================================
 #read all the terrains
-print "*******Getting All the Terrains***************"
+print("*******Getting All the Terrains***************")
 terrain_list = get_all_terrain(terrain_dir)
 
 pts_in_grid = grid_size * pt_resolution

@@ -1,26 +1,19 @@
 from laspy.file import File
 import numpy as np
 
-las_filepath = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\las\\USGS_Lidar_Point_Cloud_NJ_SdL5_2014_18TWK325655_LAS_2015\\18TWK325655.las"
+las_filepath = "E:\\kianwee_work_data\\lidar_campus_as_lab\\lidar\\USGS_Lidar_Point_Cloud_NJ_SdL5_2014_18TWK325655_LAS_2015\\18TWK325655.las"
 inFile = File(las_filepath, mode='r')
-pts = inFile.points
 coords = np.vstack((inFile.x, inFile.y, inFile.z)).transpose()
 headerformat = inFile.header.header_format
-print len(pts)
-#class_arr = inFile.raw_classification
-#print class_arr
-#for c in class_arr:
-#    if c == 3:
-#        print "tree"
+class_arr = inFile.raw_classification
 
 #filter all single return points of classes 3, 4, or 5 (vegetation)
-veg = np.where(inFile.raw_classification == 11)
-#single_veg = np.where()
-coords = np.vstack((inFile.x, inFile.y, inFile.z)).transpose()
-valid_pts = np.take(coords, veg, axis = 0)[0]
-print len(valid_pts)
-print len(veg)
-print veg
+veg = np.where(inFile.raw_classification == 4)
+# coords = np.vstack((inFile.x, inFile.y, inFile.z)).transpose()
+# valid_pts = np.take(coords, veg, axis = 0)[0]
+
+print(len(veg))
+
 #for i in veg:
 #    if i == True:
 #        print "tree"
@@ -32,8 +25,8 @@ print veg
 #                                  single_veg_points['point']['Z'])).transpose()
 
 #print len(single_veg_points_xyz)
-##for spec in headerformat:
-##    print(spec.name)
+for spec in headerformat:
+    print(spec.name)
 #    
 ##print inFile.header.scale
 ##print inFile.header.max

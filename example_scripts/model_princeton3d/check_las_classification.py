@@ -1,66 +1,14 @@
 import os
 
-import shapefile
 import numpy as np
 from py4design import py3dmodel
 from laspy.file import File
 
 #specify the pt cloud directory
-pt_cloud_dir = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\las"
-bdry_shp_file = "F:\\kianwee_work\\princeton\\2019_06_to_2019_12\\campus_as_a_lab\\model3d\\shp\\las_bdry\\las_bdry.shp"
+pt_cloud_dir = "E:\\kianwee_work_data\\lidar_campus_as_lab\\lidar"
 #============================================================================================================
 #FUNCTION
 #============================================================================================================
-def write_poly_shpfile(occface_list, shp_filepath):
-    w = shapefile.Writer(shp_filepath, shapeType = 5)
-    w.field('index','N',10)
-    cnt=0
-    for occface in occface_list:
-        wires = py3dmodel.fetch.topo_explorer(occface, "wire")
-        nwires = len(wires)
-        
-        if nwires > 1:
-            nrml = py3dmodel.calculate.face_normal(occface)
-            poly_shp_list = []
-            for wire in wires:
-                pyptlist = py3dmodel.fetch.points_frm_wire(wire)
-                is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, nrml)
-                is_anticlockwise2 = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
-                if is_anticlockwise: #means its a face not a hole
-                    if is_anticlockwise2:
-                        pyptlist.reverse()
-                else: #means its a hole not a face
-                    if not is_anticlockwise2:
-                        pyptlist.reverse()
-                
-                pyptlist2d = []
-                for pypt in pyptlist:
-                    x = pypt[0]
-                    y = pypt[1]
-                    pypt2d = [x,y]
-                    pyptlist2d.append(pypt2d)
-                poly_shp_list.append(pyptlist2d)
-                
-            w.poly(poly_shp_list)
-            w.record(cnt)
-                    
-        else:
-            pyptlist = py3dmodel.fetch.points_frm_occface(occface)
-            is_anticlockwise = py3dmodel.calculate.is_anticlockwise(pyptlist, (0,0,1))
-            if is_anticlockwise:
-                pyptlist.reverse()
-            pyptlist2d = []
-            for pypt in pyptlist:
-                x = pypt[0]
-                y = pypt[1]
-                pypt2d = [x,y]
-                pyptlist2d.append(pypt2d)
-        
-            w.poly([pyptlist2d])
-            w.record(cnt)
-        cnt+=1
-    w.close()
-
 def find_las_file(folder_dirs):
     lasfile = ""
     for dirx in folder_dirs:
@@ -79,18 +27,40 @@ def get_las_file_bdry(las_filepath):
     mn.extend(mx)
     return mn, lasfile
 
-def extract_trees(las_filepath):
+def check_classification(las_filepath):
     lasfile = File(las_filepath, mode='r')
-    #filter all single return points of classes 3, 4, or 5 (vegetation)
+    # print('Total number of points:',len(lasfile.x))
+    clfy_d = {}
     try:
-        #tree_pts = np.logical_or(lasfile.raw_classification == 3, lasfile.raw_classification == 4, lasfile.raw_classification == 5)
-        veg = np.where(lasfile.raw_classification == 6)
-        coords = np.vstack((lasfile.x, lasfile.y, lasfile.z)).transpose()
-        valid_pts = np.take(coords, veg, axis = 0)[0]
-        print len(valid_pts)
+        clfy = lasfile.raw_classification
+        unqs = np.unique(clfy)
+        for unq in unqs:
+            where = np.where(clfy == unq)[0]
+            clfy_d[unq] = len(where)
         lasfile.close()
+        
     except:
-        print "not classified"
+        print("not classified")
+    
+    return clfy_d
+
+def extract_las_pts(las_filepath, classify_no_list):
+    lasfile = File(las_filepath, mode='r')
+    try:       
+        clfy = lasfile.raw_classification
+        clfy_list = []
+        for no in classify_no_list:
+            clfy_list.append(clfy == no)
+            
+        chosen_pts = np.logical_or(*clfy_list)
+        # chosen_pts = np.logical_or(clfy == 1, clfy == 2)
+        take_idx = np.where(chosen_pts)
+        coords = np.vstack((lasfile.x, lasfile.y, lasfile.z)).transpose()
+        valid_pts = np.take(coords, take_idx, axis = 0)[0]
+        lasfile.close()
+        return valid_pts       
+    except:
+        return None    
 
 def make_bdry_face2d(mn_mx_list):
     xmin = mn_mx_list[0]
@@ -105,12 +75,13 @@ def make_bdry_face2d(mn_mx_list):
 #FUNCTION
 #============================================================================================================
 list_dir = os.listdir(pt_cloud_dir)
-bdry_face_list = []
 for dirx in list_dir:    
     las_folder = os.path.join(pt_cloud_dir, dirx)
     folder_dirs = os.listdir(las_folder)
     lasfilename = find_las_file(folder_dirs)
     las_filepath = os.path.join(pt_cloud_dir, dirx, lasfilename)
-    extract_trees(las_filepath)
-    
-#write_poly_shpfile(bdry_face_list, bdry_shp_file)
+    d = check_classification(las_filepath)
+    extract_pts = extract_las_pts(las_filepath, [1, 2, 3])
+    print(d)
+    if extract_pts is not None:
+        print(len(extract_pts))

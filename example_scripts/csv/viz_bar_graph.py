@@ -14,8 +14,6 @@ res_filepath = "F:\\kianwee_work\\princeton\\journal\\air2srf_conditioning\\img\
 #===========================================================================================================
 fig, ax1 = plt.subplots()
 
-
-
 ax1.bar(positions, values, color="silver", alpha = 1.0)
 #ax1.bar(positions2, means2, color="silver", alpha = 0.5, yerr=std2, label = "Avg/Err Air Temp of Comfort Zones")
 #ax1.bar(positions3, means3, color="k", alpha = 0.3, yerr=std3, label = "Avg/Err MRT of Comfort Zones")
@@ -35,4 +33,4 @@ ax1.tick_params('y', colors='k')
 ax1.grid(axis = "y", linestyle = ":", alpha = 0.2, color = "k")
 #ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.4), fancybox=True, ncol=2)
 
-plt.savefig(res_filepath, bbox_inches = "tight" , dpi = 300, transparent=True,papertype="a3")
+# plt.savefig(res_filepath, bbox_inches = "tight" , dpi = 300, transparent=True,papertype="a3")

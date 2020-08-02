@@ -1,5 +1,6 @@
 import os
 import csv
+import math
 from dateutil.parser import parse
 
 import numpy as np
@@ -228,16 +229,31 @@ for cnt in range(len(v_list1)):
     #CALC THE OPERATIVE TEMPERATURE 
     to = "undefined"
     if type(tr) == float and type(ta) == float:
-        to = (ta+tr)/2.0
+        air_v_10 = 10*vams
+        air_v_sqrt = math.sqrt(air_v_10)
+        
+        top = tr + (ta*air_v_sqrt)
+        bottom = 1 + air_v_sqrt
+        to = top/bottom
+        print(to)
+        # to = (ta+tr)/2.0
     
     #CALC THE AVG TANK TEMP
-    if tankt_red > 0 and tankt_blue > 0:
-        avg_tank_temp = calc_avg_of_ls([tankt_red, tankt_blue])
-    else:
-        if tankt_red > 0:
-            avg_tank_temp = tankt_red
+    avg_tank_temp = "undefined"
+    if type(tankt_red) == float and type(tankt_blue) == float:
+        if tankt_red > 0 and tankt_blue > 0:
+            avg_tank_temp = calc_avg_of_ls([tankt_red, tankt_blue])
         else:
-            avg_tank_temp = tankt_blue
+            if tankt_red > 0:
+                avg_tank_temp = tankt_red
+            else:
+                avg_tank_temp = tankt_blue
+    elif type(tankt_red) == float:
+        if tankt_red > 0:
+                avg_tank_temp = tankt_red
+    elif type(tankt_blue) == float:
+        if tankt_blue > 0:
+                avg_tank_temp = tankt_blue    
     
     #CALC THE AVG PANEL TEMP
     avg_panel_temp = calc_avg_of_ls([panel2, panel3, panel4, panel6, panel7, panel8])
@@ -292,12 +308,12 @@ comfy_percent80 = n80/float(nstates)
 comfy_percent90 = n90/float(nstates)
 uncomfy_percent = nhot/float(nstates)
 
-print "WIND VELOCITY (m/s) percentile:", np.percentile(vams_list, [10,20,30,40,50,60,70,80,90,99])
+print("WIND VELOCITY (m/s) percentile:", np.percentile(vams_list, [10,20,30,40,50,60,70,80,90,99]))
 
-print "TOTAL STATES", nstates, "S80", n80, "S90", n90, "STATEHOT", nhot
-print "PERCENTAGE OF COMFORTABLE 90% SATISFACTION", comfy_percent90
-print "PERCENTAGE OF COMFORTABLE 80% SATISFACTION", comfy_percent80
-print "PERCENTAGE OF THERMALLY UNCOMFORTABLE", uncomfy_percent
+print("TOTAL STATES", nstates, "S80", n80, "S90", n90, "STATEHOT", nhot)
+print("PERCENTAGE OF COMFORTABLE 90% SATISFACTION", comfy_percent90)
+print("PERCENTAGE OF COMFORTABLE 80% SATISFACTION", comfy_percent80)
+print("PERCENTAGE OF THERMALLY UNCOMFORTABLE", uncomfy_percent)
 #=================================================================================================================================
 #THE FIRST AXIS
 #=================================================================================================================================
@@ -374,4 +390,4 @@ for i in range(1):
     ax1.set_xlim(xmin, xmax)
     ax1.grid(axis = "y", linestyle = ":", alpha = 0.1, color = "k")
     graph_path = os.path.join(graph_dir, "2019jan" + str(day) + ".png")
-    #plt.savefig(graph_path, bbox_inches = "tight", dpi = 300, transparent=False, papertype="a3")
+    plt.savefig(graph_path, bbox_inches = "tight", dpi = 300, transparent=False, papertype="a3")

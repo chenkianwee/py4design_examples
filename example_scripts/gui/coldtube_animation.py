@@ -172,7 +172,7 @@ class CTVisualiser(QtGui.QWidget):
             self.params2.param('Environment').param('Globe Temp').setValue(str(globe))
         
         except:
-            print self.current_index
+            print(self.current_index)
             
     def animation(self):
         timer = QtCore.QTimer()
