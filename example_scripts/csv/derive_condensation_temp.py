@@ -31,7 +31,7 @@ score = lr.score(air_list, water_list)
 co = lr.coef_
 intercept = lr.intercept_
 
-print "Rsquare SCORE", score, "COEEFF", co, "INTERCEPT", intercept
+print("Rsquare SCORE", score, "COEEFF", co, "INTERCEPT", intercept)
 #=================================================================================
 #PLOTTING
 #=================================================================================

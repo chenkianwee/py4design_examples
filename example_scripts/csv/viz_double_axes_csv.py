@@ -154,5 +154,5 @@ for i in range(13):
     ax1.legend(bbox_to_anchor=(1.4, 1))
     #ax2.legend(loc="best")
     plt.gcf().autofmt_xdate()
-    plt.savefig(img_path, bbox_inches = "tight", dpi = 300,transparent=True,papertype="a3")
+    # plt.savefig(img_path, bbox_inches = "tight", dpi = 300,transparent=True,papertype="a3")
     #plt.show()

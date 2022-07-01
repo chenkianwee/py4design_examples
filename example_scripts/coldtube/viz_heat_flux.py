@@ -43,7 +43,6 @@ def calc_mrt_from_qrad(qrad, tskin):
     s_boltzman = 5.67e-08
     tmrt4 = qrad/(e*s_boltzman)
     tmrt4 = tmrt4 - ((tskin+273.15)**4)
-
     tmrt = math.sqrt(tmrt4)
     return tmrt
 
@@ -94,6 +93,12 @@ for i in range(3):
     qcons.append(con_percent)
     
     qrad = total_flux - qcon
+    qrad2 = qrad*-1
+    tair2 = tskin+3+273.15
+    
+    tp = (qrad2/5e-8) + tair2**4
+    tp = tp**0.25
+    print('tp',tp-273.15, 'ts', twater)
     rad_percent = qrad/total_flux * 100
     qrads.append(rad_percent)
 

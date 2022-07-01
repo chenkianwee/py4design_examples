@@ -364,11 +364,11 @@ mutation_rate = 0.01
 crossover_rate  = 0.8 
 current_path = os.path.dirname(__file__)
 parent_path = os.path.abspath(os.path.join(current_path, os.pardir, os.pardir))
-    
+print(parent_path)
 live_file = os.path.join(parent_path, "example_files", "xml", "results", "office_live.xml")
 dead_file = os.path.join(parent_path, "example_files", "xml", "results", "office_dead.xml")
 
-print "OPTIMISING ... ..."
+print("OPTIMISING ... ...")
 gene_dict_list = generate_gene_dict_list()
 score_dict_list = generate_score_dict_list()
 
@@ -381,7 +381,7 @@ if resume == True:
     
 for gencnt in range(ngeneration):
     indlist = population.individuals
-    print "CURRENT GEN", gencnt
+    print("CURRENT GEN", gencnt)
     for ind in indlist:
         #==================================================
         #GENERATE DESIGN VARIANT
@@ -399,11 +399,20 @@ for gencnt in range(ngeneration):
         shade_strategy = parms[6]
         win_mat = parms[7]
         
+        # pt1 =3
+        # pt2 = 1
+        # pt3 =1
+        # pt4 = 0
+        # courtyard_size = 0.4
+        # wwr = 0.4
+        # shade_strategy = 2
+        # win_mat = 1
+                                                                                            
         wall_list, flr_list, roof_list, win_list, bldg_shade_list = generate_design_variant(pt1, pt2, pt3, pt4,
                                                                                             courtyard_size, wwr, 
                                                                                             shade_strategy) 
-                                                                                            
         
+        print(pt1, pt2, pt3, pt4, courtyard_size, wwr, shade_strategy)
         
         all_srf_list =  wall_list + bldg_shade_list
         
@@ -475,27 +484,26 @@ for gencnt in range(ngeneration):
                                 "panel_srf_area:" + str(round(panel_srf_area,2)) + "\n" + \
                                 "ndvus:" + str(ndvus) + "\n"
         description_string = description_string + description_string2
-
         
-        py3dmodel.export_collada.write_2_collada(cmpd_list, dv_dae, face_rgb_colour_list=rgb_colour_list, text_string = description_string)
-        print 'COOLING ENERGY', cooling_energy , "DAYLIGHT", daylight
+        py3dmodel.export_collada.write_2_collada(dv_dae, cmpd_list, face_rgb_colour_list=rgb_colour_list, text_string = description_string)
+        print('COOLING ENERGY', cooling_energy , "DAYLIGHT", daylight)
         ind.set_score(0,cooling_energy)
         ind.set_score(1,daylight)
         derivedparams = [ettv, shape_factor, sensible_load, flr_area, cooling_system,
-                         supply_temperature, panel_srf_area, ndvus]
+                          supply_temperature, panel_srf_area, ndvus]
         ind.add_derivedparams(derivedparams)
         
     #==================================================
     #NSGA FEEDBACK 
     #=================================================
-    print "FEEDBACK ... ..."
+    print("FEEDBACK ... ...")
     pyoptimise.feedback_nsga2(population)
     time2 = time.clock() 
-    print "TIME TAKEN", (time2-time1)/60.0
+    print("TIME TAKEN", (time2-time1)/60.0)
     
-print "DONE"
+print("DONE")
 time3 = time.clock() 
-print "TIME TAKEN", (time3-time1)/60.0
+print("TIME TAKEN", (time3-time1)/60.0)
 
 #glazing materials
 #0 =  sgl clear glass, vt 0.9, 1 = dbl glaze no coat, vt 0.79, 
